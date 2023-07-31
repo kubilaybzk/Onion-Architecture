@@ -6,4 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Entities\Common\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Entities\Common\" />
+  </ItemGroup>
 </Project>

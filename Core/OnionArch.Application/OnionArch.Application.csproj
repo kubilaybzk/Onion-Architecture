@@ -9,4 +9,10 @@
   <ItemGroup>
     <ProjectReference Include="..\OnionArch.Domain\OnionArch.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Abstractions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Abstractions\" />
+  </ItemGroup>
 </Project>
