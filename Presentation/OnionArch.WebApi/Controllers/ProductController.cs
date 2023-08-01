@@ -38,7 +38,7 @@ namespace OnionArch.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOneBook([FromBody] Product book)
+        public async Task<IActionResult> CreateOneBook([FromQuery] Product book)
         {
             try
             {
