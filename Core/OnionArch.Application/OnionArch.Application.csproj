@@ -11,8 +11,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Abstractions\" />
+    <None Remove="Abstractions\CustomerCrud\" />
+    <None Remove="Abstractions\OrderCrud\" />
+    <None Remove="Abstractions\ProductCrud\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstractions\" />
+    <Folder Include="Abstractions\CustomerCrud\" />
+    <Folder Include="Abstractions\OrderCrud\" />
+    <Folder Include="Abstractions\ProductCrud\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
   </ItemGroup>
 </Project>
