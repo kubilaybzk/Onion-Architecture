@@ -5,6 +5,7 @@ namespace OnionArch.Domain.Entities.Common
 	{
 		public Guid ID { get; set; }
 		public DateTime CreateTime { get; set; }
-	}
+        public DateTime UpdateTime { get; set; }
+    }
 }
 

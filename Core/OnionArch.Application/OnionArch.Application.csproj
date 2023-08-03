@@ -14,12 +14,14 @@
     <None Remove="Abstractions\CustomerCrud\" />
     <None Remove="Abstractions\OrderCrud\" />
     <None Remove="Abstractions\ProductCrud\" />
+    <None Remove="View_Models\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstractions\" />
     <Folder Include="Abstractions\CustomerCrud\" />
     <Folder Include="Abstractions\OrderCrud\" />
     <Folder Include="Abstractions\ProductCrud\" />
+    <Folder Include="View_Models\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
