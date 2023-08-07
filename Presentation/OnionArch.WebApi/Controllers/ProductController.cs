@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using OnionArch.Application.Abstractions.CustomerCrud;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.View_Models;
@@ -22,14 +23,14 @@ namespace OnionArch.API.Controllers
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
         }
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> Get()
         {
             var product = _productReadRepository.GetAll();
             return Ok(product);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetSingleById")]
         public async Task<IActionResult> GetSingle(string id)
         {
 
@@ -37,55 +38,56 @@ namespace OnionArch.API.Controllers
             return Ok(product);
         }
 
-        [HttpPost]
+        [HttpPost("CreateOneProduct")]
         public async Task<IActionResult> CreateOneProduct([FromQuery] VM_Create_Product product)
         {
             try
             {
-                //Gelen veri boş ise yani product objesi boş gelmişse hata mesajı
                 if (product is null)
                 {
-                    return BadRequest();
+                    // Boş veri hatası için 400 Bad Request dönüşü ve özel hata mesajı
+                    return BadRequest("Product data is missing.");
                 }
                 else
                 {
-                //Gelen veri boş ise yani product objesi boş değilse yeni obje oluşturma.
-                    await _productWriteRepository.AddAsync( new Product
+                    // Veri eklenmesi işlemi
+                    await _productWriteRepository.AddAsync(new Product
                     {
-                        Price=product.Price,
-                        Name=product.Name,
-                        Stock=product.Stock
+                        Price = product.Price,
+                        Name = product.Name,
+                        Stock = product.Stock
                     });
                     await _productWriteRepository.SaveAsync();
+
+                    // 201 Created dönüşü ve eklenen ürün bilgisi
                     return StatusCode(201, product);
                 }
             }
             catch (Exception ex)
             {
-                //Hata varsa bir hata mesajı gösterme .
-                throw new Exception(ex.Message);
-
+                // Genel bir hata mesajı dönüşü ve içerideki hata mesajı
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut("UpdateProductById")]
         public async Task<IActionResult> UpdateProduct(VM_Update_Product model)
         {
             //Önclikle Update edilecek olan veriye ıd üzerinden erişelim.
-            Product product = await  _productReadRepository.GetByIdAsync(model.ID);
-           //model'den gelen verileri bu verilere atayalım.
+            Product product = await _productReadRepository.GetByIdAsync(model.ID);
+            //model'den gelen verileri bu verilere atayalım.
             product.Name = model.Name;
             product.Price = model.Price;
             product.Stock = model.Stock;
             //Değişiklik veri tabanına yansısın.
             await _productWriteRepository.SaveAsync();
-            
+
             return Ok(product);
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpPut("DeleteProductById")]
         public async Task<IActionResult> DeleteProduct([FromRoute(Name = "id")] string id)
         {
             var result = await _productWriteRepository.RemoveAsync(id);
@@ -104,3 +106,13 @@ namespace OnionArch.API.Controllers
 
     }
 }
+
+
+
+
+
+
+
+
+
+      

@@ -9,4 +9,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\OnionArch.Application\OnionArch.Application.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Filters\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Filters\" />
+  </ItemGroup>
 </Project>

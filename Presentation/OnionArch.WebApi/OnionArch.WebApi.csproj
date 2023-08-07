@@ -24,6 +24,9 @@
     <ProjectReference Include="..\..\infrastructure\OnionArch.Persistance\OnionArch.Persistance.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\..\infrastructure\OnionArch.infrastructure\OnionArch.infrastructure.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Remove="Controllers\" />
