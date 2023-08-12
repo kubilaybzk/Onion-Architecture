@@ -24,19 +24,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddPersistanceServices();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+    policy.WithOrigins(
+"http://localhost:3000",
+    "https://localhost:3000",
+    "https://0.0.0.0:3000",
+    "http://0.0.0.0:3000",
+    "https://127.0.0.1:3000",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5500",
+    "https://127.0.0.1:5500"
+     ).AllowAnyHeader().AllowAnyMethod()
 )) ;
 
-//WithOrigins(
-//"http://localhost:3000",
-//    "https://localhost:3000",
-//    "https://0.0.0.0:3000",
-//    "http://0.0.0.0:3000",
-//    "https://127.0.0.1:3000",
-//    "http://127.0.0.1:3000",
-//    "http://127.0.0.1:5500",
-//    "https://127.0.0.1:5500"
-//     )
+
 
 var app = builder.Build();
 

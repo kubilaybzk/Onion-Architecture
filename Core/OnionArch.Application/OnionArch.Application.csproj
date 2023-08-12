@@ -15,6 +15,7 @@
     <None Remove="Abstractions\OrderCrud\" />
     <None Remove="Abstractions\ProductCrud\" />
     <None Remove="View_Models\" />
+    <None Remove="RequestParamaters\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstractions\" />
@@ -22,6 +23,7 @@
     <Folder Include="Abstractions\OrderCrud\" />
     <Folder Include="Abstractions\ProductCrud\" />
     <Folder Include="View_Models\" />
+    <Folder Include="RequestParamaters\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
