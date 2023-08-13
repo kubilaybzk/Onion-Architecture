@@ -1,5 +1,6 @@
 ﻿using FluentValidation.AspNetCore;
 using OnionArch.Application.Validators.Product_Validators;
+using OnionArch.infrastructure;
 using OnionArch.infrastructure.Filters;
 using OnionArch.Persistance;
 
@@ -21,6 +22,7 @@ builder.Services.AddControllers(options => options.Filters.Add<ValidationFilters
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddInfrastructureServices();
 builder.Services.AddPersistanceServices();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>

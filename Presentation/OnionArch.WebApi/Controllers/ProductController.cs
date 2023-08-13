@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnionArch.Application.Abstractions.CustomerCrud;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.RequestParamaters;
+using OnionArch.Application.Services;
 using OnionArch.Application.View_Models;
 using OnionArch.Domain.Entities;
 using static System.Net.Mime.MediaTypeNames;
@@ -16,17 +17,21 @@ namespace OnionArch.API.Controllers
     {
         readonly private IProductWriteRepository _productWriteRepository;
         readonly private IProductReadRepository _productReadRepository;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        readonly IFileService _fileService;
+        
 
         public ProductsController(
             IProductWriteRepository productWriteRepository,
             IProductReadRepository productReadRepository,
-            IWebHostEnvironment webHostEnvironment
+            IFileService fileService
+
+
             )
         {
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
-            _webHostEnvironment = webHostEnvironment;
+            _fileService = fileService;
+           
         }
 
         [HttpGet("GetAll")]
@@ -128,42 +133,16 @@ namespace OnionArch.API.Controllers
             }
         }
 
+
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload()
         {
-            //Burada iki farklı path'i bileştirme işlemi yapıyruz.
-                // wwwroot özel bir dosya sistemi bundan dolayı burada göresellerimizi depolamak istiyoruz.
-                    //Burada şimdi wwwroot'un pat bilgisini alıp içinde nasıl bir mantıkla bir dosyalama sistemi olacak onu düzenleyelim.
-                        
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resource/product-images");
-            //Yani gelen dosyalar wwwroot/resource/product-images altında olsun demek istedik üst satırda.
-
-            //path var mı yok mu kontrol ediyoruz.
-            if (!Directory.Exists(uploadPath))
-                Directory.CreateDirectory(uploadPath);
-
-            //Burada bu path içinde birden fazla veri olabilir,
-              //Bundan dolayı burada biz bir döngü içinde dönüş yapacağız bu arada gelen görselin isim değerini
-              
-                    
-            Random r = new();
-            foreach (IFormFile file in Request.Form.Files)
-            {
-                //Şimdilik biz kendimiz belirlemek isteyelim  yani bu şu anlama gelecek gelen resim random bir sayı olsun  .
-
-                string fullPath = Path.Combine(uploadPath, $"{r.Next()}{Path.GetExtension(file.FileName)}");
-
-                //Yani gelen dosyalar wwwroot/ resource / product - images altında olsun demek istedik üst satırda.
-
-                using FileStream fileStream = new(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: false);
-                //Gelen veriyi almak için konfigürasyonlar düzenledik.
-                await file.CopyToAsync(fileStream);
-                //Gelen veriyi kopyaladık.
-                await fileStream.FlushAsync();
-                //Bütün kopyalama işleminde oluşan verileri ortadan kaldırdık.
-            }
+            //FileService içinde tanımladığımız global File Servisimiz için geçerli olan fonksiyon.
+            await _fileService.UploadAsync("resource/product-images", Request.Form.Files);
             return Ok();
         }
+
+
     }
 }
 
