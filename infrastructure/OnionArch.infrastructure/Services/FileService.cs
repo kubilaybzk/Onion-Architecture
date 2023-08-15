@@ -18,7 +18,7 @@ namespace OnionArch.infrastructure.Services
 
 
 
-        private async Task<string> DosyaYenidenAdlandirAsync(string yol, string dosyaAdi, bool ilk = true)
+        private async Task<string> FileRenameAsync(string yol, string dosyaAdi, bool ilk = true)
         {
             string yeniDosyaAdi = await Task.Run<string>(async () =>
             {
@@ -79,7 +79,7 @@ namespace OnionArch.infrastructure.Services
                 if (File.Exists($"{yol}\\{yeniDosyaAdi}"))
                 {
                     // Yeni adıyla bir dosya zaten varsa, işlemi değiştirilmiş bir ad ile tekrar çağır.
-                    return await DosyaYenidenAdlandirAsync(yol, yeniDosyaAdi, false);
+                    return await FileRenameAsync(yol, yeniDosyaAdi, false);
                 }
                 else
                 {

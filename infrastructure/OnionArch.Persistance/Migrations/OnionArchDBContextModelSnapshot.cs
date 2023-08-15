@@ -43,6 +43,36 @@ namespace OnionArch.Persistance.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.File", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Files");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("File");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("ID")
@@ -113,6 +143,23 @@ namespace OnionArch.Persistance.Migrations
                     b.HasIndex("ProductsID");
 
                     b.ToTable("OrderProduct");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.InvoiceFile", b =>
+                {
+                    b.HasBaseType("OnionArch.Domain.Entities.File");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasDiscriminator().HasValue("InvoiceFile");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.ProductImageFile", b =>
+                {
+                    b.HasBaseType("OnionArch.Domain.Entities.File");
+
+                    b.HasDiscriminator().HasValue("ProductImageFile");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Order", b =>

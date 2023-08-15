@@ -12,16 +12,16 @@
   <ItemGroup>
     <None Remove="Contexts\" />
     <None Remove="Repositorys\" />
-    <None Remove="Repositorys\CustomerCrud\" />
-    <None Remove="Repositorys\OrderCrud\" />
-    <None Remove="Repositorys\ProductCrud\" />
+    <None Remove="Repositorys\FileCrud\" />
+    <None Remove="Repositorys\InvoiceFileCrud\" />
+    <None Remove="Repositorys\ProductImageFileCrud\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Contexts\" />
     <Folder Include="Repositorys\" />
-    <Folder Include="Repositorys\CustomerCrud\" />
-    <Folder Include="Repositorys\OrderCrud\" />
-    <Folder Include="Repositorys\ProductCrud\" />
+    <Folder Include="Repositorys\FileCrud\" />
+    <Folder Include="Repositorys\InvoiceFileCrud\" />
+    <Folder Include="Repositorys\ProductImageFileCrud\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />

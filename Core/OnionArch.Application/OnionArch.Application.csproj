@@ -17,6 +17,9 @@
     <None Remove="View_Models\" />
     <None Remove="RequestParamaters\" />
     <None Remove="Services\" />
+    <None Remove="Abstractions\FileCrud\" />
+    <None Remove="Abstractions\InvoiceFileCrud\" />
+    <None Remove="Abstractions\ProductImageFileCrud\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstractions\" />
@@ -26,6 +29,9 @@
     <Folder Include="View_Models\" />
     <Folder Include="RequestParamaters\" />
     <Folder Include="Services\" />
+    <Folder Include="Abstractions\FileCrud\" />
+    <Folder Include="Abstractions\InvoiceFileCrud\" />
+    <Folder Include="Abstractions\ProductImageFileCrud\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />

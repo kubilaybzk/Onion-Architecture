@@ -16,9 +16,16 @@ namespace OnionArch.Persistance.Contexts
 
         public DbSet<Order> Orders { get; set; }
 
+        //Burada Bizim File Entity'miz .Net'in File classı ile karışıyor bunu engellemek için böyle bir yöntem kullandık.
+        public DbSet<Domain.Entities.File> Files { get; set; }
+
+        public DbSet<ProductImageFile> ProductImageFiles { get; set; }
+
+        public DbSet<InvoiceFile> InvoiceFiles { get; set; }
+
         //Burada veri tabanında otomatik olarka yapılan işlemlerde EFCore tarafından belirli alanlara değerler atanmasını istiyoruz.
-            //Base entity içinde bulunana update ve createTime alanlarının
-            ///her bir savechanges anında değişmesini ve bu değerin otomatik olarak EFCore tarafından tanımkanmasını istiyoruz
+        //Base entity içinde bulunana update ve createTime alanlarının
+        ///her bir savechanges anında değişmesini ve bu değerin otomatik olarak EFCore tarafından tanımkanmasını istiyoruz
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
