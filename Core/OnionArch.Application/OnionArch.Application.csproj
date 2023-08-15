@@ -10,28 +10,20 @@
     <ProjectReference Include="..\OnionArch.Domain\OnionArch.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Abstractions\CustomerCrud\" />
-    <None Remove="Abstractions\OrderCrud\" />
-    <None Remove="Abstractions\ProductCrud\" />
     <None Remove="View_Models\" />
     <None Remove="RequestParamaters\" />
-    <None Remove="Services\" />
-    <None Remove="Abstractions\FileCrud\" />
-    <None Remove="Abstractions\InvoiceFileCrud\" />
-    <None Remove="Abstractions\ProductImageFileCrud\" />
-    <None Remove="Repositorys\" />
+    <None Remove="Abstractions\" />
+    <None Remove="Abstractions\Storage\" />
+    <None Remove="Abstractions\Storage\LocalStorage\" />
+    <None Remove="Repositories\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Abstractions\CustomerCrud\" />
-    <Folder Include="Abstractions\OrderCrud\" />
-    <Folder Include="Abstractions\ProductCrud\" />
     <Folder Include="View_Models\" />
     <Folder Include="RequestParamaters\" />
-    <Folder Include="Services\" />
-    <Folder Include="Abstractions\FileCrud\" />
-    <Folder Include="Abstractions\InvoiceFileCrud\" />
-    <Folder Include="Abstractions\ProductImageFileCrud\" />
-    <Folder Include="Repositorys\" />
+    <Folder Include="Abstractions\" />
+    <Folder Include="Abstractions\Storage\" />
+    <Folder Include="Abstractions\Storage\LocalStorage\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />

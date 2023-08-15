@@ -2,6 +2,7 @@
 using OnionArch.Application.Validators.Product_Validators;
 using OnionArch.infrastructure;
 using OnionArch.infrastructure.Filters;
+using OnionArch.infrastructure.Services.Storage.LocalStorage;
 using OnionArch.Persistance;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,9 @@ builder.Services.AddControllers(options => options.Filters.Add<ValidationFilters
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddStorage<LocalStorage>();
 
 builder.Services.AddInfrastructureServices();
 builder.Services.AddPersistanceServices();

@@ -1,12 +1,11 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using OnionArch.Application.Services;
 using OnionArch.infrastructure.Operations;
 
 namespace OnionArch.infrastructure.Services
 {
-    public class FileService : IFileService
+    public class FileService
     {
         readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -14,9 +13,6 @@ namespace OnionArch.infrastructure.Services
         {
             _webHostEnvironment = webHostEnvironment;
         }
-
-
-
 
         private async Task<string> FileRenameAsync(string yol, string dosyaAdi, bool ilk = true)
         {
@@ -90,87 +86,6 @@ namespace OnionArch.infrastructure.Services
 
             return yeniDosyaAdi;
         }
-
-
-
-
-
-
-        public async Task<bool> CopyFileAsync(string path, IFormFile file)
-        {
-            try
-            {
-                //Gelen dosya için bir filestream işlemi ger
-                await using FileStream fileStream = new(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: false);
-                //Gelen dosyayı kopyalama işlemini gerçekleştiriyoruz.
-                await file.CopyToAsync(fileStream);
-                //Kopyalama işemi sonrası temizleme işlemi yapıyoruzç
-                await fileStream.FlushAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                //todo log!
-                throw ex;
-            }
-        }
-
-
-
-
-
-        public async Task<List<(string fileName, string path)>> UploadAsync(string path, IFormFileCollection files)
-        {
-            //Burada iki farklı path'i bileştirme işlemi yapıyruz.
-            // wwwroot özel bir dosya sistemi bundan dolayı burada göresellerimizi depolamak istiyoruz.
-            //Burada şimdi wwwroot'un pat bilgisini alıp içinde nasıl bir mantıkla bir dosyalama sistemi olacak onu düzenleyelim.
-
-            //Path bizim dışarıdan aldığımız dizin.
-
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
-
-            //Yani gelen dosyalar wwwroot/resource/gelen_path_bilgisi altında olsun demek istedik üst satırda.
-
-            //path var mı yok mu kontrol ediyoruz.
-            if (!Directory.Exists(uploadPath))
-                Directory.CreateDirectory(uploadPath);
-
-
-
-
-            List<(string fileName, string path)> datas = new();
-            List<bool> results = new();
-
-
-            foreach (IFormFile file in files)
-
-            {
-                //Şimdi burada Solid prensipinden yararlanacağız.
-                //SRP yani single respon. prensciple
-                //Bu ne anlama geliyordu bir sınıf içinde bulunan bir method tek bir sorunluluğa sahip olsun demekti değil mi ?
-                //Şimdi burada bu yapının hem veri tabanı ile ilgilenmesi hemde dosya yüklemesi bu prensipe aykırı değil mi ?
-                //Yani dosyanın ismini değiştirme dosyanın veri tabanına yazma işlemleri burada bu prensip açısından  uygun bir şey değil.
-                //Bundan dolayı burada sadece dosyayı kayıt ettirme işlemi yapacağız.
-
-                string fileNewName = await FileRenameAsync(uploadPath, file.FileName);
-                //Burada File'ın yeni bir isme sahip olmasını sağlıyoruz.
-
-                string CopyFilePath = $"{uploadPath}\\{fileNewName}";
-
-                bool result = await CopyFileAsync(CopyFilePath, file);
-
-                datas.Add((fileNewName, $"{uploadPath}\\{fileNewName}"));
-                results.Add(result);
-
-
-            }
-
-            if (results.TrueForAll(r => r.Equals(true)))
-                return datas;
-
-            return null;
-        }
-
         
     }
 }

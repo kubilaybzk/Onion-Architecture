@@ -15,6 +15,8 @@ namespace OnionArch.Domain.Entities
         public string FileName { get; set; }
 
         public string Path { get; set; }
+        //Storage'ın bilgisini tutan alan AWS Local Azure vs vs 
+        public string Storage { get; set; }
     }
 }
 

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Abstractions.ProductImageFileCrud;
+using OnionArch.Application.Abstractions.Storage;
 using OnionArch.Application.RequestParamaters;
-using OnionArch.Application.Services;
 using OnionArch.Application.View_Models;
 using OnionArch.Domain.Entities;
 
@@ -14,9 +14,9 @@ namespace OnionArch.API.Controllers
     {
         readonly private IProductWriteRepository _productWriteRepository;
         readonly private IProductReadRepository _productReadRepository;
-        readonly IFileService _fileService;
         readonly IProductImageFileReadRepository _productImageFileReadRepository;
         readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
+        readonly IStorageService _storageService;
 
 
 
@@ -24,20 +24,17 @@ namespace OnionArch.API.Controllers
         public ProductsController(
             IProductWriteRepository productWriteRepository,
             IProductReadRepository productReadRepository,
-            IFileService fileService,
             IProductImageFileReadRepository productImageFileReadRepository,
-            IProductImageFileWriteRepository productImageFileWriteRepository
-
+            IProductImageFileWriteRepository productImageFileWriteRepository,
+            IStorageService storageService
 
             )
         {
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
-            _fileService = fileService;
             _productImageFileReadRepository = productImageFileReadRepository;
             _productImageFileWriteRepository = productImageFileWriteRepository;
-
-
+            _storageService = storageService;
         }
 
         [HttpGet("GetAll")]
@@ -143,9 +140,8 @@ namespace OnionArch.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload()
         {
-            //FileService içinde tanımladığımız global File Servisimiz için geçerli olan fonksiyon.
-
-            var result = await _fileService.UploadAsync("resource/product-images", Request.Form.Files);
+            //Storage için global methodumuz.
+            var result = await _storageService.UploadAsync("resource/product-images", Request.Form.Files);
 
             //Upload işlemi bittikten sonra , VeriTabanına kayıt işlemini gerçekleştirelim.
             //Birden fazla veri gelebilir şekilde projemizi tanımladığımız için ToList ile yollamamız gerekmekete. 
@@ -153,9 +149,10 @@ namespace OnionArch.API.Controllers
             await _productImageFileWriteRepository.AddRangeAsync(result.Select(d => new ProductImageFile()
             {
                 FileName = d.fileName,
-                Path = d.path,
+                Path = d.PathOrContainerName,
+                Storage = _storageService.StorageType
 
-            }).ToList());
+            }).ToList()) ;
 
             await _productImageFileWriteRepository.SaveAsync();
             return Ok();

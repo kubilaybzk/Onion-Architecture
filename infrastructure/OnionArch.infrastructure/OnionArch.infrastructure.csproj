@@ -13,10 +13,14 @@
     <None Remove="Filters\" />
     <None Remove="Services\" />
     <None Remove="Operations\" />
+    <None Remove="Services\Storage\" />
+    <None Remove="Services\Storage\LocalStorage\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Filters\" />
     <Folder Include="Services\" />
     <Folder Include="Operations\" />
+    <Folder Include="Services\Storage\" />
+    <Folder Include="Services\Storage\LocalStorage\" />
   </ItemGroup>
 </Project>
