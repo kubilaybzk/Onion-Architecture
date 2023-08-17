@@ -12,8 +12,8 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20230814130218_mig-4")]
-    partial class mig4
+    [Migration("20230816111046_mig-1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,18 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Storage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -140,9 +152,27 @@ namespace OnionArch.Persistance.Migrations
                     b.ToTable("OrderProduct");
                 });
 
+            modelBuilder.Entity("ProductProductImageFile", b =>
+                {
+                    b.Property<Guid>("ProductImageFilesID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductsID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProductImageFilesID", "ProductsID");
+
+                    b.HasIndex("ProductsID");
+
+                    b.ToTable("ProductProductImageFile");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.InvoiceFile", b =>
                 {
                     b.HasBaseType("OnionArch.Domain.Entities.File");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasDiscriminator().HasValue("InvoiceFile");
                 });
@@ -170,6 +200,21 @@ namespace OnionArch.Persistance.Migrations
                     b.HasOne("OnionArch.Domain.Entities.Order", null)
                         .WithMany()
                         .HasForeignKey("OrdersID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnionArch.Domain.Entities.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProductProductImageFile", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.ProductImageFile", null)
+                        .WithMany()
+                        .HasForeignKey("ProductImageFilesID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

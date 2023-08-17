@@ -27,7 +27,7 @@ namespace OnionArch.Persistance.Repositorys
 
         public DbSet<T> Table => _context.Set<T>();
 
-        public IQueryable<T> GetAll(bool tracking = true)
+        virtual public  IQueryable<T> GetAll(bool tracking = true)
         {
             var query = Table.AsQueryable();
             if (!tracking)

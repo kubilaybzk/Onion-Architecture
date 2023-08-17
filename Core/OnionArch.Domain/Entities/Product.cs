@@ -9,7 +9,11 @@ namespace OnionArch.Domain.Entities
 		public int Stock { get; set; }
 		public float Price { get; set; }
 		//Bir ürün birden fazla sipariş içerebilir Many-to-many relation
+
         public ICollection<Order> Orders { get; set; }
-    }
+
+		public ICollection<ProductImageFile> ProductImageFiles { get; set; }
+
+	}
 }
 

@@ -52,6 +52,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseCors();
+    app.UseStaticFiles();
 }
 app.UseStaticFiles();
 app.UseCors();

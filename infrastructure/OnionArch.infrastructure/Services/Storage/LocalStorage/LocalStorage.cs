@@ -4,7 +4,7 @@ using OnionArch.Application.Abstractions.Storage.LocalStorage;
 
 namespace OnionArch.infrastructure.Services.Storage.LocalStorage
 {
-    public class LocalStorage : ILocalStorage
+    public class LocalStorage : Storage,ILocalStorage
     {
 
         //Dependency Injection
@@ -52,9 +52,6 @@ namespace OnionArch.infrastructure.Services.Storage.LocalStorage
             return File.Exists($"{PathOrContainerName}\\{FileName}");
         }
 
-
-
-
         public async Task<List<(string fileName, string PathOrContainerName)>> UploadAsync(string PathOrContainerName, IFormFileCollection files)
         {
 
@@ -67,11 +64,17 @@ namespace OnionArch.infrastructure.Services.Storage.LocalStorage
             foreach (IFormFile file in files)
             {
                 var Name = file.FileName;
-                string CopyFilePath = $"{uploadPath}\\{file.FileName}";
+
+                //Artık burada HasFile kısmını göndermek bizim daha önce oluşturduğumuz  ,
+                    //delagate için kullanılacak olan fonksiyon.
+
+                string fileNewName = await FileRenameAsync(PathOrContainerName, file.Name, HasFile);
+
+                string CopyFilePath = $"{uploadPath}\\{fileNewName}";
 
                 bool result = await CopyFileAsync(CopyFilePath, file);
 
-                datas.Add((file.FileName, $"{uploadPath}\\{file.FileName}"));
+                datas.Add((file.FileName, $"{uploadPath}\\{fileNewName}"));
 
             }
             return datas;

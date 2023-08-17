@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Abstractions.ProductImageFileCrud;
 using OnionArch.Application.Abstractions.Storage;
@@ -40,14 +43,32 @@ namespace OnionArch.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get([FromQuery] Pagination pagination)
         {
-            var product = _productReadRepository.GetAll();
-            int totalProductCount = product.Count();  //Toplam ürün sayısı 
-            int totalPageSize = (int)Math.Ceiling((double)totalProductCount / pagination.Size); //Toplam sayfa sayısı 
+            var productQuery = _productReadRepository.GetAll();
+            int totalProductCount = await productQuery.CountAsync();
 
-            var pagedProduct = product.Skip(pagination.Size * pagination.Page).Take(pagination.Size); //Pagination işlemleri
-            int pagesize = pagedProduct.Count(); //Pagination işlemleri sonucu sayfada gösterilecek eleman sayısı
-            bool hasNextPage = pagination.Page < totalPageSize - 1; //Bir sonraki sayfa var mı ? 
-            bool hasPrevPage = pagination.Page > 0; //Bir önceki sayfa var mı ? 
+            int totalPageSize = (int)Math.Ceiling((double)totalProductCount / pagination.Size);
+
+            var pagedProductQuery = productQuery
+                .Skip(pagination.Size * pagination.Page)
+                .Take(pagination.Size);
+
+            int pageSize = await pagedProductQuery.CountAsync();
+
+            var productResult = await pagedProductQuery
+                .Select(p => new
+                {
+                    p.Name,
+                    p.Price,
+                    p.Stock,
+                    p.ID,
+                    p.ProductImageFiles,
+                    p.CreateTime,
+                    p.UpdateTime
+                })
+                .ToListAsync(); // JSON dönüşümü için liste haline getiriyoruz
+
+            bool hasNextPage = pagination.Page < totalPageSize - 1;
+            bool hasPrevPage = pagination.Page > 0;
 
             return Ok(new
             {
@@ -56,8 +77,8 @@ namespace OnionArch.API.Controllers
                 CurrentPage = pagination.Page,
                 HasNext = hasNextPage,
                 HasPrev = hasPrevPage,
-                Pagesize= pagesize,
-                Products = pagedProduct
+                PageSize = pageSize,
+                Products = productResult
             });
         }
 
@@ -152,11 +173,52 @@ namespace OnionArch.API.Controllers
                 Path = d.PathOrContainerName,
                 Storage = _storageService.StorageType
 
-            }).ToList()) ;
+
+            }).ToList());
 
             await _productImageFileWriteRepository.SaveAsync();
             return Ok();
 
+        }
+
+        [HttpPost("CreateOneProductWithImage")]
+        public async Task<IActionResult> CreateOneProductWithImage()
+        {
+
+            try
+            {
+
+
+                // Veri eklenmesi işlemi
+                var result = await _storageService.UploadAsync("resource/product-images", Request.Form.Files);
+
+
+                await _productWriteRepository.AddAsync(new Product
+                {
+                    Price = (float)Convert.ToDecimal(Request.Form["Price"]),
+                    Name = Request.Form["Name"],
+                    Stock = Convert.ToInt16(Request.Form["Stock"]),
+                    ProductImageFiles = (result.Select(d => new ProductImageFile()
+                    {
+                        FileName = d.fileName,
+                        Path = d.PathOrContainerName,
+                        Storage = _storageService.StorageType
+                    }).ToList())
+                });
+
+
+
+                await _productWriteRepository.SaveAsync();
+
+                // 201 Created dönüşü ve eklenen ürün bilgisi
+                return StatusCode(201, Request.Form);
+
+            }
+            catch (Exception ex)
+            {
+                // Genel bir hata mesajı dönüşü ve içerideki hata mesajı
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
 
 

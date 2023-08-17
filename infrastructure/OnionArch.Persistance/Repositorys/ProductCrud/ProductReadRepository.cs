@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Domain.Entities;
 using OnionArch.Persistance.Contexts;
@@ -14,10 +15,21 @@ namespace OnionArch.Persistance.Concretes.ProductCrud
         //Tüm bu düzenlemeleri sen git readRepository içinde yap.
         //Aynı zamanda  ICustomerReadRepository senin soyut nesnen olsun.
 
+        private OnionArchDBContext _context;
 
         public ProductReadRepository(OnionArchDBContext context) : base(context)
         {
+            _context = context;
         }
+
+        public override IQueryable<Product> GetAll(bool tracking = true)
+        {
+            return base.Table.Include(p => p.ProductImageFiles).AsQueryable();
+        }
+
+
+
+
     }
 }
 
