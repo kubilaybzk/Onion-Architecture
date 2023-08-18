@@ -188,9 +188,13 @@ namespace OnionArch.API.Controllers
             try
             {
 
+                //var Price = (float)Convert.ToDecimal(Request.Form["Price"]);
+                //var Name = Request.Form["Name"];
+                //var Stock = Convert.ToInt16(Request.Form["Stock"]);
+                //var ProductImageFiles = Request.Form.Files;
 
-                // Veri eklenmesi işlemi
-                var result = await _storageService.UploadAsync("resource/product-images", Request.Form.Files);
+
+                var result = await _storageService.UploadAsync("product-images", Request.Form.Files);
 
 
                 await _productWriteRepository.AddAsync(new Product

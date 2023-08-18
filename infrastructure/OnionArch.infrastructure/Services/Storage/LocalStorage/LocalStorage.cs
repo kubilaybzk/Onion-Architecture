@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.IO;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using OnionArch.Application.Abstractions.Storage.LocalStorage;
 
 namespace OnionArch.infrastructure.Services.Storage.LocalStorage
 {
-    public class LocalStorage : Storage,ILocalStorage
+    public class LocalStorage : Storage, ILocalStorage
     {
 
         //Dependency Injection
@@ -38,49 +39,47 @@ namespace OnionArch.infrastructure.Services.Storage.LocalStorage
 
         public async Task DeleteFileAsync(string FileName, string PathOrContainerName)
         {
-           File.Delete($"{PathOrContainerName}\\{FileName}");
+            File.Delete($"{PathOrContainerName}\\{FileName}");
         }
 
-        public  List<string> GetAllFiles(string PathOrContainerName)
+        public List<string> GetAllFiles(string PathOrContainerName)
         {
             DirectoryInfo target = new DirectoryInfo(PathOrContainerName);
-            return  target.GetFiles().Select(p=>p.Name).ToList();
+            return target.GetFiles().Select(p => p.Name).ToList();
         }
 
         public bool HasFile(string FileName, string PathOrContainerName)
         {
-            return File.Exists($"{PathOrContainerName}\\{FileName}");
+            string uploadImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "resource", PathOrContainerName, FileName);
+
+            return File.Exists(uploadImagePath);
         }
 
         public async Task<List<(string fileName, string PathOrContainerName)>> UploadAsync(string PathOrContainerName, IFormFileCollection files)
         {
 
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, PathOrContainerName);
+            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resource", PathOrContainerName);
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);
 
             List<(string fileName, string path)> datas = new();
 
+
             foreach (IFormFile file in files)
             {
-                var Name = file.FileName;
+                string uploadImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "resource", PathOrContainerName, file.FileName);
 
-                //Artık burada HasFile kısmını göndermek bizim daha önce oluşturduğumuz  ,
-                    //delagate için kullanılacak olan fonksiyon.
 
-                string fileNewName = await FileRenameAsync(PathOrContainerName, file.Name, HasFile);
-
-                string CopyFilePath = $"{uploadPath}\\{fileNewName}";
-
-                bool result = await CopyFileAsync(CopyFilePath, file);
-
-                datas.Add((file.FileName, $"{uploadPath}\\{fileNewName}"));
-
+                string fileNewName = await FileRenameAsync(PathOrContainerName, file.FileName, HasFile);
+                string uploadImagePathNew = Path.Combine(_webHostEnvironment.WebRootPath, "resource", PathOrContainerName, fileNewName);
+                string databasePath = Path.Combine("resource", PathOrContainerName, fileNewName);
+                await CopyFileAsync(uploadImagePathNew, file);
+                datas.Add((fileNewName, databasePath));
             }
             return datas;
         }
 
-      
+
 
     }
 }

@@ -72,7 +72,9 @@ namespace OnionArch.infrastructure.Services
                     }
                 }
 
-                if (File.Exists($"{yol}\\{yeniDosyaAdi}"))
+                string uploadImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "resource", yol, yeniDosyaAdi);
+
+                if (File.Exists(uploadImagePath))
                 {
                     // Yeni adıyla bir dosya zaten varsa, işlemi değiştirilmiş bir ad ile tekrar çağır.
                     return await FileRenameAsync(yol, yeniDosyaAdi, false);

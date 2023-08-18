@@ -34,10 +34,10 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="wwwroot\" />
-    <Folder Include="wwwroot\resource\product-images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\" />
-    <Content Remove="wwwroot\resource\product-images\" />
+    <Content Remove="wwwroot\resource\product-images\Araba.png" />
+    <Content Remove="wwwroot\resource\product-images\Araba-2.png" />
   </ItemGroup>
 </Project>

@@ -93,7 +93,7 @@ namespace OnionArch.infrastructure.Services.Storage
                     }
                 }
                 // if (File.Exists($"{yol}\\{yeniDosyaAdi}"))
-                if (hasFileMethod(PathOrContainerName, yeniDosyaAdi))
+                if (hasFileMethod(yeniDosyaAdi, PathOrContainerName))
                 {
                     // Yeni adıyla bir dosya zaten varsa, işlemi değiştirilmiş bir ad ile tekrar çağır.
                     return await FileRenameAsync(PathOrContainerName, yeniDosyaAdi,hasFileMethod, false);
