@@ -44,28 +44,13 @@ namespace OnionArch.API.Controllers
         public async Task<IActionResult> Get([FromQuery] Pagination pagination)
         {
             var productQuery = _productReadRepository.GetAll();
+
             int totalProductCount = await productQuery.CountAsync();
-
             int totalPageSize = (int)Math.Ceiling((double)totalProductCount / pagination.Size);
-
-            var pagedProductQuery = productQuery
-                .Skip(pagination.Size * pagination.Page)
-                .Take(pagination.Size);
-
+            var pagedProductQuery = productQuery .Skip(pagination.Size * pagination.Page) .Take(pagination.Size);
             int pageSize = await pagedProductQuery.CountAsync();
 
-            var productResult = await pagedProductQuery
-                .Select(p => new
-                {
-                    p.Name,
-                    p.Price,
-                    p.Stock,
-                    p.ID,
-                    p.ProductImageFiles,
-                    p.CreateTime,
-                    p.UpdateTime
-                })
-                .ToListAsync(); // JSON dönüşümü için liste haline getiriyoruz
+    
 
             bool hasNextPage = pagination.Page < totalPageSize - 1;
             bool hasPrevPage = pagination.Page > 0;
@@ -78,7 +63,7 @@ namespace OnionArch.API.Controllers
                 HasNext = hasNextPage,
                 HasPrev = hasPrevPage,
                 PageSize = pageSize,
-                Products = productResult
+                Products = productQuery
             });
         }
 
@@ -188,10 +173,6 @@ namespace OnionArch.API.Controllers
             try
             {
 
-                //var Price = (float)Convert.ToDecimal(Request.Form["Price"]);
-                //var Name = Request.Form["Name"];
-                //var Stock = Convert.ToInt16(Request.Form["Stock"]);
-                //var ProductImageFiles = Request.Form.Files;
 
 
                 var result = await _storageService.UploadAsync("product-images", Request.Form.Files);

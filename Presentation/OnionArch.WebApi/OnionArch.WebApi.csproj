@@ -39,5 +39,6 @@
     <Content Remove="wwwroot\" />
     <Content Remove="wwwroot\resource\product-images\Araba.png" />
     <Content Remove="wwwroot\resource\product-images\Araba-2.png" />
+    <Content Remove="wwwroot\resource\product-images\Araba-3.png" />
   </ItemGroup>
 </Project>

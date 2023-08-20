@@ -15,15 +15,18 @@ namespace OnionArch.Persistance.Concretes.ProductCrud
         //Tüm bu düzenlemeleri sen git readRepository içinde yap.
         //Aynı zamanda  ICustomerReadRepository senin soyut nesnen olsun.
 
-        private OnionArchDBContext _context;
 
         public ProductReadRepository(OnionArchDBContext context) : base(context)
         {
-            _context = context;
+
         }
+
+        //GetAll methodunu burada override ediyoruz.
 
         public override IQueryable<Product> GetAll(bool tracking = true)
         {
+            //Base'den Table değerimize ulaşıyoruz .
+            //Daha sonra  Include sayesibde bağlantıyı kuruyoruz.
             return base.Table.Include(p => p.ProductImageFiles).AsQueryable();
         }
 

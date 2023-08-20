@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
 using OnionArch.Application.Validators.Product_Validators;
 using OnionArch.infrastructure;
 using OnionArch.infrastructure.Filters;
@@ -12,6 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 //Burada fulent application için düzenleme yapıyoruz.
 
 
+//Json sorununu çözmek için ;
+
+//builder.Services.AddControllers().AddJsonOptions(x =>
+//   x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 
 
