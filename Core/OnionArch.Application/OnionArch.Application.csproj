@@ -16,6 +16,17 @@
     <None Remove="Abstractions\Storage\" />
     <None Remove="Abstractions\Storage\LocalStorage\" />
     <None Remove="Repositories\" />
+    <None Remove="Features\" />
+    <None Remove="Features\Commands\" />
+    <None Remove="Features\Queries\" />
+    <None Remove="Features\Commands\Product\" />
+    <None Remove="Features\Commands\Product\DeleteProductById\" />
+    <None Remove="Features\Queries\Product\" />
+    <None Remove="Features\Queries\Product\GetAllProducts\" />
+    <None Remove="Features\Queries\Product\GetSingleById\" />
+    <None Remove="Features\Commands\Product\CreateOneProductNoImage\" />
+    <None Remove="Features\Commands\Product\CreateOneProductWithImage\" />
+    <None Remove="Features\Commands\Product\UpdateOneProduct\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="View_Models\" />
@@ -24,11 +35,25 @@
     <Folder Include="Abstractions\Storage\" />
     <Folder Include="Abstractions\Storage\LocalStorage\" />
     <Folder Include="Repositories\" />
+    <Folder Include="Features\" />
+    <Folder Include="Features\Commands\" />
+    <Folder Include="Features\Queries\" />
+    <Folder Include="Features\Commands\Product\" />
+    <Folder Include="Features\Commands\Product\DeleteProductById\" />
+    <Folder Include="Features\Queries\Product\" />
+    <Folder Include="Features\Queries\Product\GetAllProducts\" />
+    <Folder Include="Features\Queries\Product\GetSingleById\" />
+    <Folder Include="Features\Commands\Product\CreateOneProductNoImage\" />
+    <Folder Include="Features\Commands\Product\CreateOneProductWithImage\" />
+    <Folder Include="Features\Commands\Product\UpdateOneProduct\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.6.0" />
     <PackageReference Include="FluentValidation" Version="11.6.0" />
+    <PackageReference Include="MediatR" Version="11.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
   </ItemGroup>
 </Project>

@@ -1,10 +1,10 @@
 ﻿
 using FluentValidation;
-using OnionArch.Application.View_Models;
+using OnionArch.Domain.Entities;
 
 namespace OnionArch.Application.Validators.Product_Validators
 {
-	public class CreateProductValidator:AbstractValidator<VM_Create_Product>
+	public class CreateProductValidator:AbstractValidator<Product>
 	{
 		//Burada her bir Validator işlemi Generic olarak bir tip ister.
 		//Bizler constructor aracılığıyla bu tip içine gerekli bilgileri gireriz.

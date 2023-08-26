@@ -4,6 +4,7 @@ using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Domain.Entities;
 using OnionArch.Persistance.Contexts;
 using OnionArch.Persistance.Repositorys;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace OnionArch.Persistance.Concretes.ProductCrud
 {
@@ -27,7 +28,19 @@ namespace OnionArch.Persistance.Concretes.ProductCrud
         {
             //Base'den Table değerimize ulaşıyoruz .
             //Daha sonra  Include sayesibde bağlantıyı kuruyoruz.
-            return base.Table.Include(p => p.ProductImageFiles).AsQueryable();
+            var query = base.Table.Include(p => p.ProductImageFiles).AsQueryable();
+            if (!tracking)
+                query = query.AsNoTracking();
+            return query;
+        }
+
+        public async override Task<Product> GetByIdAsync(string id, bool tracking = true)
+        {
+            var query = Table.Include(p => p.ProductImageFiles).AsQueryable();
+            if (!tracking)
+                query = Table.AsNoTracking();
+            return await query.FirstOrDefaultAsync(data => data.ID == Guid.Parse(id));
+
         }
 
 

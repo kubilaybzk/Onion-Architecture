@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
+using OnionArch.Application;
 using OnionArch.Application.Validators.Product_Validators;
 using OnionArch.infrastructure;
 using OnionArch.infrastructure.Filters;
@@ -33,6 +34,7 @@ builder.Services.AddStorage<LocalStorage>();
 
 builder.Services.AddInfrastructureServices();
 builder.Services.AddPersistanceServices();
+builder.Services.AddApplicationServices();
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.WithOrigins(
