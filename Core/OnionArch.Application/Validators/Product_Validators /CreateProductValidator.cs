@@ -1,10 +1,11 @@
 ﻿
 using FluentValidation;
+using OnionArch.Application.Features.Commands.Product.CreateOneProductWithImage;
 using OnionArch.Domain.Entities;
 
 namespace OnionArch.Application.Validators.Product_Validators
 {
-	public class CreateProductValidator:AbstractValidator<Product>
+	public class CreateProductValidator:AbstractValidator<CreateOneProductWithImageRequest>
 	{
 		//Burada her bir Validator işlemi Generic olarak bir tip ister.
 		//Bizler constructor aracılığıyla bu tip içine gerekli bilgileri gireriz.
