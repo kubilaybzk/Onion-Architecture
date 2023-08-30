@@ -1,9 +1,5 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OnionArch.Application.Abstractions.ProductCrud;
-using OnionArch.Application.Abstractions.ProductImageFileCrud;
-using OnionArch.Application.Abstractions.Storage;
 using OnionArch.Application.Features.Commands.Product.CreateOneProductNoImage;
 using OnionArch.Application.Features.Commands.Product.CreateOneProductWithImage;
 using OnionArch.Application.Features.Commands.Product.DeleteProductById;
@@ -11,8 +7,6 @@ using OnionArch.Application.Features.Commands.Product.UpdateOneProduct;
 using OnionArch.Application.Features.Queries.Product.GetAllProducts;
 using OnionArch.Application.Features.Queries.Product.GetSingleById;
 using OnionArch.Application.Features.Queries.Product.Product.GetAllProducts;
-using OnionArch.Application.View_Models;
-using OnionArch.Domain.Entities;
 
 namespace OnionArch.API.Controllers
 {

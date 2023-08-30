@@ -1,11 +1,13 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OnionArch.Domain.Entities;
 using OnionArch.Domain.Entities.Common;
+using OnionArch.Domain.Entities.Identity;
 
 namespace OnionArch.Persistance.Contexts
 {
-	public class OnionArchDBContext:DbContext
+	public class OnionArchDBContext:IdentityDbContext<AppUser,AppRole,string>
 	{
         //Burada DBContext'i IOC container içinde tanımlayacağız. ServicesRegistration içinde bu işlemi gerçekleştireceğiz.
         public OnionArchDBContext(DbContextOptions options) : base(options) { }

@@ -6,6 +6,7 @@ using OnionArch.Application.Abstractions.InvoiceFileCrud;
 using OnionArch.Application.Abstractions.OrderCrud;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Abstractions.ProductImageFileCrud;
+using OnionArch.Domain.Entities.Identity;
 using OnionArch.Persistance.Concretes.CustomerCrud;
 using OnionArch.Persistance.Concretes.OrderCrud;
 using OnionArch.Persistance.Concretes.ProductCrud;
@@ -24,6 +25,9 @@ namespace OnionArch.Persistance
         {
 
             services.AddDbContext<OnionArchDBContext>(options => options.UseSqlServer(Configuration.ConnectionString));
+
+            //Identity için gerekli olan düzenlemeler . 
+            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<OnionArchDBContext>();
 
 
             services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
