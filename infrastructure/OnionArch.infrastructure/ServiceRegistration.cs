@@ -1,8 +1,10 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using OnionArch.Application.Abstractions.Storage;
+using OnionArch.Application.Abstractions.Token;
 using OnionArch.infrastructure.Services;
 using OnionArch.infrastructure.Services.Storage;
+using OnionArch.infrastructure.Services.Token;
 
 namespace OnionArch.infrastructure
 {
@@ -13,6 +15,7 @@ namespace OnionArch.infrastructure
             //Burada normal şekilde bir servis kaydını oluşturuyoruz.
             //Bu sayede  IStorageService çağrıldığı zaman bize  StorageService oluşturuyor.
             services.AddScoped<IStorageService, StorageService>();
+            services.AddScoped<ITokenHandler, TokenHandler>();
         }
 
         //Şimdi bahsettiğimiz gibi program.çs üzerinden hangi Storage yönteminin çalışacağını ayarlayalım.

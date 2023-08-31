@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnionArch.Application.Features.Commands.Product.CreateOneProductNoImage;
 using OnionArch.Application.Features.Commands.Product.CreateOneProductWithImage;
@@ -12,6 +13,7 @@ namespace OnionArch.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes ="Admin")]
     public class ProductsController : ControllerBase
     {
 

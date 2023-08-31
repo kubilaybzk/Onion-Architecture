@@ -1,5 +1,8 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using OnionArch.Application;
 using OnionArch.Application.Validators.Product_Validators;
 using OnionArch.infrastructure;
@@ -51,6 +54,28 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 
 
 
+//Authantication işlemleri
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer("Admin",options =>
+    options.TokenValidationParameters = new()
+    {
+        //Oluşturulacak token değerini kimlerin/hangi originlerin/sitelerin kullanıcıya belirlediğimiz değerdir. -> www.bilmemne.com
+        ValidateAudience = true,
+        //Oluşturulacak token değerini kimin dağıttığını ifade edeceðimiz alandır. -> www.myapi.com
+        ValidateIssuer = true,
+        //Oluşturulan token değerinin süresini kontrol edecek olan doğrulamadır.
+        ValidateLifetime = true,
+        //Üretilecek token değerinin uygulamamıza ait bir değer olduğunu ifade eden suciry key verisinin doğrulamasıdır.
+        ValidateIssuerSigningKey = true,
+
+        ValidAudience = builder.Configuration["Token:Audience"],
+        ValidIssuer = builder.Configuration["Token:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"]))
+    }
+
+);
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -65,6 +90,7 @@ app.UseStaticFiles();
 app.UseCors();
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

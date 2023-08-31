@@ -1,13 +1,26 @@
 ﻿using System;
+using System.Numerics;
+using OnionArch.Application.DTOs;
+
 namespace OnionArch.Application.Features.Commands.AppUser.LoginUser
 {
 	public class LoginUserCommandsResponse
 	{
-        /*
-         Dosyamızı şimdilik burada boş bırakalım bir sonraki aşamada
-        JWT işlemlerinde bunun ne olduğunu ve neler döndürmemiz
-        gerektiğini öğrenince dolduracağız burayı .
-        */
+        
+
+    }
+    //Burada farklı bir kullanım yöntemi deneyimliyoruz .
+    //İşlem başarılı ise sadece Token döndür .
+    public class LoginUserSuccessCommandsResponse: LoginUserCommandsResponse
+    {
+
+        public Token token { get; set; }
+    }
+    //Error var ise sadece  hata mesajı
+    public class LoginUserErrorCommandsResponse: LoginUserCommandsResponse
+    {
+
+        public string Message { get; set; }
     }
 }
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using OnionArch.Application.Abstractions.Token;
 using OnionArch.Application.CustomExceptions;
+using OnionArch.Application.DTOs;
 
 namespace OnionArch.Application.Features.Commands.AppUser.LoginUser
 {
@@ -10,11 +12,14 @@ namespace OnionArch.Application.Features.Commands.AppUser.LoginUser
 
         readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
         readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
+        readonly ITokenHandler _tokenHandler;
 
-        public LoginUserCommandsHandle(UserManager<Domain.Entities.Identity.AppUser> userManager, SignInManager<Domain.Entities.Identity.AppUser> signInManager)
+
+        public LoginUserCommandsHandle(UserManager<Domain.Entities.Identity.AppUser> userManager, SignInManager<Domain.Entities.Identity.AppUser> signInManager, ITokenHandler tokenHandler)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenHandler =tokenHandler;
         }
 
         public async Task<LoginUserCommandsResponse> Handle(LoginUserCommandsRequest request, CancellationToken cancellationToken)
@@ -37,10 +42,21 @@ namespace OnionArch.Application.Features.Commands.AppUser.LoginUser
                 
             if (result.Succeeded) //Authentication başarılı!
             {
-                //.... Yetkileri belirlememiz gerekiyor!
+               Token token= _tokenHandler.CreateAccessToken(5);
+                return new LoginUserSuccessCommandsResponse()
+                {
+                    token = token,
+                };
+            }
+            else
+            {
+                return new LoginUserErrorCommandsResponse()
+                {
+                    Message="Token Başarısız"
+                };
             }
 
-            return new();
+           
         }
     }
 }

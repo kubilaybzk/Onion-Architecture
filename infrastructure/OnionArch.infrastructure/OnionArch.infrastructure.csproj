@@ -15,6 +15,7 @@
     <None Remove="Operations\" />
     <None Remove="Services\Storage\" />
     <None Remove="Services\Storage\LocalStorage\" />
+    <None Remove="Services\Token\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Filters\" />
@@ -22,5 +23,9 @@
     <Folder Include="Operations\" />
     <Folder Include="Services\Storage\" />
     <Folder Include="Services\Storage\LocalStorage\" />
+    <Folder Include="Services\Token\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
   </ItemGroup>
 </Project>
