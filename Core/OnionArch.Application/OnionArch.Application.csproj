@@ -33,6 +33,9 @@
     <None Remove="Features\Commands\AppUser\LoginUser\" />
     <None Remove="Abstractions\Token\" />
     <None Remove="DTOs\" />
+    <None Remove="Features\Commands\AppUser\LoginUser\GoogleLogin\" />
+    <None Remove="DTOs\Facebook\" />
+    <None Remove="Features\Commands\AppUser\LoginUser\FacebookLogin\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="View_Models\" />
@@ -58,6 +61,9 @@
     <Folder Include="Features\Commands\AppUser\LoginUser\" />
     <Folder Include="Abstractions\Token\" />
     <Folder Include="DTOs\" />
+    <Folder Include="Features\Commands\AppUser\LoginUser\GoogleLogin\" />
+    <Folder Include="DTOs\Facebook\" />
+    <Folder Include="Features\Commands\AppUser\LoginUser\FacebookLogin\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
@@ -67,5 +73,6 @@
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.61.0" />
   </ItemGroup>
 </Project>

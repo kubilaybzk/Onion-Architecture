@@ -32,7 +32,12 @@ namespace OnionArch.Application.Features.Commands.AppUser.LoginUser
 
             if (user == null)
                 //Kullanıcı adı ve Eposta ile ilgili bir bilgi bulamadıysak hata mesajı
-                throw new NotFoundUserException("Kullanıcı veya şifre hatalı...");
+                //throw new NotFoundUserException("Kullanıcı veya şifre hatalı...");
+
+                return new LoginUserErrorCommandsResponse()
+                {
+                    Message = "Kullanıcı bulunamadı"
+                };
 
             //Burada ise bulunan kullanıcının veri tabanında olan şifresi ,
             //Form'dan gelen şifre ile aynı mı kontrol ediyoruz.
@@ -42,17 +47,25 @@ namespace OnionArch.Application.Features.Commands.AppUser.LoginUser
                 
             if (result.Succeeded) //Authentication başarılı!
             {
-               Token token= _tokenHandler.CreateAccessToken(5);
+               Token token= _tokenHandler.CreateAccessToken(10);
                 return new LoginUserSuccessCommandsResponse()
                 {
                     token = token,
+                    UserInfo = new()
+                    {
+                        UserName=user.UserName,
+                        Email=user.Email,
+                        NameSurname=user.NameSurname
+
+                    }
+                   
                 };
             }
             else
             {
                 return new LoginUserErrorCommandsResponse()
                 {
-                    Message="Token Başarısız"
+                    Message="Kullanıcı adı ve şifre hatalı"
                 };
             }
 

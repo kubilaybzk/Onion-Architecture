@@ -13,7 +13,7 @@ namespace OnionArch.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes ="Admin")]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class ProductsController : ControllerBase
     {
 
@@ -77,8 +77,9 @@ namespace OnionArch.API.Controllers
             }
         }
 
-
+        
         [HttpPost("CreateOneProduct")]
+        
         public async Task<IActionResult> CreateOneProduct([FromQuery] CreateOneProductNoImageRequest createOneProductNoImageRequest)
         {
             CreateOneProductNoImageResponse productResponse = await _mediator.Send(createOneProductNoImageRequest);
@@ -163,6 +164,7 @@ namespace OnionArch.API.Controllers
 
 
         [HttpPost("CreateOneProductWithImage")]
+
         public async Task<IActionResult> CreateOneProductWithImage([FromForm] CreateOneProductWithImageRequest createOneProductWithImageRequest)
         {
             //Nasıl yollayacağımızı bulamadım normalde null gönderiyor ilerleyen aşamada düzeltilecek.
