@@ -6,6 +6,7 @@ using OnionArch.Application.Abstractions.InvoiceFileCrud;
 using OnionArch.Application.Abstractions.OrderCrud;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Abstractions.ProductImageFileCrud;
+using OnionArch.Application.Abstractions.UserServices;
 using OnionArch.Domain.Entities.Identity;
 using OnionArch.Persistance.Concretes.CustomerCrud;
 using OnionArch.Persistance.Concretes.OrderCrud;
@@ -15,7 +16,7 @@ using OnionArch.Persistance.Repositorys.FileCrud;
 using OnionArch.Persistance.Repositorys.InvoiceFileCrud;
 using OnionArch.Persistance.Repositorys.OrderCrud;
 using OnionArch.Persistance.Repositorys.ProductImageFileCrud;
-
+using OnionArch.Persistance.Repositorys.UserServices;
 
 namespace OnionArch.Persistance
 {
@@ -53,6 +54,9 @@ namespace OnionArch.Persistance
             services.AddScoped<IProductImageFileReadRepository, ProductImageFileReadRepository>();
             services.AddScoped<IProductImageFileWriteRepository, ProductImageFileWriteRepository>();
 
+            services.AddScoped<IUserService,UserService>();
+
+            services.AddScoped<IAuthService, AuthService>();
 
 
 

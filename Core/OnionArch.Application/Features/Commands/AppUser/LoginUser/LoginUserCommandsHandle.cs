@@ -1,76 +1,46 @@
-﻿using System;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using OnionArch.Application.Abstractions.Token;
-using OnionArch.Application.CustomExceptions;
+﻿using MediatR;
+using OnionArch.Application.Abstractions.UserServices;
 using OnionArch.Application.DTOs;
+using OnionArch.Application.DTOs.UserDTOs;
+using OnionArch.Application.Features.Commands.AppUser.LoginUser;
 
-namespace OnionArch.Application.Features.Commands.AppUser.LoginUser
+public class LoginUserCommandsHandle : IRequestHandler<LoginUserCommandsRequest, LoginUserCommandsResponse>
 {
-    public class LoginUserCommandsHandle : IRequestHandler<LoginUserCommandsRequest, LoginUserCommandsResponse>
+    readonly IAuthService _authService;
+
+    public LoginUserCommandsHandle(IAuthService authService)
     {
+        _authService = authService;
+    }
 
-        readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
-        readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
-        readonly ITokenHandler _tokenHandler;
+    public async Task<LoginUserCommandsResponse> Handle(LoginUserCommandsRequest request, CancellationToken cancellationToken)
+    {
+        var GelenDeğer = await _authService.LoginAsync(request.UserNameOrEmail, request.Password, 15);
 
-
-        public LoginUserCommandsHandle(UserManager<Domain.Entities.Identity.AppUser> userManager, SignInManager<Domain.Entities.Identity.AppUser> signInManager, ITokenHandler tokenHandler)
+        if (GelenDeğer is LoginUserSuccessResponseDTO successResponse)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _tokenHandler =tokenHandler;
+            return new LoginUserSuccessCommandsResponse()
+            {
+                token = successResponse.token,
+                UserInfo = new()
+                {
+                    UserName = successResponse.UserInfo.UserName,
+                    Email = successResponse.UserInfo.Email,
+                    NameSurname = successResponse.UserInfo.NameSurname
+
+                }
+            };
         }
 
-        public async Task<LoginUserCommandsResponse> Handle(LoginUserCommandsRequest request, CancellationToken cancellationToken)
+        if (GelenDeğer is LoginUserErrorResponseDTO errorResponse)
         {
-            //Kullanıcı adı varmı kontrol ediyoruz.
-            Domain.Entities.Identity.AppUser user = await _userManager.FindByNameAsync(request.UserNameOrEmail);
-            if (user == null)
-                //Kullanıcı adı ile ilgili bir bilgi bulamadıysak e mail kontrol ediyoruz.
-                user = await _userManager.FindByEmailAsync(request.UserNameOrEmail);
-
-            if (user == null)
-                //Kullanıcı adı ve Eposta ile ilgili bir bilgi bulamadıysak hata mesajı
-                //throw new NotFoundUserException("Kullanıcı veya şifre hatalı...");
-
-                return new LoginUserErrorCommandsResponse()
-                {
-                    Message = "Kullanıcı bulunamadı"
-                };
-
-            //Burada ise bulunan kullanıcının veri tabanında olan şifresi ,
-            //Form'dan gelen şifre ile aynı mı kontrol ediyoruz.
-            //Eğer doğrulanmıyorsa kullanıcı kitlensin mi ? =>True False alanı
-
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-                
-            if (result.Succeeded) //Authentication başarılı!
+            var response = new LoginUserErrorCommandsResponse
             {
-               Token token= _tokenHandler.CreateAccessToken(10);
-                return new LoginUserSuccessCommandsResponse()
-                {
-                    token = token,
-                    UserInfo = new()
-                    {
-                        UserName=user.UserName,
-                        Email=user.Email,
-                        NameSurname=user.NameSurname
-
-                    }
-                   
-                };
-            }
-            else
-            {
-                return new LoginUserErrorCommandsResponse()
-                {
-                    Message="Kullanıcı adı ve şifre hatalı"
-                };
-            }
-
-           
+                Message=errorResponse.Message
+            };
+            return response;
         }
+
+        throw new Exception("Beklenmeyen bir yanıt türü alındı.");
     }
 }
-

@@ -1,48 +1,42 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using OnionArch.Application.Abstractions.UserServices;
 using OnionArch.Application.CustomExceptions;
+using OnionArch.Application.DTOs.UserDTOs;
 
 namespace OnionArch.Application.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        //UserManager servisi 
-        //ıdentity tarafından oluşturulan yönetim işlemlerini yani kullanıcı işlemlerinden sorunlu olan servistir.
-        //Bundan dolayı burada bizim repository vs oluşturmamıza gerek yoktu :) 
 
-        readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
+        // IUserService içinde yazdığımız kodu kullanacağız.
 
-        public CreateUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager)
+        readonly IUserService _userService;
+
+        public CreateUserCommandHandler(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
 
-          IdentityResult result =  await _userManager.CreateAsync(new()
+            CreateUserResponseDTO createUserResponseDTO = await _userService.CreateUser(new()
             {
-              //Gerekli olan ekleme işlemlerini burada gerçekleştiriyoruz.
-                Id=Guid.NewGuid().ToString(),
+                //    Gelen Tipi Persistance katmanına yollayacağımız için ve  Peristance içine göndereceğimiz tipin
+                //        createUserRequestDTO olacağı için burada çevirme işlemi yapacağız.
+                Email = request.Email,
                 NameSurname=request.NameSurname,
-                UserName =request.UserName,
-                Email=request.Email,
+                 Password=request.Password,
+                 UserName=request.UserName
+            });
 
-                
-                
-            },request.Password);
-            //Password'un en sona eklenme sebebi burada bir hash mantığı olması.
-
-            CreateUserCommandResponse response = new() { Succeeded = result.Succeeded };
-
-            if (result.Succeeded)
-                response.Message = "Kullanıcı başarıyla oluşturulmuştur.";
-            else
-                foreach (var error in result.Errors)
-                    response.Message += $"{error.Code} - {error.Description}\n";
-
-            return response;
-
+            //Gidecek olan tip  createUserResponseDTO olacağı için burada çevirme işlemi yapacağız.
+            return new()
+            {
+                Message = createUserResponseDTO.Message,
+                Succeeded = createUserResponseDTO.Succeeded
+            };
 
 
         }

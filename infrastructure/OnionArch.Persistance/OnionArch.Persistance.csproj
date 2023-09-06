@@ -16,6 +16,7 @@
     <None Remove="Repositorys\InvoiceFileCrud\" />
     <None Remove="Repositorys\ProductImageFileCrud\" />
     <None Remove="Migrations\" />
+    <None Remove="Repositorys\UserServices\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Contexts\" />
@@ -24,6 +25,7 @@
     <Folder Include="Repositorys\InvoiceFileCrud\" />
     <Folder Include="Repositorys\ProductImageFileCrud\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Repositorys\UserServices\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />

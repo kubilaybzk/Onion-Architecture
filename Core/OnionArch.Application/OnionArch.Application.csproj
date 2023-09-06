@@ -36,6 +36,8 @@
     <None Remove="Features\Commands\AppUser\LoginUser\GoogleLogin\" />
     <None Remove="DTOs\Facebook\" />
     <None Remove="Features\Commands\AppUser\LoginUser\FacebookLogin\" />
+    <None Remove="Abstractions\UserServices\" />
+    <None Remove="DTOs\UserDTOs\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="View_Models\" />
@@ -64,6 +66,8 @@
     <Folder Include="Features\Commands\AppUser\LoginUser\GoogleLogin\" />
     <Folder Include="DTOs\Facebook\" />
     <Folder Include="Features\Commands\AppUser\LoginUser\FacebookLogin\" />
+    <Folder Include="Abstractions\UserServices\" />
+    <Folder Include="DTOs\UserDTOs\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
