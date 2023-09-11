@@ -27,7 +27,22 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
                 //Operasyonumuzu burada tanımlayacağız.
                 var productQuery = _productReadRepository.GetAll(false);
 
+                /*
+                 Şimdi buruda birden fazla yöntem kullanabiliriz.
+                Burada ilk yötem ;
+
+                 var productQuery = _productReadRepository.Table.Include(p => p.ProductImageFiles).AsQueryable();
+
+                 yada
+
+                 var test = _productReadRepository.GetAll(false).Include(p => p.ProductImageFiles);
+
+                    Şeklinde kullanabiliriz.
+
+
+                */
                 int totalProductCount = await productQuery.CountAsync();
+                
 
                 int totalPageSize = (int)Math.Ceiling((double)totalProductCount / request.Size);
                 var pagedProductQuery = productQuery.Skip(request.Size * request.Page).Take(request.Size);

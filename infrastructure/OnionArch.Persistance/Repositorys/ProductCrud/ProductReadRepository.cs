@@ -28,7 +28,7 @@ namespace OnionArch.Persistance.Concretes.ProductCrud
         {
             //Base'den Table değerimize ulaşıyoruz .
             //Daha sonra  Include sayesibde bağlantıyı kuruyoruz.
-            var query = base.Table.Include(p => p.ProductImageFiles).AsQueryable();
+            var query = Table.Include(p => p.ProductImageFiles).AsQueryable();
             if (!tracking)
                 query = query.AsNoTracking();
             return query;
