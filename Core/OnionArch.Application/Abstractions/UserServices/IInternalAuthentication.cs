@@ -7,6 +7,7 @@ namespace OnionArch.Application.Abstractions.UserServices
     public interface IInternalAuthentication
 	{
         Task<LoginUserResponseDTO> LoginAsync(string usernameOrEmail, string password, int accessTokenLifeTime);
+        Task<LoginUserResponseDTO> RefreshTokenLoginAsync(string refreshToken);
     }
 }
 

@@ -12,7 +12,13 @@ namespace OnionArch.Application.Abstractions.Token
 		 Şimdi burada bu Token 'ı temsil edecek bir objeye  ihtiyacımız olmalı.
 		 */
 
+        //Acces Token için gerekli olan fonksiyon
         p.Token CreateAccessToken(int minutes);
+
+        //RefreshToken için gerekli olan fonksiyon
+
+        string CreateRefreshToken();
+
     }
 }
 

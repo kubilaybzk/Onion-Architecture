@@ -8,12 +8,22 @@ using Microsoft.AspNetCore.Identity;
 
 namespace OnionArch.Domain.Entities.Identity
 {
-    //Burada generic olarak diyoruz ki senin identity özelliğine sahip olan kısmın string yani guid tipide olsun.
+  
     public class AppUser: IdentityUser
     {
         //Burası tablomuza özel olarak ekleyeceğimiz alanlarımızı tasarladğımız alan.
 
         public string NameSurname { get; set; }
+
+
+        //RefreshToken'ı tablo içinde tutacak olan değer.
+        public string? RefreshToken { get; set; }
+
+        /*
+         RefreshToken'ın ne kadar süre geçerli olacağını
+           tablo içinde tutacak olan değer.
+         */
+        public DateTime? RefreshTokenEndDate { get; set; }
     }
 }
 

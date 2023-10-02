@@ -4,6 +4,7 @@ using OnionArch.Application.Features.Commands.AppUser.CreateUser;
 using OnionArch.Application.Features.Commands.AppUser.LoginUser;
 using OnionArch.Application.Features.Commands.AppUser.LoginUser.FacebookLogin;
 using OnionArch.Application.Features.Commands.AppUser.LoginUser.GoogleLogin;
+using OnionArch.Application.Features.Commands.AppUser.LoginUser.RefreshTokenLogin;
 
 namespace OnionArch.WebApi.Controllers
 {
@@ -30,15 +31,26 @@ namespace OnionArch.WebApi.Controllers
             return Ok(response);
         }
 
+        
 
 
 
-        [HttpPost("[action]")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginUserCommandsRequest loginUserCommandsRequest)
         {
             LoginUserCommandsResponse response = await _mediator.Send(loginUserCommandsRequest);
             return Ok(response);
         }
+
+
+        [HttpPost("RefreshTokenLogin")]
+        public async Task<IActionResult> RefreshTokenLogin([FromBody] RefreshTokenLoginCommandRequest refreshTokenLoginCommandRequest)
+        {
+            RefreshTokenLoginCommandResponse response = await _mediator.Send(refreshTokenLoginCommandRequest);
+            return Ok(response);
+        }
+
+
 
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin(GoogleLoginCommandRequest googleLoginCommandRequest)

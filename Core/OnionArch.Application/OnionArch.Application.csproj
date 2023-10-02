@@ -38,6 +38,7 @@
     <None Remove="Features\Commands\AppUser\LoginUser\FacebookLogin\" />
     <None Remove="Abstractions\UserServices\" />
     <None Remove="DTOs\UserDTOs\" />
+    <None Remove="Features\Commands\AppUser\LoginUser\RefreshTokenLogin\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="View_Models\" />
@@ -68,6 +69,7 @@
     <Folder Include="Features\Commands\AppUser\LoginUser\FacebookLogin\" />
     <Folder Include="Abstractions\UserServices\" />
     <Folder Include="DTOs\UserDTOs\" />
+    <Folder Include="Features\Commands\AppUser\LoginUser\RefreshTokenLogin\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />

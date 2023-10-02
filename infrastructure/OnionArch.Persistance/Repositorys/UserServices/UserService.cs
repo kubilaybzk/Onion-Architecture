@@ -2,6 +2,7 @@
 using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using OnionArch.Application.Abstractions.UserServices;
+using OnionArch.Application.CustomExceptions;
 using OnionArch.Application.DTOs.UserDTOs;
 using OnionArch.Application.Features.Commands.AppUser.CreateUser;
 using OnionArch.Domain.Entities.Identity;
@@ -42,6 +43,21 @@ namespace OnionArch.Persistance.Repositorys.UserServices
                     response.Message += $"{error.Code} - {error.Description}\n";
 
             return response;
+        }
+
+        public async Task UpdateRefreshToken(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenDate)
+        {
+            
+            if (user != null)
+            {
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenEndDate = accessTokenDate.AddSeconds(addOnAccessTokenDate);
+                await _userManager.UpdateAsync(user);
+            }
+            else
+            {
+                throw new  NotFoundUserException();
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using OnionArch.Application.DTOs.UserDTOs;
+using OnionArch.Domain.Entities.Identity;
 
 namespace OnionArch.Application.Abstractions.UserServices
 {
@@ -32,7 +33,14 @@ namespace OnionArch.Application.Abstractions.UserServices
         //CreateUserResponseDTO döndürecek olan ve  CreateUserRequestDTO objesi sayesinde bilgilere erişebilecek olan
         //Fonksiyonumuz
         Task<CreateUserResponseDTO> CreateUser(CreateUserRequestDTO requestDTO);
-        
-	}
+
+
+        //Refresh Token'ın kullanıcı giriş yaptığı anda ,
+
+        Task UpdateRefreshToken(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenDate);
+
+
+
+    }
 }
 

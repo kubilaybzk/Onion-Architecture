@@ -1,12 +1,10 @@
-﻿using System;
-using Azure.Core;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Abstractions.Token;
 using OnionArch.Application.Abstractions.UserServices;
+using OnionArch.Application.CustomExceptions;
 using OnionArch.Application.DTOs;
 using OnionArch.Application.DTOs.UserDTOs;
-using OnionArch.Application.Features.Commands.AppUser.LoginUser;
 using OnionArch.Domain.Entities.Identity;
 
 namespace OnionArch.Persistance.Repositorys.UserServices
@@ -21,12 +19,14 @@ namespace OnionArch.Persistance.Repositorys.UserServices
         readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
         readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
         readonly ITokenHandler _tokenHandler;
+        readonly IUserService _userService;
 
-        public AuthService(UserManager<Domain.Entities.Identity.AppUser> userManager, SignInManager<Domain.Entities.Identity.AppUser> signInManager, ITokenHandler tokenHandler)
+        public AuthService(UserManager<Domain.Entities.Identity.AppUser> userManager, SignInManager<Domain.Entities.Identity.AppUser> signInManager, ITokenHandler tokenHandler, IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenHandler = tokenHandler;
+            _userService = userService;
         }
 
         public Task<Token> FacebookLoginAsync(string authToken, int accessTokenLifeTime)
@@ -54,8 +54,6 @@ namespace OnionArch.Persistance.Repositorys.UserServices
                 return new LoginUserErrorResponseDTO()
                 {
                     Message = "Kullanıcı bulunamadı",
-
-
                 };
 
             //Burada ise bulunan kullanıcının veri tabanında olan şifresi ,
@@ -67,10 +65,44 @@ namespace OnionArch.Persistance.Repositorys.UserServices
             if (result.Succeeded) //Authentication başarılı!
             {
                 Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime);
-
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 2);
                 return new LoginUserSuccessResponseDTO()
                 {
-                    token=token,
+                    token = token,
+                    UserInfo = new()
+                    {
+                        UserName = user.UserName,
+                        Email = user.Email,
+                        NameSurname = user.NameSurname
+
+                    }
+
+                };
+            }
+            else
+            {
+                return new LoginUserErrorResponseDTO()
+                {
+                    Message = "Kullanıcı adı ve şifre hatalı"
+                };
+            }
+        }
+
+        public async Task<LoginUserResponseDTO> RefreshTokenLoginAsync(string refreshToken)
+        {
+            AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+            //Kullanıcı var mı yok mu kontrol edelim .
+           
+            if (user != null && user?.RefreshTokenEndDate > DateTime.UtcNow)
+            {
+                //Kullanıcı var.
+
+                Token token = _tokenHandler.CreateAccessToken(15);
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+                //Yeni bir AccesToken yönlendirelim.
+                return new LoginUserSuccessResponseDTO()
+                {
+                    token = token,
                     UserInfo = new()
                     {
                         UserName = user.UserName,
