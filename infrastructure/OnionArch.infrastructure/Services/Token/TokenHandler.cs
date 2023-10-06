@@ -5,6 +5,8 @@ using OnionArch.Application.Abstractions.Token;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
+using OnionArch.Domain.Entities.Identity;
+using System.Security.Claims;
 
 namespace OnionArch.infrastructure.Services.Token
 {
@@ -18,7 +20,7 @@ namespace OnionArch.infrastructure.Services.Token
             _configuration = configuration;
         }
 
-        public Application.DTOs.Token CreateAccessToken(int minutes)
+        public Application.DTOs.Token CreateAccessToken(int minutes, AppUser user)
         {
             //ÖNCELİKLE TOKEN GERİ DÖNDÜRECEĞİMİZ İÇİN BİR TOKEN NESNESİNE İHTİYACIMIZ VAR
             Application.DTOs.Token token = new();
@@ -43,7 +45,8 @@ namespace OnionArch.infrastructure.Services.Token
             issuer: _configuration["Token:Issuer"],
             expires: token.Expiration,
             notBefore: DateTime.UtcNow,
-            signingCredentials: signingCredentials
+            signingCredentials: signingCredentials,
+            claims:new List<Claim> { new(ClaimTypes.Name,user.UserName)}
             );
 
             //Token oluşturucu sınıfından bir örnek alalım.

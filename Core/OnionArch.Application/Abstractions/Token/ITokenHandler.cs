@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnionArch.Domain.Entities.Identity;
+using System;
 using p=OnionArch.Application.DTOs;
 namespace OnionArch.Application.Abstractions.Token
 {
@@ -13,7 +14,7 @@ namespace OnionArch.Application.Abstractions.Token
 		 */
 
         //Acces Token için gerekli olan fonksiyon
-        p.Token CreateAccessToken(int minutes);
+        p.Token CreateAccessToken(int minutes,AppUser user);
 
         //RefreshToken için gerekli olan fonksiyon
 

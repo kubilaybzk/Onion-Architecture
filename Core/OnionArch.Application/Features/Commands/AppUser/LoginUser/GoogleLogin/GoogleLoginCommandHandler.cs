@@ -52,7 +52,7 @@ namespace OnionArch.Application.Features.Commands.AppUser.LoginUser.GoogleLogin
             else
                 throw new Exception("Invalid external authentication.");
 
-            Token token = _tokenHandler.CreateAccessToken(5);
+            Token token = _tokenHandler.CreateAccessToken(5, user);
 
             return new()
             {

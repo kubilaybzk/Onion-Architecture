@@ -1,0 +1,347 @@
+2023-10-06 15:14:59.926 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-06 15:14:59.993 +03:00 [INF] Now listening on: http://localhost:5031
+2023-10-06 15:14:59.995 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-10-06 15:14:59.995 +03:00 [INF] Hosting environment: Development
+2023-10-06 15:14:59.996 +03:00 [INF] Content root path: C:\Users\kubil\OneDrive\Masaüstü\Onion-Architecture\Presentation\OnionArch.WebApi
+2023-10-06 15:15:00.803 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/index.html - -
+2023-10-06 15:15:00.912 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/index.html - - - 200 - text/html;charset=utf-8 110.5257ms
+2023-10-06 15:15:01.015 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_vs/browserLink - -
+2023-10-06 15:15:01.016 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - -
+2023-10-06 15:15:01.018 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - - - 200 12364 application/javascript;+charset=utf-8 2.2432ms
+2023-10-06 15:15:01.028 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 12.8243ms
+2023-10-06 15:15:01.066 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - -
+2023-10-06 15:15:01.130 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 64.0047ms
+2023-10-06 15:26:00.444 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-06 15:26:00.521 +03:00 [INF] Now listening on: http://localhost:5031
+2023-10-06 15:26:00.522 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-10-06 15:26:00.523 +03:00 [INF] Hosting environment: Development
+2023-10-06 15:26:00.523 +03:00 [INF] Content root path: C:\Users\kubil\OneDrive\Masaüstü\Onion-Architecture\Presentation\OnionArch.WebApi
+2023-10-06 15:26:02.004 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/index.html - -
+2023-10-06 15:26:02.162 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_vs/browserLink - -
+2023-10-06 15:26:02.163 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - -
+2023-10-06 15:26:02.164 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/index.html - - - 200 - text/html;charset=utf-8 161.5589ms
+2023-10-06 15:26:02.180 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - - - 200 12364 application/javascript;+charset=utf-8 17.8327ms
+2023-10-06 15:26:02.193 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 31.1141ms
+2023-10-06 15:26:02.241 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - -
+2023-10-06 15:26:02.326 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 85.0754ms
+2023-10-06 15:27:00.858 +03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5031/api/Users/CreateUser - -
+2023-10-06 15:27:00.864 +03:00 [INF] CORS policy execution successful.
+2023-10-06 15:27:00.865 +03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5031/api/Users/CreateUser - - - 204 - - 7.8259ms
+2023-10-06 15:27:00.868 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5031/api/Users/CreateUser application/json 109
+2023-10-06 15:27:00.869 +03:00 [INF] CORS policy execution successful.
+2023-10-06 15:27:00.878 +03:00 [INF] CORS policy execution successful.
+2023-10-06 15:27:00.879 +03:00 [WRN] Failed to determine the https port for redirect.
+2023-10-06 15:27:00.880 +03:00 [INF] Executing endpoint 'OnionArch.WebApi.Controllers.UsersController.CreateUser (OnionArch.WebApi)'
+2023-10-06 15:27:00.893 +03:00 [INF] Route matched with {action = "CreateUser", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(OnionArch.Application.Features.Commands.AppUser.CreateUser.CreateUserCommandRequest) on controller OnionArch.WebApi.Controllers.UsersController (OnionArch.WebApi).
+2023-10-06 15:27:01.331 +03:00 [WRN] No store type was specified for the decimal property 'Price' on entity type 'InvoiceFile'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2023-10-06 15:27:01.550 +03:00 [INF] Executed DbCommand (16ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NameSurname], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[RefreshToken], [a].[RefreshTokenEndDate], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedUserName] = @__normalizedUserName_0
+2023-10-06 15:27:01.654 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (Size = 450), @p1='?' (DbType = Int32), @p2='?' (Size = 4000), @p3='?' (Size = 256), @p4='?' (DbType = Boolean), @p5='?' (DbType = Boolean), @p6='?' (DbType = DateTimeOffset), @p7='?' (Size = 4000), @p8='?' (Size = 256), @p9='?' (Size = 256), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Boolean), @p13='?' (Size = 4000), @p14='?' (DbType = DateTime2), @p15='?' (Size = 4000), @p16='?' (DbType = Boolean), @p17='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [AspNetUsers] ([Id], [AccessFailedCount], [ConcurrencyStamp], [Email], [EmailConfirmed], [LockoutEnabled], [LockoutEnd], [NameSurname], [NormalizedEmail], [NormalizedUserName], [PasswordHash], [PhoneNumber], [PhoneNumberConfirmed], [RefreshToken], [RefreshTokenEndDate], [SecurityStamp], [TwoFactorEnabled], [UserName])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17);
+2023-10-06 15:27:01.665 +03:00 [INF] Executing OkObjectResult, writing value of type 'OnionArch.Application.Features.Commands.AppUser.CreateUser.CreateUserCommandResponse'.
+2023-10-06 15:27:01.669 +03:00 [INF] Executed action OnionArch.WebApi.Controllers.UsersController.CreateUser (OnionArch.WebApi) in 773.9481ms
+2023-10-06 15:27:01.670 +03:00 [INF] Executed endpoint 'OnionArch.WebApi.Controllers.UsersController.CreateUser (OnionArch.WebApi)'
+2023-10-06 15:27:01.674 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5031/api/Users/CreateUser application/json 109 - 200 - application/json;+charset=utf-8 805.8119ms
+2023-10-06 15:27:08.520 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5031/api/Users/Login application/json 55
+2023-10-06 15:27:08.523 +03:00 [INF] Executing endpoint 'OnionArch.WebApi.Controllers.UsersController.Login (OnionArch.WebApi)'
+2023-10-06 15:27:08.526 +03:00 [INF] Route matched with {action = "Login", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(OnionArch.Application.Features.Commands.AppUser.LoginUser.LoginUserCommandsRequest) on controller OnionArch.WebApi.Controllers.UsersController (OnionArch.WebApi).
+2023-10-06 15:27:08.564 +03:00 [INF] Executed DbCommand (3ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NameSurname], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[RefreshToken], [a].[RefreshTokenEndDate], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedUserName] = @__normalizedUserName_0
+2023-10-06 15:27:08.757 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NameSurname], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[RefreshToken], [a].[RefreshTokenEndDate], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedUserName] = @__normalizedUserName_0
+2023-10-06 15:27:08.768 +03:00 [INF] Executed DbCommand (3ms) [Parameters=[@p17='?' (Size = 450), @p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p18='?' (Size = 4000), @p2='?' (Size = 256), @p3='?' (DbType = Boolean), @p4='?' (DbType = Boolean), @p5='?' (DbType = DateTimeOffset), @p6='?' (Size = 4000), @p7='?' (Size = 256), @p8='?' (Size = 256), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (DbType = Boolean), @p12='?' (Size = 4000), @p13='?' (DbType = DateTime2), @p14='?' (Size = 4000), @p15='?' (DbType = Boolean), @p16='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [AspNetUsers] SET [AccessFailedCount] = @p0, [ConcurrencyStamp] = @p1, [Email] = @p2, [EmailConfirmed] = @p3, [LockoutEnabled] = @p4, [LockoutEnd] = @p5, [NameSurname] = @p6, [NormalizedEmail] = @p7, [NormalizedUserName] = @p8, [PasswordHash] = @p9, [PhoneNumber] = @p10, [PhoneNumberConfirmed] = @p11, [RefreshToken] = @p12, [RefreshTokenEndDate] = @p13, [SecurityStamp] = @p14, [TwoFactorEnabled] = @p15, [UserName] = @p16
+OUTPUT 1
+WHERE [Id] = @p17 AND [ConcurrencyStamp] = @p18;
+2023-10-06 15:27:08.772 +03:00 [INF] Executing OkObjectResult, writing value of type 'OnionArch.Application.Features.Commands.AppUser.LoginUser.LoginUserSuccessCommandsResponse'.
+2023-10-06 15:27:08.778 +03:00 [INF] Executed action OnionArch.WebApi.Controllers.UsersController.Login (OnionArch.WebApi) in 251.6021ms
+2023-10-06 15:27:08.779 +03:00 [INF] Executed endpoint 'OnionArch.WebApi.Controllers.UsersController.Login (OnionArch.WebApi)'
+2023-10-06 15:27:08.779 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5031/api/Users/Login application/json 55 - 200 - application/json;+charset=utf-8 259.6579ms
+2023-10-06 15:27:12.405 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/api/Products/GetAll?Page=0 application/json -
+2023-10-06 15:27:12.472 +03:00 [INF] Executing endpoint 'OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi)'
+2023-10-06 15:27:12.476 +03:00 [INF] Route matched with {action = "Get", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Get(OnionArch.Application.Features.Queries.Product.GetAllProducts.GetAllProductsQueryRequest) on controller OnionArch.API.Controllers.ProductsController (OnionArch.WebApi).
+2023-10-06 15:27:12.519 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+2023-10-06 15:27:12.523 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:27:12.524 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:27:12.529 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM (
+    SELECT [p].[ID]
+    FROM [Products] AS [p]
+    ORDER BY (SELECT 1)
+    OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+) AS [t]
+2023-10-06 15:27:12.538 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:27:12.539 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:27:12.577 +03:00 [INF] Executed DbCommand (4ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t].[Name], [t].[Price], [t].[Stock], [t].[ID], [t0].[ID], [t0].[CreateTime], [t0].[Discriminator], [t0].[FileName], [t0].[Path], [t0].[Storage], [t0].[ProductImageFilesID], [t0].[ProductsID], [t].[CreateTime], [t].[UpdateTime]
+FROM (
+    SELECT [p].[Name], [p].[Price], [p].[Stock], [p].[ID], [p].[CreateTime], [p].[UpdateTime]
+    FROM [Products] AS [p]
+    ORDER BY (SELECT 1)
+    OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+) AS [t]
+LEFT JOIN (
+    SELECT [t1].[ID], [t1].[CreateTime], [t1].[Discriminator], [t1].[FileName], [t1].[Path], [t1].[Storage], [p0].[ProductImageFilesID], [p0].[ProductsID]
+    FROM [ProductProductImageFile] AS [p0]
+    INNER JOIN (
+        SELECT [f].[ID], [f].[CreateTime], [f].[Discriminator], [f].[FileName], [f].[Path], [f].[Storage]
+        FROM [Files] AS [f]
+        WHERE [f].[Discriminator] = N'ProductImageFile'
+    ) AS [t1] ON [p0].[ProductImageFilesID] = [t1].[ID]
+) AS [t0] ON [t].[ID] = [t0].[ProductsID]
+ORDER BY [t].[ID], [t0].[ProductImageFilesID], [t0].[ProductsID]
+2023-10-06 15:27:12.579 +03:00 [INF] Başarılı bir şekilde ürünler listelendi
+2023-10-06 15:27:12.580 +03:00 [INF] Executing OkObjectResult, writing value of type 'OnionArch.Application.Features.Queries.Product.Product.GetAllProducts.GetAllProductsQueryResponse'.
+2023-10-06 15:27:12.588 +03:00 [INF] Executed action OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi) in 111.0732ms
+2023-10-06 15:27:12.588 +03:00 [INF] Executed endpoint 'OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi)'
+2023-10-06 15:27:12.589 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/api/Products/GetAll?Page=0 application/json - - 200 - application/json;+charset=utf-8 184.1197ms
+2023-10-06 15:47:59.720 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-06 15:47:59.792 +03:00 [INF] Now listening on: http://localhost:5031
+2023-10-06 15:47:59.793 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-10-06 15:47:59.794 +03:00 [INF] Hosting environment: Development
+2023-10-06 15:47:59.794 +03:00 [INF] Content root path: C:\Users\kubil\OneDrive\Masaüstü\Onion-Architecture\Presentation\OnionArch.WebApi
+2023-10-06 15:48:01.893 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/index.html - -
+2023-10-06 15:48:02.016 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - -
+2023-10-06 15:48:02.016 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_vs/browserLink - -
+2023-10-06 15:48:02.019 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - - - 200 12364 application/javascript;+charset=utf-8 2.4497ms
+2023-10-06 15:48:02.019 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/index.html - - - 200 - text/html;charset=utf-8 126.6621ms
+2023-10-06 15:48:02.054 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 37.7053ms
+2023-10-06 15:48:02.085 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - -
+2023-10-06 15:48:02.140 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 55.3468ms
+2023-10-06 15:53:10.655 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-06 15:53:10.720 +03:00 [INF] Now listening on: http://localhost:5031
+2023-10-06 15:53:10.721 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-10-06 15:53:10.722 +03:00 [INF] Hosting environment: Development
+2023-10-06 15:53:10.722 +03:00 [INF] Content root path: C:\Users\kubil\OneDrive\Masaüstü\Onion-Architecture\Presentation\OnionArch.WebApi
+2023-10-06 15:53:13.466 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/index.html - -
+2023-10-06 15:53:13.598 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/index.html - - - 200 - text/html;charset=utf-8 132.0821ms
+2023-10-06 15:53:13.603 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_vs/browserLink - -
+2023-10-06 15:53:13.604 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - -
+2023-10-06 15:53:13.608 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - - - 200 12364 application/javascript;+charset=utf-8 3.7783ms
+2023-10-06 15:53:13.617 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 13.4822ms
+2023-10-06 15:53:13.668 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - -
+2023-10-06 15:53:13.732 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 64.4835ms
+2023-10-06 15:53:31.784 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-06 15:53:31.902 +03:00 [INF] Now listening on: http://localhost:5031
+2023-10-06 15:53:31.904 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-10-06 15:53:31.904 +03:00 [INF] Hosting environment: Development
+2023-10-06 15:53:31.904 +03:00 [INF] Content root path: C:\Users\kubil\OneDrive\Masaüstü\Onion-Architecture\Presentation\OnionArch.WebApi
+2023-10-06 15:53:33.033 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/index.html - -
+2023-10-06 15:53:33.148 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/index.html - - - 200 - text/html;charset=utf-8 116.5095ms
+2023-10-06 15:53:33.567 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_vs/browserLink - -
+2023-10-06 15:53:33.569 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - -
+2023-10-06 15:53:33.573 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - - - 200 12364 application/javascript;+charset=utf-8 3.9930ms
+2023-10-06 15:53:33.583 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 15.7749ms
+2023-10-06 15:53:33.625 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - -
+2023-10-06 15:53:33.691 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 65.6277ms
+2023-10-06 15:53:37.003 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5031/api/Users/Login application/json 55
+2023-10-06 15:53:37.016 +03:00 [WRN] Failed to determine the https port for redirect.
+2023-10-06 15:53:37.018 +03:00 [INF] Executing endpoint 'OnionArch.WebApi.Controllers.UsersController.Login (OnionArch.WebApi)'
+2023-10-06 15:53:37.032 +03:00 [INF] Route matched with {action = "Login", controller = "Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(OnionArch.Application.Features.Commands.AppUser.LoginUser.LoginUserCommandsRequest) on controller OnionArch.WebApi.Controllers.UsersController (OnionArch.WebApi).
+2023-10-06 15:53:37.446 +03:00 [WRN] No store type was specified for the decimal property 'Price' on entity type 'InvoiceFile'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2023-10-06 15:53:37.679 +03:00 [INF] Executed DbCommand (20ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NameSurname], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[RefreshToken], [a].[RefreshTokenEndDate], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedUserName] = @__normalizedUserName_0
+2023-10-06 15:53:37.836 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NameSurname], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[RefreshToken], [a].[RefreshTokenEndDate], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedUserName] = @__normalizedUserName_0
+2023-10-06 15:53:37.883 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@p17='?' (Size = 450), @p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p18='?' (Size = 4000), @p2='?' (Size = 256), @p3='?' (DbType = Boolean), @p4='?' (DbType = Boolean), @p5='?' (DbType = DateTimeOffset), @p6='?' (Size = 4000), @p7='?' (Size = 256), @p8='?' (Size = 256), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (DbType = Boolean), @p12='?' (Size = 4000), @p13='?' (DbType = DateTime2), @p14='?' (Size = 4000), @p15='?' (DbType = Boolean), @p16='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [AspNetUsers] SET [AccessFailedCount] = @p0, [ConcurrencyStamp] = @p1, [Email] = @p2, [EmailConfirmed] = @p3, [LockoutEnabled] = @p4, [LockoutEnd] = @p5, [NameSurname] = @p6, [NormalizedEmail] = @p7, [NormalizedUserName] = @p8, [PasswordHash] = @p9, [PhoneNumber] = @p10, [PhoneNumberConfirmed] = @p11, [RefreshToken] = @p12, [RefreshTokenEndDate] = @p13, [SecurityStamp] = @p14, [TwoFactorEnabled] = @p15, [UserName] = @p16
+OUTPUT 1
+WHERE [Id] = @p17 AND [ConcurrencyStamp] = @p18;
+2023-10-06 15:53:37.894 +03:00 [INF] Executing OkObjectResult, writing value of type 'OnionArch.Application.Features.Commands.AppUser.LoginUser.LoginUserSuccessCommandsResponse'.
+2023-10-06 15:53:37.901 +03:00 [INF] Executed action OnionArch.WebApi.Controllers.UsersController.Login (OnionArch.WebApi) in 866.49ms
+2023-10-06 15:53:37.902 +03:00 [INF] Executed endpoint 'OnionArch.WebApi.Controllers.UsersController.Login (OnionArch.WebApi)'
+2023-10-06 15:53:37.906 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5031/api/Users/Login application/json 55 - 200 - application/json;+charset=utf-8 903.3403ms
+2023-10-06 15:53:40.060 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/api/Products/GetAll?Page=0 application/json -
+2023-10-06 15:53:40.097 +03:00 [INF] Executing endpoint 'OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi)'
+2023-10-06 15:53:40.100 +03:00 [INF] Route matched with {action = "Get", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Get(OnionArch.Application.Features.Queries.Product.GetAllProducts.GetAllProductsQueryRequest) on controller OnionArch.API.Controllers.ProductsController (OnionArch.WebApi).
+2023-10-06 15:53:40.158 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+2023-10-06 15:53:40.162 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:53:40.163 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:53:40.167 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM (
+    SELECT [p].[ID]
+    FROM [Products] AS [p]
+    ORDER BY (SELECT 1)
+    OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+) AS [t]
+2023-10-06 15:53:40.176 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:53:40.177 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:53:40.210 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t].[Name], [t].[Price], [t].[Stock], [t].[ID], [t0].[ID], [t0].[CreateTime], [t0].[Discriminator], [t0].[FileName], [t0].[Path], [t0].[Storage], [t0].[ProductImageFilesID], [t0].[ProductsID], [t].[CreateTime], [t].[UpdateTime]
+FROM (
+    SELECT [p].[Name], [p].[Price], [p].[Stock], [p].[ID], [p].[CreateTime], [p].[UpdateTime]
+    FROM [Products] AS [p]
+    ORDER BY (SELECT 1)
+    OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+) AS [t]
+LEFT JOIN (
+    SELECT [t1].[ID], [t1].[CreateTime], [t1].[Discriminator], [t1].[FileName], [t1].[Path], [t1].[Storage], [p0].[ProductImageFilesID], [p0].[ProductsID]
+    FROM [ProductProductImageFile] AS [p0]
+    INNER JOIN (
+        SELECT [f].[ID], [f].[CreateTime], [f].[Discriminator], [f].[FileName], [f].[Path], [f].[Storage]
+        FROM [Files] AS [f]
+        WHERE [f].[Discriminator] = N'ProductImageFile'
+    ) AS [t1] ON [p0].[ProductImageFilesID] = [t1].[ID]
+) AS [t0] ON [t].[ID] = [t0].[ProductsID]
+ORDER BY [t].[ID], [t0].[ProductImageFilesID], [t0].[ProductsID]
+2023-10-06 15:53:40.212 +03:00 [INF] Başarılı bir şekilde ürünler listelendi
+2023-10-06 15:53:40.213 +03:00 [INF] Executing OkObjectResult, writing value of type 'OnionArch.Application.Features.Queries.Product.Product.GetAllProducts.GetAllProductsQueryResponse'.
+2023-10-06 15:53:40.221 +03:00 [INF] Executed action OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi) in 120.338ms
+2023-10-06 15:53:40.222 +03:00 [INF] Executed endpoint 'OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi)'
+2023-10-06 15:53:40.223 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/api/Products/GetAll?Page=0 application/json - - 200 - application/json;+charset=utf-8 162.9083ms
+2023-10-06 15:54:04.084 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-06 15:54:04.151 +03:00 [INF] Now listening on: http://localhost:5031
+2023-10-06 15:54:04.152 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-10-06 15:54:04.152 +03:00 [INF] Hosting environment: Development
+2023-10-06 15:54:04.153 +03:00 [INF] Content root path: C:\Users\kubil\OneDrive\Masaüstü\Onion-Architecture\Presentation\OnionArch.WebApi
+2023-10-06 15:54:05.939 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/index.html - -
+2023-10-06 15:54:06.082 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - -
+2023-10-06 15:54:06.082 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_vs/browserLink - -
+2023-10-06 15:54:06.085 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - - - 200 12364 application/javascript;+charset=utf-8 2.3502ms
+2023-10-06 15:54:06.085 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/index.html - - - 200 - text/html;charset=utf-8 146.8716ms
+2023-10-06 15:54:06.095 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 13.2985ms
+2023-10-06 15:54:06.145 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - -
+2023-10-06 15:54:06.208 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 62.9810ms
+2023-10-06 15:54:23.986 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/api/Products/GetAll?Page=0 application/json -
+2023-10-06 15:54:24.097 +03:00 [WRN] Failed to determine the https port for redirect.
+2023-10-06 15:54:24.101 +03:00 [INF] Executing endpoint 'OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi)'
+2023-10-06 15:54:24.114 +03:00 [INF] Route matched with {action = "Get", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Get(OnionArch.Application.Features.Queries.Product.GetAllProducts.GetAllProductsQueryRequest) on controller OnionArch.API.Controllers.ProductsController (OnionArch.WebApi).
+2023-10-06 15:54:24.541 +03:00 [WRN] No store type was specified for the decimal property 'Price' on entity type 'InvoiceFile'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2023-10-06 15:54:24.726 +03:00 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+2023-10-06 15:54:24.741 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:54:24.741 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:54:24.753 +03:00 [INF] Executed DbCommand (4ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM (
+    SELECT [p].[ID]
+    FROM [Products] AS [p]
+    ORDER BY (SELECT 1)
+    OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+) AS [t]
+2023-10-06 15:54:24.767 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:54:24.767 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:54:24.817 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t].[Name], [t].[Price], [t].[Stock], [t].[ID], [t0].[ID], [t0].[CreateTime], [t0].[Discriminator], [t0].[FileName], [t0].[Path], [t0].[Storage], [t0].[ProductImageFilesID], [t0].[ProductsID], [t].[CreateTime], [t].[UpdateTime]
+FROM (
+    SELECT [p].[Name], [p].[Price], [p].[Stock], [p].[ID], [p].[CreateTime], [p].[UpdateTime]
+    FROM [Products] AS [p]
+    ORDER BY (SELECT 1)
+    OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+) AS [t]
+LEFT JOIN (
+    SELECT [t1].[ID], [t1].[CreateTime], [t1].[Discriminator], [t1].[FileName], [t1].[Path], [t1].[Storage], [p0].[ProductImageFilesID], [p0].[ProductsID]
+    FROM [ProductProductImageFile] AS [p0]
+    INNER JOIN (
+        SELECT [f].[ID], [f].[CreateTime], [f].[Discriminator], [f].[FileName], [f].[Path], [f].[Storage]
+        FROM [Files] AS [f]
+        WHERE [f].[Discriminator] = N'ProductImageFile'
+    ) AS [t1] ON [p0].[ProductImageFilesID] = [t1].[ID]
+) AS [t0] ON [t].[ID] = [t0].[ProductsID]
+ORDER BY [t].[ID], [t0].[ProductImageFilesID], [t0].[ProductsID]
+2023-10-06 15:54:24.820 +03:00 [INF] Başarılı bir şekilde ürünler listelendi
+2023-10-06 15:54:24.824 +03:00 [INF] Executing OkObjectResult, writing value of type 'OnionArch.Application.Features.Queries.Product.Product.GetAllProducts.GetAllProductsQueryResponse'.
+2023-10-06 15:54:24.836 +03:00 [INF] Executed action OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi) in 719.992ms
+2023-10-06 15:54:24.837 +03:00 [INF] Executed endpoint 'OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi)'
+2023-10-06 15:54:24.841 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/api/Products/GetAll?Page=0 application/json - - 200 - application/json;+charset=utf-8 854.9032ms
+2023-10-06 15:57:16.885 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-06 15:57:16.957 +03:00 [INF] Now listening on: http://localhost:5031
+2023-10-06 15:57:16.958 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-10-06 15:57:16.959 +03:00 [INF] Hosting environment: Development
+2023-10-06 15:57:16.959 +03:00 [INF] Content root path: C:\Users\kubil\OneDrive\Masaüstü\Onion-Architecture\Presentation\OnionArch.WebApi
+2023-10-06 15:57:17.930 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/index.html - -
+2023-10-06 15:57:18.043 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - -
+2023-10-06 15:57:18.043 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_vs/browserLink - -
+2023-10-06 15:57:18.045 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - - - 200 12364 application/javascript;+charset=utf-8 2.6032ms
+2023-10-06 15:57:18.045 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/index.html - - - 200 - text/html;charset=utf-8 116.5120ms
+2023-10-06 15:57:18.054 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 11.5642ms
+2023-10-06 15:57:18.094 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - -
+2023-10-06 15:57:18.151 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 56.8919ms
+2023-10-06 15:58:12.402 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/api/Products/GetAll?Page=0 application/json -
+2023-10-06 15:58:12.504 +03:00 [WRN] Failed to determine the https port for redirect.
+2023-10-06 15:58:12.508 +03:00 [INF] Request:
+Protocol: HTTP/1.1
+Method: GET
+Scheme: http
+PathBase: 
+Path: /api/Products/GetAll
+Accept: */*
+Connection: keep-alive
+Host: localhost:5031
+User-Agent: undici
+Accept-Encoding: gzip, deflate
+Accept-Language: *
+Authorization: [Redacted]
+Cache-Control: max-age=0
+Content-Type: application/json
+sec-fetch-mode: [Redacted]
+2023-10-06 15:58:12.511 +03:00 [INF] Executing endpoint 'OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi)'
+2023-10-06 15:58:12.524 +03:00 [INF] Route matched with {action = "Get", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Get(OnionArch.Application.Features.Queries.Product.GetAllProducts.GetAllProductsQueryRequest) on controller OnionArch.API.Controllers.ProductsController (OnionArch.WebApi).
+2023-10-06 15:58:12.922 +03:00 [WRN] No store type was specified for the decimal property 'Price' on entity type 'InvoiceFile'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2023-10-06 15:58:13.105 +03:00 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+2023-10-06 15:58:13.119 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:58:13.120 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:58:13.133 +03:00 [INF] Executed DbCommand (5ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM (
+    SELECT [p].[ID]
+    FROM [Products] AS [p]
+    ORDER BY (SELECT 1)
+    OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+) AS [t]
+2023-10-06 15:58:13.146 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:58:13.146 +03:00 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2023-10-06 15:58:13.200 +03:00 [INF] Executed DbCommand (4ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t].[Name], [t].[Price], [t].[Stock], [t].[ID], [t0].[ID], [t0].[CreateTime], [t0].[Discriminator], [t0].[FileName], [t0].[Path], [t0].[Storage], [t0].[ProductImageFilesID], [t0].[ProductsID], [t].[CreateTime], [t].[UpdateTime]
+FROM (
+    SELECT [p].[Name], [p].[Price], [p].[Stock], [p].[ID], [p].[CreateTime], [p].[UpdateTime]
+    FROM [Products] AS [p]
+    ORDER BY (SELECT 1)
+    OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+) AS [t]
+LEFT JOIN (
+    SELECT [t1].[ID], [t1].[CreateTime], [t1].[Discriminator], [t1].[FileName], [t1].[Path], [t1].[Storage], [p0].[ProductImageFilesID], [p0].[ProductsID]
+    FROM [ProductProductImageFile] AS [p0]
+    INNER JOIN (
+        SELECT [f].[ID], [f].[CreateTime], [f].[Discriminator], [f].[FileName], [f].[Path], [f].[Storage]
+        FROM [Files] AS [f]
+        WHERE [f].[Discriminator] = N'ProductImageFile'
+    ) AS [t1] ON [p0].[ProductImageFilesID] = [t1].[ID]
+) AS [t0] ON [t].[ID] = [t0].[ProductsID]
+ORDER BY [t].[ID], [t0].[ProductImageFilesID], [t0].[ProductsID]
+2023-10-06 15:58:13.203 +03:00 [INF] Başarılı bir şekilde ürünler listelendi
+2023-10-06 15:58:13.209 +03:00 [INF] Executing OkObjectResult, writing value of type 'OnionArch.Application.Features.Queries.Product.Product.GetAllProducts.GetAllProductsQueryResponse'.
+2023-10-06 15:58:13.219 +03:00 [INF] Response:
+StatusCode: 200
+Content-Type: application/json; charset=utf-8
+2023-10-06 15:58:13.223 +03:00 [INF] Executed action OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi) in 696.0041ms
+2023-10-06 15:58:13.224 +03:00 [INF] Executed endpoint 'OnionArch.API.Controllers.ProductsController.Get (OnionArch.WebApi)'
+2023-10-06 15:58:13.225 +03:00 [INF] RequestBody: 
+2023-10-06 15:58:13.225 +03:00 [INF] ResponseBody: {"totalCount":0,"totalPageSize":0,"currentPage":0,"hasNext":false,"hasPrev":false,"pageSize":0,"products":[],"statusCode":200,"message":"Ürün Gönderildi"}
+2023-10-06 15:58:13.229 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/api/Products/GetAll?Page=0 application/json - - 200 - application/json;+charset=utf-8 827.9294ms

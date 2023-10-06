@@ -64,7 +64,7 @@ namespace OnionArch.Persistance.Repositorys.UserServices
 
             if (result.Succeeded) //Authentication başarılı!
             {
-                Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime);
+                Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime,user);
                 await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 2);
                 return new LoginUserSuccessResponseDTO()
                 {
@@ -97,7 +97,7 @@ namespace OnionArch.Persistance.Repositorys.UserServices
             {
                 //Kullanıcı var.
 
-                Token token = _tokenHandler.CreateAccessToken(15);
+                Token token = _tokenHandler.CreateAccessToken(15,user);
                 await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
                 //Yeni bir AccesToken yönlendirelim.
                 return new LoginUserSuccessResponseDTO()

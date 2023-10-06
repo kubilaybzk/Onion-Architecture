@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Features.Queries.Product.Product.GetAllProducts;
 
@@ -13,10 +14,12 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
 
         //Burada dependency injection'dan yararlanıyoruz.
         private readonly IProductReadRepository _productReadRepository;
+        private readonly ILogger<GetAllProductsQueryHandler> _logger;
 
-        public GetAllProductsQueryHandler(IProductReadRepository productReadRepository)
+        public GetAllProductsQueryHandler(IProductReadRepository productReadRepository, ILogger<GetAllProductsQueryHandler> logger)
         {
             _productReadRepository = productReadRepository;
+            _logger = logger;
         }
 
 
@@ -64,7 +67,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
 
                 bool hasNextPage = request.Page < totalPageSize - 1;
                 bool hasPrevPage = request.Page > 0;
-
+                _logger.LogInformation("Başarılı bir şekilde ürünler listelendi");
                 return new GetAllProductsQueryResponse()
                 {
                     TotalCount = totalProductCount,
@@ -80,6 +83,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
             }
             catch(Exception ex)
             {
+                _logger.LogError("Ürün listelerken bir hata oluştu.");
                 return new GetAllProductsQueryResponse()
                 {
 

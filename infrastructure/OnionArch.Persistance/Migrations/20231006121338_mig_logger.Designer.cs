@@ -12,8 +12,8 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20230829063259_mig-1")]
-    partial class mig1
+    [Migration("20231006121338_mig_logger")]
+    partial class mig_logger
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -258,6 +258,12 @@ namespace OnionArch.Persistance.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenEndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

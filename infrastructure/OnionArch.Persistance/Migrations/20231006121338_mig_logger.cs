@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnionArch.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class mig1 : Migration
+    public partial class mig_logger : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,6 +32,8 @@ namespace OnionArch.Persistance.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     NameSurname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshTokenEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

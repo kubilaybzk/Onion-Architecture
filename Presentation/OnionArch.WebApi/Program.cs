@@ -1,7 +1,12 @@
-﻿using System.Text;
+﻿using System.Collections.ObjectModel;
+using System.Data;
+using System.Security.Claims;
+using System.Text;
 using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OnionArch.Application;
@@ -10,6 +15,10 @@ using OnionArch.infrastructure;
 using OnionArch.infrastructure.Filters;
 using OnionArch.infrastructure.Services.Storage.LocalStorage;
 using OnionArch.Persistance;
+using Serilog;
+using Serilog.Context;
+using Serilog.Core;
+using Serilog.Sinks.MSSqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +39,58 @@ builder.Services.AddControllers(options => options.Filters.Add<ValidationFilters
     .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+
+
+
+
+/* SeriLog ile ilgili konfigürasyonlar */
+
+
+//Tabloya yeni bir alan ekleyelim.
+
+ColumnOptions columnOptions=new ColumnOptions();
+columnOptions.AdditionalColumns = new Collection<SqlColumn>
+{
+    //Yeni bir alan oluşturup bu alanda kendimize özel allanlar ekliyoruz.
+    new SqlColumn
+    {
+        ColumnName="EmailOrUserNameLogs",
+        DataType=SqlDbType.NVarChar,
+        DataLength=100
+    }
+};
+
+
+
+Logger log = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/Logs.txt")
+    .WriteTo.MSSqlServer(
+    builder.Configuration.GetConnectionString("SqlConnectionString"),
+    tableName: "BackEndLogs",
+    autoCreateSqlTable: true,
+    columnOptions:columnOptions
+    )
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestHeaders.Add("sec-ch-ua");
+    logging.MediaTypeOptions.AddText("application/javascript");
+    logging.RequestBodyLogLimit = 4096;
+    logging.ResponseBodyLogLimit = 4096;
+});
+
+
+builder.Host.UseSerilog(log);
+
+
+
+
 builder.Services.AddEndpointsApiExplorer();
 
 
@@ -104,7 +165,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidAudience = builder.Configuration["Token:Audience"],
         ValidIssuer = builder.Configuration["Token:Issuer"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),
-        LifetimeValidator = (notBefore, expires, securityToken, validationParameters)=>expires !=null ? expires>DateTime.UtcNow:false
+        LifetimeValidator = (notBefore, expires, securityToken, validationParameters)=>expires !=null ? expires>DateTime.UtcNow:false,
+
+        /* 
+         JWT üzerinden gelen Name Claim'e karşılık gelen değeri User.Identity.Name
+        propertysinden elde edebilmek için
+         */
+
+        NameClaimType=ClaimTypes.Name
     }
 
 );
@@ -128,11 +196,35 @@ if (app.Environment.IsDevelopment())
 
 }
 app.UseStaticFiles();
+
+
+//Tabloya kullanıcının bilgilerini vermek için gerekli olan middleware
+
+app.Use(async (context,next) => {
+
+    var userName = context.User.Identity.Name != null ? context.User.Identity.Name : null;
+
+    using (LogContext.PushProperty("EmailOrUserNameLogs", userName))
+    {
+        //Bir sonraki middleware'a geçiş için
+        await next();
+    }
+
+});
+
+
 app.UseCors();
 app.UseHttpsRedirection();
 
 
+/*
+ Bu middleware kendisinden sonra olan bütün işlemler için
+loglama yapar  kendisinden önce gelen işlemler için loglama yapmaz
 
+ */
+
+app.UseSerilogRequestLogging();
+app.UseHttpLogging(); //HTTP requestleri için middleware
 app.UseAuthentication();
 app.UseAuthorization();
 
