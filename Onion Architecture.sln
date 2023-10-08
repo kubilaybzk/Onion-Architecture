@@ -1,23 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1706.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{07F71441-DFD6-4054-8DF6-9E79F6B5FFC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionArch.Domain", "Core\OnionArch.Domain\OnionArch.Domain.csproj", "{C24DB988-EDF1-4F84-9A6E-3076A0940D6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnionArch.Domain", "Core\OnionArch.Domain\OnionArch.Domain.csproj", "{C24DB988-EDF1-4F84-9A6E-3076A0940D6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionArch.Application", "Core\OnionArch.Application\OnionArch.Application.csproj", "{AABBBF67-F66C-4F8B-B460-C59E2A4DD893}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnionArch.Application", "Core\OnionArch.Application\OnionArch.Application.csproj", "{AABBBF67-F66C-4F8B-B460-C59E2A4DD893}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infrastructure", "infrastructure", "{0CA9E60C-B68A-4C3E-B288-903DE62EDB9E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{3AF225F6-66F9-48BC-9F67-C26C69B70D50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionArch.infrastructure", "infrastructure\OnionArch.infrastructure\OnionArch.infrastructure.csproj", "{A7B6215F-8D75-4404-B94E-B5B716ED9483}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnionArch.infrastructure", "infrastructure\OnionArch.infrastructure\OnionArch.infrastructure.csproj", "{A7B6215F-8D75-4404-B94E-B5B716ED9483}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionArch.Persistance", "infrastructure\OnionArch.Persistance\OnionArch.Persistance.csproj", "{BA272F77-2F88-4172-9EFA-4337032D4CF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnionArch.Persistance", "infrastructure\OnionArch.Persistance\OnionArch.Persistance.csproj", "{BA272F77-2F88-4172-9EFA-4337032D4CF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionArch.WebApi", "Presentation\OnionArch.WebApi\OnionArch.WebApi.csproj", "{0AC2E31D-FF28-49A9-AD8F-18B497675395}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnionArch.WebApi", "Presentation\OnionArch.WebApi\OnionArch.WebApi.csproj", "{0AC2E31D-FF28-49A9-AD8F-18B497675395}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,14 +49,14 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {45CADB62-0236-47BD-8A39-A2096915B591}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C24DB988-EDF1-4F84-9A6E-3076A0940D6B} = {07F71441-DFD6-4054-8DF6-9E79F6B5FFC7}
 		{AABBBF67-F66C-4F8B-B460-C59E2A4DD893} = {07F71441-DFD6-4054-8DF6-9E79F6B5FFC7}
 		{A7B6215F-8D75-4404-B94E-B5B716ED9483} = {0CA9E60C-B68A-4C3E-B288-903DE62EDB9E}
 		{BA272F77-2F88-4172-9EFA-4337032D4CF7} = {0CA9E60C-B68A-4C3E-B288-903DE62EDB9E}
 		{0AC2E31D-FF28-49A9-AD8F-18B497675395} = {3AF225F6-66F9-48BC-9F67-C26C69B70D50}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45CADB62-0236-47BD-8A39-A2096915B591}
 	EndGlobalSection
 EndGlobal

@@ -15,6 +15,7 @@ using OnionArch.infrastructure;
 using OnionArch.infrastructure.Filters;
 using OnionArch.infrastructure.Services.Storage.LocalStorage;
 using OnionArch.Persistance;
+using OnionArch.WebApi.Middlewares;
 using Serilog;
 using Serilog.Context;
 using Serilog.Core;
@@ -195,6 +196,9 @@ if (app.Environment.IsDevelopment())
     app.UseAuthorization();
 
 }
+
+
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 app.UseStaticFiles();
 
 
@@ -222,6 +226,12 @@ app.UseHttpsRedirection();
 loglama yapar  kendisinden önce gelen işlemler için loglama yapmaz
 
  */
+
+
+app.UseExceptionHandler();
+
+//Kendi geliştirdiğimiz global Exception handler sınıfımız
+
 
 app.UseSerilogRequestLogging();
 app.UseHttpLogging(); //HTTP requestleri için middleware

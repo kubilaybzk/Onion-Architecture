@@ -67,6 +67,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
 
                 bool hasNextPage = request.Page < totalPageSize - 1;
                 bool hasPrevPage = request.Page > 0;
+                throw new Exception("Hata alındı ürün listesinde");
                 _logger.LogInformation("Başarılı bir şekilde ürünler listelendi");
                 return new GetAllProductsQueryResponse()
                 {

@@ -345,3 +345,104 @@ Content-Type: application/json; charset=utf-8
 2023-10-06 15:58:13.225 +03:00 [INF] RequestBody: 
 2023-10-06 15:58:13.225 +03:00 [INF] ResponseBody: {"totalCount":0,"totalPageSize":0,"currentPage":0,"hasNext":false,"hasPrev":false,"pageSize":0,"products":[],"statusCode":200,"message":"Ürün Gönderildi"}
 2023-10-06 15:58:13.229 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/api/Products/GetAll?Page=0 application/json - - 200 - application/json;+charset=utf-8 827.9294ms
+2023-10-08 21:03:40.157 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-08 21:03:40.307 +03:00 [INF] Now listening on: http://localhost:5031
+2023-10-08 21:03:40.308 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-10-08 21:03:40.311 +03:00 [INF] Hosting environment: Development
+2023-10-08 21:03:40.312 +03:00 [INF] Content root path: C:\Users\kubil\OneDrive\Masaüstü\Onion-Architecture\Presentation\OnionArch.WebApi
+2023-10-08 21:03:41.185 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/index.html - -
+2023-10-08 21:03:41.349 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - -
+2023-10-08 21:03:41.349 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/_vs/browserLink - -
+2023-10-08 21:03:41.361 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_framework/aspnetcore-browser-refresh.js - - - 200 12364 application/javascript;+charset=utf-8 1.8648ms
+2023-10-08 21:03:41.361 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/index.html - - - 200 - text/html;charset=utf-8 176.2807ms
+2023-10-08 21:03:41.374 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 24.8867ms
+2023-10-08 21:03:41.405 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - -
+2023-10-08 21:03:41.467 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5031/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 62.0387ms
+2023-10-08 22:32:26.934 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-08 22:32:26.984 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+2023-10-08 22:32:50.553 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-08 22:32:50.595 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+2023-10-08 22:33:03.336 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-08 22:33:03.375 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+2023-10-08 23:56:54.648 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-08 23:56:54.705 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+2023-10-08 23:58:18.089 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-08 23:58:18.130 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+2023-10-08 23:58:43.258 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-08 23:58:43.308 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+2023-10-08 23:58:57.219 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-08 23:58:57.254 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+2023-10-09 00:00:53.503 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-09 00:00:53.541 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+2023-10-09 00:01:30.866 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-09 00:01:30.902 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+2023-10-09 00:02:51.793 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-09 00:02:51.830 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+2023-10-09 00:06:04.835 +03:00 [INF] User profile is available. Using 'C:\Users\kubil\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-10-09 00:06:04.876 +03:00 [FTL] Application startup exception
+System.InvalidOperationException: An error occurred when configuring the exception handler middleware. Either the 'ExceptionHandlingPath' or the 'ExceptionHandler' property must be set in 'UseExceptionHandler()'. Alternatively, set one of the aforementioned properties in 'Startup.ConfigureServices' as follows: 'services.AddExceptionHandler(options => { ... });' or configure to generate a 'ProblemDetails' response in 'service.AddProblemDetails()'.
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl..ctor(RequestDelegate next, ILoggerFactory loggerFactory, IOptions`1 options, DiagnosticListener diagnosticListener, IProblemDetailsService problemDetailsService)
+   at Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.<>c__DisplayClass4_0.<SetExceptionHandlerMiddleware>b__0(RequestDelegate next)
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.ApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
