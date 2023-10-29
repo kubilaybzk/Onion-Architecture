@@ -31,6 +31,7 @@
     <ProjectReference Include="..\..\infrastructure\OnionArch.infrastructure\OnionArch.infrastructure.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\..\SignalR\SignalR.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Controllers\" />

@@ -20,6 +20,7 @@ using Serilog;
 using Serilog.Context;
 using Serilog.Core;
 using Serilog.Sinks.MSSqlServer;
+using SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -127,16 +128,18 @@ builder.Services.AddSwaggerGen(setup =>
 
 
 
-
+//Genel servilerimizi entegre ettiğimiz alan.
 builder.Services.AddStorage<LocalStorage>();
+builder.Services.AddInfrastructureServices();   //Infrastructure kısmında içinde ServisRegistration class'ını tanımı 
+builder.Services.AddPersistanceServices();      //Persistance kısmında içinde ServisRegistration class'ını tanımı 
+builder.Services.AddApplicationServices();      //Application kısmında içinde ServisRegistration class'ını tanımı 
+builder.Services.AddSignalRServices();          //SignalR içinde ServisRegistration class'ını tanımı 
 
-builder.Services.AddInfrastructureServices();
-builder.Services.AddPersistanceServices();
-builder.Services.AddApplicationServices();
+
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.WithOrigins(
-"http://localhost:3000",
+    "http://localhost:3000",
     "https://localhost:3000",
     "https://0.0.0.0:3000",
     "http://0.0.0.0:3000",
@@ -144,8 +147,11 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5500",
     "https://127.0.0.1:5500"
-     ).AllowAnyHeader().AllowAnyMethod()
+     ).AllowAnyHeader()//
+     .AllowAnyMethod()//.
+     .AllowCredentials()//.AllowCredentials() SignalR'ın çalışması için.
 )) ;
+
 
 
 
@@ -202,8 +208,7 @@ app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<P
 app.UseStaticFiles();
 
 
-//Tabloya kullanıcının bilgilerini vermek için gerekli olan middleware
-
+//Tabloya kullanıcının bilgilerini vermek için gerekli olan middleware düzenlemesi
 app.Use(async (context,next) => {
 
     var userName = context.User.Identity.Name != null ? context.User.Identity.Name : null;
@@ -237,6 +242,9 @@ app.UseSerilogRequestLogging();
 app.UseHttpLogging(); //HTTP requestleri için middleware
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapHubs();          //SignalR için geliştirdiğimiz map işlemlerini yapacağımız fonk. tanımı
+
+
 
 app.MapControllers();
 

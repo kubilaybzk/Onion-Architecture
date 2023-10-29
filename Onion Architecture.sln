@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnionArch.Persistance", "in
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnionArch.WebApi", "Presentation\OnionArch.WebApi\OnionArch.WebApi.csproj", "{0AC2E31D-FF28-49A9-AD8F-18B497675395}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR", "SignalR\SignalR.csproj", "{E021F6AC-D9ED-485C-8604-D77695569639}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{0AC2E31D-FF28-49A9-AD8F-18B497675395}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AC2E31D-FF28-49A9-AD8F-18B497675395}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AC2E31D-FF28-49A9-AD8F-18B497675395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E021F6AC-D9ED-485C-8604-D77695569639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E021F6AC-D9ED-485C-8604-D77695569639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E021F6AC-D9ED-485C-8604-D77695569639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E021F6AC-D9ED-485C-8604-D77695569639}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{A7B6215F-8D75-4404-B94E-B5B716ED9483} = {0CA9E60C-B68A-4C3E-B288-903DE62EDB9E}
 		{BA272F77-2F88-4172-9EFA-4337032D4CF7} = {0CA9E60C-B68A-4C3E-B288-903DE62EDB9E}
 		{0AC2E31D-FF28-49A9-AD8F-18B497675395} = {3AF225F6-66F9-48BC-9F67-C26C69B70D50}
+		{E021F6AC-D9ED-485C-8604-D77695569639} = {0CA9E60C-B68A-4C3E-B288-903DE62EDB9E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45CADB62-0236-47BD-8A39-A2096915B591}
