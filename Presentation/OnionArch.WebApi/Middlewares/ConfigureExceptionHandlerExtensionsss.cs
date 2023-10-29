@@ -13,12 +13,12 @@ namespace OnionArch.WebApi.Middlewares
     Bunu hallettikten hemen sonra program.cs içinde gerekli düzenleri yapmamız gerekmekte. 
 
      */
-    static public class ConfigureExceptionHandlerExtensionv2
+    static public class ConfigureExceptionHandlerExtension
     {
 
         /*artık program.cs içinde çağıracağımız middleware'ı burada bu fonksiyon içinde çağırıp gerekli olan
          güncellemeyi burada çağırıp burada konfigure edeceğiz. */
-        public static void ConfigureExceptionHandlerv2<T>(this WebApplication application, ILogger<T> logger)
+        public static void ConfigureExceptionHandler<T>(this WebApplication application, ILogger<T> logger)
         {
 
             /* Bu program.cs içinde normal şartlarda çağıracağımız middleware bunu artık burada oluşturacağız. */

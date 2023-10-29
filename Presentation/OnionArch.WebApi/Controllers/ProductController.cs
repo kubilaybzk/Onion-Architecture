@@ -24,6 +24,8 @@ namespace OnionArch.API.Controllers
             _mediator = mediator;
         }
 
+
+        [AllowAnonymous]
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get([FromQuery] GetAllProductsQueryRequest getAllProductsQueryRequest)
         {
@@ -50,7 +52,7 @@ namespace OnionArch.API.Controllers
             }
         }
 
-
+        [AllowAnonymous]
         [HttpGet("GetSingleById/{id}")]
         public async Task<IActionResult> GetSingle([FromRoute] GetSingleByIdQueryRequest getSingleByIdQueryRequest)
         {
@@ -171,9 +173,9 @@ namespace OnionArch.API.Controllers
             createOneProductWithImageRequest.ImageFiles = Request.Form.Files;
 
             CreateOneProductWithImageResponse productResponse = await _mediator.Send(createOneProductWithImageRequest);
-            if (productResponse.StatusCode == StatusCodes.Status200OK)
+            if (productResponse.StatusCode == StatusCodes.Status201Created)
             {
-                // Başarılı güncelleme durumunda 200 OK kodunu dönün
+                // Başarılı güncelleme durumunda 201 OK kodunu dönün
                 return Ok(productResponse);
             }
             else if (productResponse.StatusCode == StatusCodes.Status404NotFound)

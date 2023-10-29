@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using OnionArch.Application.Abstractions.Storage.LocalStorage;
 
 namespace OnionArch.infrastructure.Services.Storage.LocalStorage
@@ -10,10 +11,13 @@ namespace OnionArch.infrastructure.Services.Storage.LocalStorage
 
         //Dependency Injection
         readonly IWebHostEnvironment _webHostEnvironment;
+        readonly ILogger<LocalStorage> _logger;
 
-        public LocalStorage(IWebHostEnvironment webHostEnvironment)
+        public LocalStorage(IWebHostEnvironment webHostEnvironment, ILogger<LocalStorage> logger)
         {
             _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
+          
         }
 
         //Sadece buraya özel bir method bundan dolayı private yapabilriiz.
@@ -57,7 +61,12 @@ namespace OnionArch.infrastructure.Services.Storage.LocalStorage
 
         public async Task<List<(string fileName, string PathOrContainerName)>> UploadAsync(string PathOrContainerName, IFormFileCollection files)
         {
-
+            if (files[0].Length == 0)
+            {
+                _logger.LogError("Görsel eklemeden ürün eklemeye çalışılıyor.");
+                throw new Exception("Görsel eklenmeden ürün ekleyemezsiniz.! ");
+                
+            }
             string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resource", PathOrContainerName);
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);

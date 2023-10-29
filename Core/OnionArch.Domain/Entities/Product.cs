@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using OnionArch.Domain.Entities.Common;
 
 namespace OnionArch.Domain.Entities
@@ -11,8 +12,8 @@ namespace OnionArch.Domain.Entities
 		//Bir ürün birden fazla sipariş içerebilir Many-to-many relation
 
         public ICollection<Order> Orders { get; set; }
-
-		public ICollection<ProductImageFile> ProductImageFiles { get; set; }
+        [JsonIgnore]
+        public ICollection<ProductImageFile> ProductImageFiles { get; set; }
     }
 }
 

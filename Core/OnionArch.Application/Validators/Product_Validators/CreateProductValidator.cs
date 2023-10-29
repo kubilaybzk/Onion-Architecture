@@ -34,6 +34,7 @@ namespace OnionArch.Application.Validators.Product_Validators
                     .WithMessage("Stock bilgisi boş olamaz")
                     .Must(p => p > 0)
                         .WithMessage("Stock bilgisi negatif olamaz");
+
         }
     }
 }

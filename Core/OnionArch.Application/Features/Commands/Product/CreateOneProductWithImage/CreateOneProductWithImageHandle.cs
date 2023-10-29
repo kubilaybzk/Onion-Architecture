@@ -20,7 +20,9 @@ public class CreateOneProductWithImageHandle: IRequestHandler<CreateOneProductWi
         try
         {
             var result = await _storageService.UploadAsync("product-images", request.ImageFiles);
+            Console.Write(result);
 
+            
             var product = new Product
             {
                 Price = (float)request.Price,
@@ -33,6 +35,9 @@ public class CreateOneProductWithImageHandle: IRequestHandler<CreateOneProductWi
                     Storage = _storageService.StorageType
                 }).ToList()
             };
+
+
+
 
             await _productWriteRepository.AddAsync(product);
             await _productWriteRepository.SaveAsync();

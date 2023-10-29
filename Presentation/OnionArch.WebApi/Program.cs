@@ -228,7 +228,7 @@ loglama yapar  kendisinden önce gelen işlemler için loglama yapmaz
  */
 
 
-app.UseExceptionHandler();
+
 
 //Kendi geliştirdiğimiz global Exception handler sınıfımız
 
