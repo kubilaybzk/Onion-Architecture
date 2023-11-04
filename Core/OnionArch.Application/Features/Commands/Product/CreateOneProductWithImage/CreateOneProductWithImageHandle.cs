@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
+using OnionArch.Application.Abstractions.HubServices;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Abstractions.Storage;
 using OnionArch.Application.Features.Commands.Product.CreateOneProductWithImage;
@@ -8,11 +10,20 @@ public class CreateOneProductWithImageHandle: IRequestHandler<CreateOneProductWi
 {
     private readonly IStorageService _storageService;
     private readonly IProductWriteRepository _productWriteRepository;
+    private readonly ILogger<CreateOneProductWithImageHandle> _logger;
+    private readonly IProductHubService _productHubService;
+    public CreateOneProductWithImageHandle(IStorageService storageService, 
+                                            ILogger<CreateOneProductWithImageHandle> logger,
+                                            IProductHubService productHubService,
+                                            IProductWriteRepository productWriteRepository)
 
-    public CreateOneProductWithImageHandle(IStorageService storageService, IProductWriteRepository productWriteRepository)
     {
         _storageService = storageService;
         _productWriteRepository = productWriteRepository;
+        _logger = logger;
+        _productHubService= productHubService;
+
+
     }
 
     public async Task<CreateOneProductWithImageResponse> Handle(CreateOneProductWithImageRequest request, CancellationToken cancellationToken)
@@ -40,7 +51,10 @@ public class CreateOneProductWithImageHandle: IRequestHandler<CreateOneProductWi
 
 
             await _productWriteRepository.AddAsync(product);
+            _logger.LogInformation("Başarılı bir şekilde ürün eklendi");
+            await _productHubService.ProductAddOperationMessage("Ürün listesine bir adet ürün eklendi");
             await _productWriteRepository.SaveAsync();
+            
 
             return new CreateOneProductWithImageResponse
             {
@@ -51,6 +65,7 @@ public class CreateOneProductWithImageHandle: IRequestHandler<CreateOneProductWi
         }
         catch (Exception ex)
         {
+            _logger.LogError($"Ürün eklenirken bir sorun ile karşılaşıldı: {ex.Message}");
             return new CreateOneProductWithImageResponse
             {
                 StatusCode = 500,

@@ -63,7 +63,7 @@ namespace OnionArch.infrastructure.Services.Storage.LocalStorage
         {
             if (files[0].Length == 0)
             {
-                _logger.LogError("Görsel eklemeden ürün eklemeye çalışılıyor.");
+                _logger.LogError("Görsel eklemeden ekleme işlemi çalıştırılmaya çalışılıyor.");
                 throw new Exception("Görsel eklenmeden ürün ekleyemezsiniz.! ");
                 
             }

@@ -47,7 +47,6 @@
     <Folder Include="Abstractions\" />
     <Folder Include="Abstractions\Storage\" />
     <Folder Include="Abstractions\Storage\LocalStorage\" />
-    <Folder Include="Repositories\" />
     <Folder Include="Features\" />
     <Folder Include="Features\Commands\" />
     <Folder Include="Features\Queries\" />
