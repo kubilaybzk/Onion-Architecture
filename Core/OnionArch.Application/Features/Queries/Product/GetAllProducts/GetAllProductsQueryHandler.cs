@@ -57,7 +57,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
                     p.Price,
                     p.Stock,
                     p.ID,
-                    p.ProductImageFiles,
+                    ProductImageFiles = p.ProductImageFiles.Where(pif => pif.Showcase),
                     p.CreateTime,
                     p.UpdateTime
                 })

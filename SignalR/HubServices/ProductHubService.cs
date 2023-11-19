@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using FluentValidation.Validators;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Abstractions.HubServices;
+using OnionArch.Application.Abstractions.ProductCrud;
+using OnionArch.Application.Repositories.BackEndLogsCrud;
 using SignalR.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,10 +27,13 @@ namespace SignalR.HubServices
          */
 
         readonly IHubContext<ProductHub> _hubContext;
+        private readonly IBackEndLogsReadRepository _backendReadRepository;
 
-          public ProductHubService(IHubContext<ProductHub> hubContext)
+        public ProductHubService(IHubContext<ProductHub> hubContext, IBackEndLogsReadRepository backendReadRepository)
         {
             _hubContext = hubContext;
+            _backendReadRepository = backendReadRepository;
+
         }
 
         /*
@@ -56,7 +64,30 @@ namespace SignalR.HubServices
               Bunun için ayrı bir class içinde  ReceiveFunctionNames adında bir değişken tanımlayıp
                     Bu değişken üzeriden bu değişkenleri ayarlamak daha mantıklı.
              */
+
+
+
+
+
             await _hubContext.Clients.All.SendAsync(ReceiveFunctionNames.ProductAddedMessage, message);
         }
+
+
+
+        public async Task ShowAllLogs()
+        {
+            var datas = _backendReadRepository.GetAll(false);
+            var result = await datas.Select(p => new
+            {
+                p.MessageTemplate,
+                p.Message,
+                p.EmailOrUserNameLogs
+            })
+                .ToListAsync();
+            Console.WriteLine(result);
+            await _hubContext.Clients.All.SendAsync("GetAllLogs", result);
+        }
+
+
     }
 }

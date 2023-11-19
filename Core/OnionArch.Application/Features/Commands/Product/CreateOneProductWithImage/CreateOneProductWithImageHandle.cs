@@ -39,11 +39,13 @@ public class CreateOneProductWithImageHandle: IRequestHandler<CreateOneProductWi
                 Price = (float)request.Price,
                 Name = request.Name,
                 Stock = (short)request.Stock,
-                ProductImageFiles = result.Select(d => new ProductImageFile
+                ProductImageFiles = result.Select((d,index) => new ProductImageFile
                 {
                     FileName = d.fileName,
                     Path = d.PathOrContainerName,
-                    Storage = _storageService.StorageType
+                    Storage = _storageService.StorageType,
+                    Showcase=(index==0),
+
                 }).ToList()
             };
 

@@ -5,8 +5,8 @@ namespace OnionArch.Domain.Entities
 {
 	public class ProductImageFile:File
 	{
-        [JsonIgnore] 
-		public ICollection<Product> Products { get; set; }
+        public bool Showcase { get; set; }
+        public ICollection<Product> Products { get; set; }
 
 
 	}

@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Contexts\" />
-    <Folder Include="Repositorys\" />
     <Folder Include="Repositorys\FileCrud\" />
     <Folder Include="Repositorys\InvoiceFileCrud\" />
     <Folder Include="Repositorys\ProductImageFileCrud\" />

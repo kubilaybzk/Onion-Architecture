@@ -26,7 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-//Burada fulent application için düzenleme yapıyoruz.
+
 
 
 //Json sorununu çözmek için ;
@@ -34,7 +34,7 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddControllers().AddJsonOptions(x =>
 //   x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
-
+//Burada fulent application için düzenleme yapıyoruz.
 
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilters>())
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
@@ -60,7 +60,7 @@ columnOptions.AdditionalColumns = new Collection<SqlColumn>
         ColumnName="EmailOrUserNameLogs",
         DataType=SqlDbType.NVarChar,
         DataLength=100
-    }
+    },
 };
 
 
@@ -76,6 +76,9 @@ Logger log = new LoggerConfiguration()
     )
     .Enrich.FromLogContext()
     .CreateLogger();
+
+
+
 
 
 builder.Services.AddHttpLogging(logging =>

@@ -25,6 +25,8 @@ namespace OnionArch.Persistance.Contexts
 
         public DbSet<InvoiceFile> InvoiceFiles { get; set; }
 
+        public DbSet<BackEndLogs> BackEndLogs { get; set; }
+
         //Burada veri tabanında otomatik olarka yapılan işlemlerde EFCore tarafından belirli alanlara değerler atanmasını istiyoruz.
         //Base entity içinde bulunana update ve createTime alanlarının
         ///her bir savechanges anında değişmesini ve bu değerin otomatik olarak EFCore tarafından tanımkanmasını istiyoruz

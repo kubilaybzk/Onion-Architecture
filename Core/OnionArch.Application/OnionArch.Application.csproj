@@ -47,9 +47,7 @@
     <Folder Include="Abstractions\" />
     <Folder Include="Abstractions\Storage\" />
     <Folder Include="Abstractions\Storage\LocalStorage\" />
-    <Folder Include="Features\" />
     <Folder Include="Features\Commands\" />
-    <Folder Include="Features\Queries\" />
     <Folder Include="Features\Commands\Product\" />
     <Folder Include="Features\Commands\Product\DeleteProductById\" />
     <Folder Include="Features\Queries\Product\" />
