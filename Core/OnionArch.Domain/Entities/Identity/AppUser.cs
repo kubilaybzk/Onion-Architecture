@@ -24,6 +24,11 @@ namespace OnionArch.Domain.Entities.Identity
            tablo içinde tutacak olan değer.
          */
         public DateTime? RefreshTokenEndDate { get; set; }
+
+
+        //Sepete ilişkisi için
+
+        public ICollection<Basket> Baskets{ get; set; }
     }
 }
 

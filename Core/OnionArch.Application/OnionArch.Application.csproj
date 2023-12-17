@@ -42,12 +42,9 @@
     <None Remove="Validators\Product_Validators\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="View_Models\" />
     <Folder Include="RequestParamaters\" />
-    <Folder Include="Abstractions\" />
     <Folder Include="Abstractions\Storage\" />
     <Folder Include="Abstractions\Storage\LocalStorage\" />
-    <Folder Include="Features\Commands\" />
     <Folder Include="Features\Commands\Product\" />
     <Folder Include="Features\Commands\Product\DeleteProductById\" />
     <Folder Include="Features\Queries\Product\" />

@@ -14,6 +14,8 @@ namespace OnionArch.Domain.Entities
         public ICollection<Order> Orders { get; set; }
         [JsonIgnore]
         public ICollection<ProductImageFile> ProductImageFiles { get; set; }
+
+        public ICollection<BasketItem> BasketItems { get; set; }
     }
 }
 

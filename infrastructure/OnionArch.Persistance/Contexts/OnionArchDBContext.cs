@@ -27,9 +27,32 @@ namespace OnionArch.Persistance.Contexts
 
         public DbSet<BackEndLogs> BackEndLogs { get; set; }
 
+        public DbSet<Basket> Baskets{ get; set; }
+
+        public DbSet<BasketItem> BasketItems { get; set; }
+
         //Burada veri tabanında otomatik olarka yapılan işlemlerde EFCore tarafından belirli alanlara değerler atanmasını istiyoruz.
         //Base entity içinde bulunana update ve createTime alanlarının
         ///her bir savechanges anında değişmesini ve bu değerin otomatik olarak EFCore tarafından tanımkanmasını istiyoruz
+
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+
+            builder.Entity<Order>()
+                .HasKey(b => b.ID);
+
+            builder.Entity<Basket>()
+                .HasOne(b => b.Order)
+                .WithOne(b => b.Basket)
+                .HasForeignKey<Order>(b => b.BasketId);
+
+
+            base.OnModelCreating(builder); // Biz IdentityDbContext kullandığımız için bunu eklemek zorundayız.
+
+
+        }
+
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

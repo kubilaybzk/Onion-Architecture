@@ -11,6 +11,10 @@ namespace OnionArch.Domain.Entities
         public ICollection<Product> Products { get; set; }
         //Bir siparişin sadece tek bir müşteriye ait olabilir.
         public Customer Customer { get; set; }
+
+        public Basket Basket { get; set; }
+
+        public Guid BasketId { get; set; }
     }
 }
 

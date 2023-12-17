@@ -132,6 +132,11 @@ builder.Services.AddSwaggerGen(setup =>
 
 
 //Genel servilerimizi entegre ettiğimiz alan.
+builder.Services.AddHttpContextAccessor(); /*Clinet'den gelen Request neticesinde 
+oluşturulan HTTPContext nesnesine katmanlarda bulunan
+ classlarda erişebilmemizi sağlar. */
+
+
 builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddInfrastructureServices();   //Infrastructure kısmında içinde ServisRegistration class'ını tanımı 
 builder.Services.AddPersistanceServices();      //Persistance kısmında içinde ServisRegistration class'ını tanımı 
