@@ -19,13 +19,30 @@ namespace OnionArch.Application.Features.Commands.Basket.UpdateQuantity
 
         async Task<UpdateQuantityCommandResponse> IRequestHandler<UpdateQuantityCommandRequest, UpdateQuantityCommandResponse>.Handle(UpdateQuantityCommandRequest request, CancellationToken cancellationToken)
         {
-            await _basketService.UpdateBasketItemAsync(new()
+            try
             {
-                BasketItemId = request.BasketItemId,
-                Quantity = request.Quantity
-            });
+                await _basketService.UpdateBasketItemAsync(new()
+                {
+                    BasketItemId = request.BasketItemId,
+                    Quantity = request.Quantity
+                });
+                return new UpdateQuantityCommandResponse()
+                {
+                    ErorStatus = false,
+                    StatusCode = 200,
+                    Message = "Ekleme işlemi başarılı"
+                };
+            }
+            catch (Exception ex) {
+                return new UpdateQuantityCommandResponse()
+                {
+                    ErorStatus = true,
+                    StatusCode = 500,
+                    Message = ex.Message
+                };
+            }
 
-            return new();
+           
         }
     }
 }

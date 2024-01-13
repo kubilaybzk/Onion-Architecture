@@ -139,13 +139,27 @@ namespace OnionArch.Persistance.ServicesConcreates
 
             // Veritabanından kullanıcının sepetini ve sepet öğelerini almak için repository kullanılıyor.
             Basket? currentUsersItems = await _basketReadRepository.Table
-                .Include(b => b.BasketItems)            // Sepet içindeki öğeleri içeri al
-                .ThenInclude(b => b.Product)  
-                .ThenInclude(b=>b.ProductImageFiles)// Sepet öğeleri içindeki ürünleri içeri al
+                .Include(b => b.BasketItems)        // Sepet içindeki öğeleri içeri al
+                .ThenInclude(b => b.Product)       
+                .ThenInclude(b=>b.ProductImageFiles)
+                // Sepet öğeleri içindeki ürünleri içeri al
                 .FirstOrDefaultAsync(b => b.ID == currentUserBasket.ID);
 
             // Eğer kullanıcının sepeti null değilse, sepet içindeki öğeleri liste olarak döndürelim.
-            return currentUsersItems?.BasketItems.ToList();
+
+            var result = currentUsersItems?.BasketItems;
+            if (result != null)
+            {
+                foreach (var basketItem in result)
+                {
+                    // Eğer bir ürün varsa ve ProductImageFiles null değilse, bu ürünün resim dosyalarını doldur
+                    if (basketItem.Product != null && basketItem.Product.ProductImageFiles != null)
+                    {
+                        basketItem.Product.ProductImageFiles = basketItem.Product.ProductImageFiles.ToList();
+                    }
+                }
+            }
+            return result.ToList();
 
         }
 

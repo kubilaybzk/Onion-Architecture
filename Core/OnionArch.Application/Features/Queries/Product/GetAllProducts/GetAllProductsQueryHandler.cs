@@ -57,7 +57,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
                     p.Price,
                     p.Stock,
                     p.ID,
-                    ProductImageFiles = p.ProductImageFiles.Where(pif => pif.Showcase),
+                    ProductImageFiles = p.ProductImageFiles, // Sadece ShowCase'i true olan elemanı return etmek için Where(pif => pif.Showcase) eklenebilir
                     p.CreateTime,
                     p.UpdateTime
                 })

@@ -25,12 +25,29 @@ namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
             //Burada ufak bir bug var o düzenlenecek bir sonraki aşamada. 
             //Todo
 
-            var result =  basketItems
+            var result = basketItems
                 .Select(ba => new GetBasketItemsQueryResponse
-            {
-                BasketItemId = ba.ID.ToString(),
-                Product =ba.Product
-            }).ToList();
+                {
+                    BasketItemId = ba.ID.ToString(),
+                    Quantity = ba.Quantity,
+                    Product = new()
+                    {
+                        ProductImageFiles = ba.Product.ProductImageFiles.Select(bas => new OnionArch.Domain.Entities.ProductImageFile()
+                        {
+                            FileName = bas.FileName,
+                            Showcase = bas.Showcase,
+                            ID = bas.ID,
+                            Path = bas.Path,
+
+                        }).ToList(),
+                        Stock = ba.Quantity,
+                        Name = ba.Product.Name,
+                        Price = ba.Product.Price,
+                    }
+                    }).ToList();
+
+
+
             return result;
         }
     }

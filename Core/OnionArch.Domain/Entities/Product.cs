@@ -12,7 +12,7 @@ namespace OnionArch.Domain.Entities
 		//Bir ürün birden fazla sipariş içerebilir Many-to-many relation
 
         public ICollection<Order> Orders { get; set; }
-        [JsonIgnore]
+        
         public ICollection<ProductImageFile> ProductImageFiles { get; set; }
 
         public ICollection<BasketItem> BasketItems { get; set; }
