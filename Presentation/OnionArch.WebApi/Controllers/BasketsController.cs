@@ -5,6 +5,7 @@ using OnionArch.Application.Features.Commands.Basket.AddItemToBasket;
 using OnionArch.Application.Features.Commands.Basket.RemoveBasketItem;
 using OnionArch.Application.Features.Commands.Basket.UpdateQuantity;
 using OnionArch.Application.Features.Queries.Basket.GetBasketItems;
+using OnionArch.Application.Features.Queries.Basket.GetOnlyBasketsPayment;
 
 namespace OnionArch.WebApi.Controllers
 {
@@ -48,5 +49,14 @@ namespace OnionArch.WebApi.Controllers
             RemoveBasketItemCommandResponse response = await _mediator.Send(removeBasketItemCommandRequest);
             return Ok(response);
         }
+
+
+        [HttpGet("GetOnlyBasketsPrice")]
+        public async Task<IActionResult> GetOnlyBasketsPrice([FromQuery] GetOnlyBasketsPaymentRequest getOnlyBasketsPaymentRequest)
+        {
+            GetOnlyBasketsPaymentResponce response = await _mediator.Send(getOnlyBasketsPaymentRequest);
+            return Ok(response);
+        }
+
     }
 }

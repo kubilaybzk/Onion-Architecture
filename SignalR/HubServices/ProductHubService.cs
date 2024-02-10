@@ -27,12 +27,12 @@ namespace SignalR.HubServices
          */
 
         readonly IHubContext<ProductHub> _hubContext;
-        private readonly IBackEndLogsReadRepository _backendReadRepository;
 
-        public ProductHubService(IHubContext<ProductHub> hubContext, IBackEndLogsReadRepository backendReadRepository)
+
+        public ProductHubService(IHubContext<ProductHub> hubContext)
         {
             _hubContext = hubContext;
-            _backendReadRepository = backendReadRepository;
+
 
         }
 
@@ -74,19 +74,7 @@ namespace SignalR.HubServices
 
 
 
-        public async Task ShowAllLogs()
-        {
-            var datas = _backendReadRepository.GetAll(false);
-            var result = await datas.Select(p => new
-            {
-                p.MessageTemplate,
-                p.Message,
-                p.EmailOrUserNameLogs
-            })
-                .ToListAsync();
-            Console.WriteLine(result);
-            await _hubContext.Clients.All.SendAsync("GetAllLogs", result);
-        }
+
 
 
     }

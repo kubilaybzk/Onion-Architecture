@@ -11,7 +11,7 @@ namespace SignalR
 {
     public static class ServicesRegistration
     {
-        //extension fonksiyonumuz IOS içine tanımlamak için
+        //extension fonksiyonumuz IOC içine tanımlamak için
         public static void AddSignalRServices(this IServiceCollection collection)
         {
 
@@ -38,6 +38,7 @@ namespace SignalR
 
            */
             collection.AddTransient<IProductHubService, ProductHubService>();
+            collection.AddTransient<IOrderHubService, OrderHubService>();
             collection.AddSignalR();
         }
     }

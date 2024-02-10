@@ -52,11 +52,24 @@ namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
 
             var totalProductPrice = result.Sum(ba => ba.Product.Price * ba.Quantity);
 
-            // Toplam indirim hesaplaması (%10)
-            var totalDiscount =   totalProductPrice * 0.10f;
-            var totalCargoPrice = totalProductPrice > 1000 ? 0 : 20.00f;
+            float totalDiscount;
+            float totalCargoPrice;
+            float totalPrice;
 
-            var totalPrice = totalProductPrice + totalDiscount + totalCargoPrice;
+            // Toplam indirim hesaplaması (%10)
+            if (totalProductPrice > 0)
+            {
+                 totalDiscount = totalProductPrice * 0.10f;
+                 totalCargoPrice = totalProductPrice > 1000 ? 0 : 20.00f;
+                 totalPrice = totalProductPrice - totalDiscount + totalCargoPrice;
+            }
+            else
+            {
+                 totalDiscount =0;
+                 totalCargoPrice = 0;
+
+                 totalPrice =0;
+            }
 
             return new GetBasketItemsQueryResponse()
             {

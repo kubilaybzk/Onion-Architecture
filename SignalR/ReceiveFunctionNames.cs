@@ -11,5 +11,7 @@ namespace SignalR
         //Bizim Hublarımızda hangi fonksiyona karşılık verilecek gelecek olan istekteki fonksiyon isimleri 
 
         public const string ProductAddedMessage = "receiveProductAddedMessage";
+        public const string OrderAddedMessage = "receiveOrderAddedMessage";
+
     }
 }
