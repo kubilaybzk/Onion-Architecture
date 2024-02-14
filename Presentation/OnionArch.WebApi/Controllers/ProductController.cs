@@ -163,7 +163,7 @@ namespace OnionArch.API.Controllers
                 return BadRequest(productResponse);
             }
         }
-
+        [AllowAnonymous]
         [HttpPost("CreateOneProductWithImage")]
 
         public async Task<IActionResult> CreateOneProductWithImage([FromForm] CreateOneProductWithImageRequest createOneProductWithImageRequest)

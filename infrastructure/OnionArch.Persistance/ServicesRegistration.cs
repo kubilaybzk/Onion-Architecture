@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using OnionArch.Application.Abstractions.AddressServices;
 using OnionArch.Application.Abstractions.BasketServices;
 using OnionArch.Application.Abstractions.CustomerCrud;
 using OnionArch.Application.Abstractions.FileCrud;
@@ -8,6 +9,7 @@ using OnionArch.Application.Abstractions.OrderCrud;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Abstractions.ProductImageFileCrud;
 using OnionArch.Application.Abstractions.UserServices;
+using OnionArch.Application.Repositories.AddressCrud;
 using OnionArch.Application.Repositories.BackEndLogsCrud;
 using OnionArch.Application.Repositories.BasketCrud;
 using OnionArch.Application.Repositories.BasketItemCrud;
@@ -16,6 +18,7 @@ using OnionArch.Persistance.Concretes.CustomerCrud;
 using OnionArch.Persistance.Concretes.OrderCrud;
 using OnionArch.Persistance.Concretes.ProductCrud;
 using OnionArch.Persistance.Contexts;
+using OnionArch.Persistance.Repositorys.AddressCrud;
 using OnionArch.Persistance.Repositorys.BackEndLogsCrud;
 using OnionArch.Persistance.Repositorys.BasketCrud;
 using OnionArch.Persistance.Repositorys.BasketItemCrud;
@@ -78,6 +81,11 @@ namespace OnionArch.Persistance
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddScoped<IBasketService, BasketService>();
+
+            services.AddScoped<IAddressWriteRepository, AddressWriteRepository>();
+            services.AddScoped<IAddressReadRepository, AddressReadRepository>();
+            services.AddScoped<IAddressService,AddressService>();
+
 
 
 

@@ -29,6 +29,8 @@ namespace OnionArch.Domain.Entities.Identity
         //Sepete ilişkisi için
 
         public ICollection<Basket> Baskets{ get; set; }
+
+        public ICollection<Address> Addresses { get; set; }
     }
 }
 
