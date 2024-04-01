@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using OnionArch.Application.GlobalResponse;
 
 namespace OnionArch.infrastructure.Filters
 {
@@ -16,11 +18,20 @@ namespace OnionArch.infrastructure.Filters
             if (!context.ModelState.IsValid)
             {
                 var errors = context.ModelState
-                       .Where(x => x.Value.Errors.Any())
-                       .ToDictionary(e => e.Key, e => e.Value.Errors.Select(e => e.ErrorMessage))
-                       .ToArray();
+                     .Where(x => x.Value.Errors.Any())
+                     .SelectMany(x => x.Value.Errors.Select(e => e.ErrorMessage))
+                     .ToList();
 
-                context.Result = new BadRequestObjectResult(errors);
+                var response = new GlobalResponseResult
+                {
+                    Message = "Validation errors occurred on the backend.",
+                    HassError = errors.Any() ? true : false, // Hata varsa true, yoksa false
+                    ErrorMessage = errors.Any() ? string.Join(", ", errors) : null, // Hata mesajlarını birleştir
+                    StatusCode = HttpStatusCode.BadRequest, // Hata durumunu belirt
+                    StatusCodeString = HttpStatusCode.BadRequest.ToString() // Hata durumu string olarak belirt
+                };
+
+                context.Result = new BadRequestObjectResult(response);
                 return;
             }
 

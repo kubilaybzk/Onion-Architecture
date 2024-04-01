@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Emit;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OnionArch.Domain.Entities;
@@ -23,6 +24,8 @@ namespace OnionArch.Persistance.Contexts
 
         public DbSet<ProductImageFile> ProductImageFiles { get; set; }
 
+        public DbSet<CategoryImageFile> CategoryImageFiles { get; set; }
+
         public DbSet<InvoiceFile> InvoiceFiles { get; set; }
 
         public DbSet<BackEndLogs> BackEndLogs { get; set; }
@@ -32,6 +35,11 @@ namespace OnionArch.Persistance.Contexts
         public DbSet<BasketItem> BasketItems { get; set; }
 
         public DbSet<Address> Addresses { get; set; }
+
+        public DbSet<Category> Categories { get; set; }
+
+  
+
 
         //Burada veri tabanında otomatik olarka yapılan işlemlerde EFCore tarafından belirli alanlara değerler atanmasını istiyoruz.
         //Base entity içinde bulunana update ve createTime alanlarının
@@ -48,7 +56,6 @@ namespace OnionArch.Persistance.Contexts
                 .HasOne(b => b.Order)
                 .WithOne(b => b.Basket)
                 .HasForeignKey<Order>(b => b.BasketId);
-
 
             base.OnModelCreating(builder); // Biz IdentityDbContext kullandığımız için bunu eklemek zorundayız.
 

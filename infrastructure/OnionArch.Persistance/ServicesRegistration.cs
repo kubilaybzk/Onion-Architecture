@@ -13,6 +13,8 @@ using OnionArch.Application.Repositories.AddressCrud;
 using OnionArch.Application.Repositories.BackEndLogsCrud;
 using OnionArch.Application.Repositories.BasketCrud;
 using OnionArch.Application.Repositories.BasketItemCrud;
+using OnionArch.Application.Repositories.CategoryCrud;
+using OnionArch.Application.Repositories.CategoryImageFileCrud;
 using OnionArch.Domain.Entities.Identity;
 using OnionArch.Persistance.Concretes.CustomerCrud;
 using OnionArch.Persistance.Concretes.OrderCrud;
@@ -22,6 +24,8 @@ using OnionArch.Persistance.Repositorys.AddressCrud;
 using OnionArch.Persistance.Repositorys.BackEndLogsCrud;
 using OnionArch.Persistance.Repositorys.BasketCrud;
 using OnionArch.Persistance.Repositorys.BasketItemCrud;
+using OnionArch.Persistance.Repositorys.CategoryCrud;
+using OnionArch.Persistance.Repositorys.CategoryImageFileCrud;
 using OnionArch.Persistance.Repositorys.FileCrud;
 using OnionArch.Persistance.Repositorys.InvoiceFileCrud;
 using OnionArch.Persistance.Repositorys.OrderCrud;
@@ -65,6 +69,9 @@ namespace OnionArch.Persistance
             services.AddScoped<IProductImageFileReadRepository, ProductImageFileReadRepository>();
             services.AddScoped<IProductImageFileWriteRepository, ProductImageFileWriteRepository>();
 
+            services.AddScoped<ICategoryImageFileReadRepository, CategoryImageFileReadRepository>();
+            services.AddScoped<ICategoryImageFileWriteRepository, CategoryImageFileWriteRepository>();
+
 
             services.AddScoped<IBackEndLogsReadRepository, BackEndLogsReadRepository>();
             services.AddScoped<IBackEndLogsWriteRepository, BackEndLogsWriteRepository>();
@@ -75,6 +82,11 @@ namespace OnionArch.Persistance
 
             services.AddScoped<IBasketItemReadRepository, BasketItemReadRepository>();
             services.AddScoped<IBasketItemWriteRepository, BasketItemWriteRepository>();
+
+
+
+            services.AddScoped<ICategoryReadRepository , CategoryReadRepository>();
+            services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
 
             services.AddScoped<IUserService,UserService>();
 

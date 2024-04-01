@@ -42,6 +42,7 @@
     <None Remove="Validators\Product_Validators\" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Features\Commands\CategoryCommands\AddCategoryCommands\" />
     <Folder Include="RequestParamaters\" />
     <Folder Include="Abstractions\Storage\" />
     <Folder Include="Abstractions\Storage\LocalStorage\" />
