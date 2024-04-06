@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnionArch.Application.Features.Queries.CategoryQueries.DeleteCategory
+namespace OnionArch.Application.Features.Commands.CategoryCommands.DeleteCategoryComands
 {
-    public class DeleteCategoryRequest:IRequest<DeleteCategoryResponse>
+    public class DeleteCategoryRequest : IRequest<DeleteCategoryResponse>
     {
         public string CategoryId { get; set; }
     }

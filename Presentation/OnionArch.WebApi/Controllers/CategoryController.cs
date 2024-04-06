@@ -1,12 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCommands;
-using OnionArch.Application.Features.Queries.CategoryQueries.DeleteCategory;
+using OnionArch.Application.Features.Commands.CategoryCommands.DeleteCategoryComands;
+using OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategoryComands;
 using OnionArch.Application.Features.Queries.CategoryQueries.GetAllCategory;
-using OnionArch.Application.Features.Queries.Product.GetAllProducts;
-using OnionArch.Application.Features.Queries.Product.Product.GetAllProducts;
 
 namespace OnionArch.WebApi.Controllers
 {
@@ -25,23 +23,31 @@ namespace OnionArch.WebApi.Controllers
         [HttpPost("CreateCategory")]
         public async Task<IActionResult> CreateCategory([FromForm] CreateCategoryRequest createCategoryRequest)
         {
-            CreateCategoryResponse productResponse = await _mediator.Send(createCategoryRequest);
-            return Ok(productResponse);
+            CreateCategoryResponse CategoryResponse = await _mediator.Send(createCategoryRequest);
+            return Ok(CategoryResponse);
         }
 
         [AllowAnonymous]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll([FromQuery] GetAllCategoryRequest getAllCategoryRequest)
         {
-            GetAllCategoryResponse productResponse = await _mediator.Send(getAllCategoryRequest);
-            return Ok(productResponse);
+            GetAllCategoryResponse CategoryResponse = await _mediator.Send(getAllCategoryRequest);
+            return Ok(CategoryResponse);
         }
         [AllowAnonymous]
         [HttpDelete("DeleteCategory")]
         public async Task<IActionResult> DeleteCategory([FromQuery] DeleteCategoryRequest deleteCategoryRequest)
         {
-            DeleteCategoryResponse productResponse = await _mediator.Send(deleteCategoryRequest);
-            return Ok(productResponse);
+            DeleteCategoryResponse CategoryResponse = await _mediator.Send(deleteCategoryRequest);
+            return Ok(CategoryResponse);
+        }
+
+        [AllowAnonymous]
+        [HttpPut("UpdateCategory")]
+        public async Task<IActionResult> UpdateCategory([FromForm] UpdateCategoryRequest updateCategoryRequest)
+        {
+            UpdateCategoryResponse CategoryResponse = await _mediator.Send(updateCategoryRequest);
+            return Ok(CategoryResponse);
         }
     }
 }
