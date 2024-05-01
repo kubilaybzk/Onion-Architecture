@@ -302,6 +302,9 @@ namespace OnionArch.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CategoryOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("CategorySlug")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -576,15 +579,26 @@ namespace OnionArch.Persistance.Migrations
                 {
                     b.HasBaseType("OnionArch.Domain.Entities.File");
 
+                    b.Property<int>("CategoryImageOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CategoryRedirectLink")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CategoryRedirectLinkTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsHeaderImage")
                         .HasColumnType("bit");
 
                     b.Property<bool>("ShowImage")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("CategoryImageFile");
                 });

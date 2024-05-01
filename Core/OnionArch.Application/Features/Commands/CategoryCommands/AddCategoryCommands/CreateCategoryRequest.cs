@@ -13,7 +13,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
     {
         public string CategoryName { get; set; }
         public string CategoryLinkTitle { get; set; }
-        //public List<CategoryImageInfo>? ImageInfos { get; set; } // liste olarak resim bilgilerini içeren yeni bir özellik
+        public List<CategoryImageInfo>? ImageInfos { get; set; } // liste olarak resim bilgilerini içeren yeni bir özellik
         public Guid? ParentCategoryId { get; set; } = null;
         public bool CategoryHasTitleImage { get; set; }
         public string CategorySlug { get; set; }
@@ -24,13 +24,15 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
 
     }
 
-    //public class CategoryImageInfo
-    //{
-    //    public IFormFileCollection ImageFile { get; set; }
-    //    public string ImageAltTitle { get; set; }
-    //    public string ImageRedirectUrl { get; set; }
-    //    public bool ImageDisplayStatus { get; set; }
-    //    public bool IsCategoryImage { get; set; }
-    //}
+    public class CategoryImageInfo
+    {
+        public IFormFileCollection BannerImageFile { get; set; }
+        public bool ShowImageOnBanner { get; set; }
+        public bool IsHeaderImage { get; set; }
+        public string BannerImageTitle { get; set; }
+        public string BannerRedirectLink { get; set; }
+        public string BannerRedirectLinkTitle { get; set; }
+        public int    BannerImageOrder { get; set; } = 0;
+    }
 
 }

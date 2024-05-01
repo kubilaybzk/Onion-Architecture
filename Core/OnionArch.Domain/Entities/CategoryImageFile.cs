@@ -11,8 +11,11 @@ namespace OnionArch.Domain.Entities
     {
         public bool ShowImage { get; set; }
         public bool IsHeaderImage { get; set; }
-        public string Title { get; set; }
-        public ICollection<Category> CategoryInfo { get; set; }
+        public string ImageTitle { get; set; }
+        public virtual ICollection<Category> CategoryInfo { get; set; }
+        public string CategoryRedirectLink { get; set; }
+        public string CategoryRedirectLinkTitle {  get; set; }
+        public int CategoryImageOrder { get; set; } = 0;
 
     }
 }

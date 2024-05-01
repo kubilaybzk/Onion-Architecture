@@ -17,7 +17,7 @@ namespace OnionArch.Domain.Entities
         public bool CategoryDisplayStatus { get; set; }
         public List<Category> SubCategories { get; set; } // List<Category> olarak değiştirildi
         public ICollection<CategoryImageFile> CategoryImageFiles { get; set; }
-        public int CategoryOrder { get; set; }
+        public int CategoryOrder { get; set; } = 0;
 
     }
 }

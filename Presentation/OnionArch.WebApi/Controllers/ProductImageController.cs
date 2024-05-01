@@ -3,8 +3,12 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OnionArch.Application.Abstractions.FileCrud;
 using OnionArch.Application.Abstractions.ProductImageFileCrud;
+using OnionArch.Application.Abstractions.Storage;
 using OnionArch.Application.Features.Queries.ProductImageFile;
+using OnionArch.Application.Repositories.CategoryImageFileCrud;
+using OnionArch.Application.View_Models.Category;
 using OnionArch.Domain.Entities;
 using OnionArch.Persistance.Repositorys.ProductImageFileCrud;
 using System;
@@ -22,12 +26,21 @@ namespace OnionArch.WebApi.Controllers
 
         private readonly IProductImageFileWriteRepository _IProductImageFileWriteRepository;
         private readonly IProductImageFileReadRepository _IProductImageFileReadRepository;
+        private readonly IStorageService _IStorageService;
+        private readonly IFileWriteRepository _IFileWriteRepository;
+        private readonly IFileReadRepository _IFileReadRepository;
+        private readonly ICategoryImageFileReadRepository _CategoryImageFileReadRepository;
+        private readonly ICategoryImageFileWriteRepository _CategoryImageFileWriteRepository;
 
-        public ImageController(IMediator mediator, IProductImageFileWriteRepository ıProductImageFileWriteRepository , IProductImageFileReadRepository ıProductImageFileReadRepository)
+        public ImageController(IMediator mediator, IProductImageFileWriteRepository ıProductImageFileWriteRepository, IProductImageFileReadRepository ıProductImageFileReadRepository, IStorageService ıStorageService, IFileWriteRepository ıFileWriteRepository, IFileReadRepository ıFileReadRepository, ICategoryImageFileReadRepository categoryImageFileReadRepository, ICategoryImageFileWriteRepository categoryImageFileWriteRepository)
         {
-            _IProductImageFileWriteRepository=ıProductImageFileWriteRepository;
+            _IProductImageFileWriteRepository = ıProductImageFileWriteRepository;
             _IProductImageFileReadRepository = ıProductImageFileReadRepository;
-
+            _IStorageService = ıStorageService;
+            _IFileWriteRepository = ıFileWriteRepository;
+            _IFileReadRepository = ıFileReadRepository;
+            _CategoryImageFileReadRepository = categoryImageFileReadRepository;
+            _CategoryImageFileWriteRepository = categoryImageFileWriteRepository;
         }
 
         [HttpGet("GetAllİmages")]
@@ -48,7 +61,48 @@ namespace OnionArch.WebApi.Controllers
            
 
         }
-        
+
+        [HttpGet("GetAllİmagesWithPathName")]
+        public async Task<IActionResult> GetAllİmagesWithPathName([FromQuery] string pathName)
+        {
+            var pathNameRewrite= "wwwroot" + "\\" + pathName;
+            
+            var images = _IStorageService.GetAllFiles(pathNameRewrite);
+           
+            var AllImageFiles = _CategoryImageFileReadRepository.GetAll().Include(p => p.CategoryInfo);
+           
+            
+            var AllImageFilesReturn = AllImageFiles.Select(category => new VM_CategoryImage_Result()
+            {
+                CategoryID = string.Join(",", category.CategoryInfo.Select(p => p.ID.ToString())),
+                ImageTitle = category.ImageTitle,
+                CategoryRedirectLink= category.CategoryRedirectLink,
+                CategoryRedirectLinkTitle= category.CategoryRedirectLinkTitle,
+                IsHeaderImage= category.IsHeaderImage,
+                ShowImage = category.ShowImage,
+                CategoryImageOrder = category.CategoryImageOrder,
+                ImagePath=category.Path,
+
+            }).OrderBy(p=>p.CategoryImageOrder).ToList() ;
+            //VM_Result_CategoryList   var data = data2.Select(p => new Category()
+
+            var files =  _IFileReadRepository.GetAll();
+            var files2 = files.Where(p => p.GetType() == typeof(CategoryImageFile));
+            var files3 = files2.ToList();
+
+            if (AllImageFilesReturn.Count > 0)
+            {
+                return Ok(AllImageFilesReturn);
+            }
+            else
+            {
+                return NotFound();
+            }
+
+
+
+        }
+
         [HttpGet("GetAllİmagesById/{gelenid}")]
         public async Task<IActionResult> GetAllİmagesById([FromRoute] string gelenid)
         {

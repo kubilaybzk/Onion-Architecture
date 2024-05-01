@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCommands
@@ -27,8 +28,6 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
         {
             try
             {
-
-
                 var category = new Category()
                 {
                     CategoryName = request.CategoryName,
@@ -48,30 +47,32 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
                         FileName = d.fileName,
                         Path = d.PathOrContainerName,
                         Storage = _storageService.StorageType,
-                        Title = request.CategoryHeaderImage[index].FileName,
-                        IsHeaderImage = request.CategoryHasTitleImage,
-                        ShowImage = request.CategoryHasTitleImage,
-
+                        ImageTitle = request.CategoryHeaderImage[index].FileName,
+                        IsHeaderImage = false,
+                        ShowImage = request.CategoryDisplayStatus,
                     }).ToList();
                 }
 
-                //if (request.ImageInfos != null && request.ImageInfos.Any())
-                //{
-                //    foreach (var imageInfo in request.ImageInfos)
-                //    {
-                //        var imageResult = await _storageService.UploadAsync("Category_Images", imageInfo.ImageFile);
+                if (request.ImageInfos != null && request.ImageInfos.Any())
+                {
+                    foreach (var imageInfo in request.ImageInfos)
+                    {
+                        var imageResult = await _storageService.UploadAsync("Category_Images", imageInfo.BannerImageFile);
 
-                //        category.CategoryImageFiles.Add(new CategoryImageFile
-                //        {
-                //            FileName = imageResult.First().fileName,
-                //            Path = imageResult.First().PathOrContainerName,
-                //            Storage = _storageService.StorageType,
-                //            Title = imageInfo.ImageAltTitle,
-                //            IsHeaderImage = imageInfo.IsCategoryImage,
-                //            ShowImage = imageInfo.ImageDisplayStatus
-                //        });
-                //    }
-                //}
+                        category.CategoryImageFiles.Add(new CategoryImageFile
+                        {
+                            FileName = imageResult.First().fileName,
+                            Path = imageResult.First().PathOrContainerName,
+                            Storage = _storageService.StorageType,
+                            ImageTitle = imageInfo.BannerImageTitle,
+                            IsHeaderImage = true,
+                            ShowImage = imageInfo.ShowImageOnBanner,
+                            CategoryRedirectLink = imageInfo.BannerRedirectLink,
+                            CategoryImageOrder = imageInfo.BannerImageOrder,
+                            CategoryRedirectLinkTitle=imageInfo.BannerRedirectLinkTitle
+                        });
+                    }
+                }
 
                 await _categoryWriteRepository.AddAsync(category);
                 await _categoryWriteRepository.SaveAsync();
@@ -95,10 +96,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
                     StatusCodeString = System.Net.HttpStatusCode.InternalServerError.ToString(),
                 };
             }
-
-
         }
-
 
         public static string RemoveTurkishCharacters(string input)
         {
@@ -129,17 +127,5 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
 
             return str;
         }
-
-        public static void Main(string[] args)
-        {
-            string input = "Türkçe karakterler i ö ü ğ ç ş Ğ İ Ü Ö Ç Ş";
-            string slug = GenerateSlug(input);
-            Console.WriteLine(slug); // Output: turkce-karakterler-i-o-u-g-c-s-g-i-u-o-c-s
-        }
-
-
     }
-
-
-
 }

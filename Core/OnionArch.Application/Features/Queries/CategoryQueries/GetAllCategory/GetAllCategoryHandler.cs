@@ -23,11 +23,13 @@ namespace OnionArch.Application.Features.Queries.CategoryQueries.GetAllCategory
             _categoryReadRepository = categoryReadRepository;
         }
 
+
+
         public async Task<GetAllCategoryResponse> Handle(GetAllCategoryRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var data2 = _categoryReadRepository.GetAll().Include(p => p.CategoryImageFiles); // Verilerin asenkron olarak alınması
+                var data2 = _categoryReadRepository.GetAll().Include(p => p.CategoryImageFiles) ; // Verilerin asenkron olarak alınması
 
                 var data = data2.Select(p => new Category()
                 {
@@ -37,13 +39,17 @@ namespace OnionArch.Application.Features.Queries.CategoryQueries.GetAllCategory
                         FileName = bas.FileName,
                         Path = bas.Path,
                         Storage = bas.Storage,
-                        Title = bas.Title,
+                        ImageTitle = bas.ImageTitle,
                         IsHeaderImage = bas.IsHeaderImage,
                         ID = bas.ID,
                         ShowImage = bas.ShowImage,
                         CreateTime = bas.CreateTime,
                         UpdateTime = bas.UpdateTime,
-                    }).ToList(),
+                        CategoryImageOrder = bas.CategoryImageOrder,
+                        CategoryRedirectLink = bas.CategoryRedirectLink,
+                        CategoryRedirectLinkTitle = bas.CategoryRedirectLinkTitle,
+                        
+                    }).OrderBy(p=>p.CategoryImageOrder).ToList(),
                     CategorySlug = p.CategorySlug,
                     ParentCategoryId = p.ParentCategoryId,
                     SubCategories = p.SubCategories,
@@ -51,7 +57,8 @@ namespace OnionArch.Application.Features.Queries.CategoryQueries.GetAllCategory
                     CategoryHasTitleImage = p.CategoryHasTitleImage,
                     CategoryLinkTitle = p.CategoryLinkTitle,
                     CategoryOrder = p.CategoryOrder,
-                    ID = p.ID
+                    ID = p.ID,
+
                 }).ToList();
 
                 var topLevelCategories = data.Where(c => c.ParentCategoryId == null).OrderBy(p => p.CategoryOrder).ToList();

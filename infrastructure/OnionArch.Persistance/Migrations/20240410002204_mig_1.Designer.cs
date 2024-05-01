@@ -12,7 +12,7 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20240214175500_mig_1")]
+    [Migration("20240410002204_mig_1")]
     partial class mig_1
     {
         /// <inheritdoc />
@@ -24,6 +24,21 @@ namespace OnionArch.Persistance.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CategoryCategoryImageFile", b =>
+                {
+                    b.Property<Guid>("CategoryImageFilesID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryInfoID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CategoryImageFilesID", "CategoryInfoID");
+
+                    b.HasIndex("CategoryInfoID");
+
+                    b.ToTable("CategoryCategoryImageFile");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
@@ -265,6 +280,52 @@ namespace OnionArch.Persistance.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("BasketItems");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.Category", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("CategoryDisplayStatus")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CategoryHasTitleImage")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("CategoryID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CategoryLinkTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CategoryOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CategorySlug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ParentCategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("CategoryID");
+
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Customer", b =>
@@ -517,6 +578,34 @@ namespace OnionArch.Persistance.Migrations
                     b.ToTable("ProductProductImageFile");
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.CategoryImageFile", b =>
+                {
+                    b.HasBaseType("OnionArch.Domain.Entities.File");
+
+                    b.Property<int>("CategoryImageOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CategoryRedirectLink")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CategoryRedirectLinkTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsHeaderImage")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ShowImage")
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("CategoryImageFile");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.InvoiceFile", b =>
                 {
                     b.HasBaseType("OnionArch.Domain.Entities.File");
@@ -535,6 +624,21 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("ProductImageFile");
+                });
+
+            modelBuilder.Entity("CategoryCategoryImageFile", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.CategoryImageFile", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryImageFilesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnionArch.Domain.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryInfoID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -629,6 +733,13 @@ namespace OnionArch.Persistance.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.Category", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.Category", null)
+                        .WithMany("SubCategories")
+                        .HasForeignKey("CategoryID");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.Order", b =>
                 {
                     b.HasOne("OnionArch.Domain.Entities.Basket", "Basket")
@@ -684,6 +795,11 @@ namespace OnionArch.Persistance.Migrations
 
                     b.Navigation("Order")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("SubCategories");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Customer", b =>
