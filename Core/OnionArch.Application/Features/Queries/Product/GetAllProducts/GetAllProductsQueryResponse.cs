@@ -1,7 +1,8 @@
-﻿using System;
+﻿using OnionArch.Application.GlobalResponse;
+using System;
 namespace OnionArch.Application.Features.Queries.Product.Product.GetAllProducts
 {
-	public class GetAllProductsQueryResponse
+	public class GetAllProductsQueryResponse:GlobalResponseResult
 	{
 		public int TotalCount { get; set; }
         public int TotalPageSize { get; set; }
@@ -10,8 +11,6 @@ namespace OnionArch.Application.Features.Queries.Product.Product.GetAllProducts
         public bool HasPrev { get; set; }
         public int PageSize { get; set; }
         public object Products { get; set;}
-        public int StatusCode { get; set; } // HTTP durum kodunu içerecek bir özellik ekledik
-        public string Message { get; set; } // Opsiyonel: Bir hata mesajı ekleyebilirsiniz
 
     }
 }

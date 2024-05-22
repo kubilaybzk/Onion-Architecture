@@ -34,7 +34,7 @@ namespace OnionArch.Application.Features.Queries.Basket.GetOnlyBasketsPayment
                 {
                     BasketItemId = ba.ID.ToString(),
                     Quantity = ba.Quantity,
-                    Price=ba.Product.Price,
+                    Price=/*ba.Product.LastPrice*/ 100,
                     
                 }).ToList();
 

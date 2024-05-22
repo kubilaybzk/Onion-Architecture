@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using OnionArch.Application.Abstractions.CategoryServices;
 using OnionArch.Application.Abstractions.Storage;
 using OnionArch.Application.Features.Commands.CategoryCommands.DeleteCategoryComands;
 using OnionArch.Application.Repositories.CategoryCrud;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategoryComands
@@ -18,11 +20,13 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategor
         private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly ICategoryWriteRepository _categoryWriteRepository;
         private readonly IStorageService _storageService;
-        public UpdateCategoryHandler(ICategoryReadRepository categoryReadRepository, ICategoryWriteRepository categoryWriteRepository, IStorageService storageService)
+        private readonly ICategoryServices _categoryServices;
+        public UpdateCategoryHandler(ICategoryReadRepository categoryReadRepository, ICategoryWriteRepository categoryWriteRepository, IStorageService storageService, ICategoryServices categoryServices)
         {
             _categoryReadRepository = categoryReadRepository;
             _categoryWriteRepository = categoryWriteRepository;
             _storageService = storageService;
+            _categoryServices = categoryServices;
         }
 
         public async Task<UpdateCategoryResponse> Handle(UpdateCategoryRequest request, CancellationToken cancellationToken)
@@ -38,15 +42,15 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategor
                     throw new Exception("Kategori bulunamadı");
                 }
 
-                targetCategory.CategorySlug = request.CategorySlug;
+                targetCategory.CategorySlug = _categoryServices.GenerateSlug(request.CategorySlug);
                 targetCategory.CategoryName = request.CategoryName;
                 targetCategory.CategoryLinkTitle = request.CategoryLinkTitle;
                 targetCategory.ParentCategoryId = request.ParentCategoryId;
                 targetCategory.CategoryHasTitleImage = request.CategoryHasTitleImage;
                 targetCategory.CategoryDisplayStatus = request.CategoryDisplayStatus;
                 targetCategory.CategoryOrder = request.CategoryOrder;
-
-
+                targetCategory.IsCampanyCategory = request.IsCampanyCategory;
+                targetCategory.IsSpecialCategory = request.IsSpecialCategory;
 
                 if (request.ImageInfos != null)
                 {
@@ -124,6 +128,8 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategor
                         }
 
                     }
+
+                    targetCategory.CategoryHasTitleImage = false;
                 }
 
                 if (request.CategoryHeaderImage != null)
@@ -149,6 +155,9 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategor
                             ImageTitle = d.fileName,
                             IsHeaderImage = false,
                             ShowImage = request.CategoryDisplayStatus,
+                            CategoryRedirectLink = request.CategoryName,
+                            CategoryRedirectLinkTitle = request.CategoryLinkTitle,
+                            CategoryImageOrder = 0
                         };
                         targetCategory.CategoryHasTitleImage=true;
                         targetCategory.CategoryImageFiles.Add(newImage);
@@ -159,14 +168,13 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategor
 
                 }
 
-
-
-
-
-
-
                 await _categoryWriteRepository.SaveAsync();
-                
+
+                if (request.ParentCategoryId != null)
+                {
+                    await _categoryServices.AddSubCategoryAsync(request.ParentCategoryId.Value, targetCategory, true);
+                }
+                    await _categoryServices.AssignMaterializedPathAsync(targetCategory, request.ParentCategoryId);
 
                 return new UpdateCategoryResponse
                 {
@@ -191,5 +199,6 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategor
 
 
         }
+
     }
 }

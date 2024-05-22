@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using OnionArch.Application.Abstractions.AddressServices;
 using OnionArch.Application.Abstractions.BasketServices;
+using OnionArch.Application.Abstractions.CategoryServices;
 using OnionArch.Application.Abstractions.CustomerCrud;
 using OnionArch.Application.Abstractions.FileCrud;
 using OnionArch.Application.Abstractions.InvoiceFileCrud;
@@ -98,6 +99,7 @@ namespace OnionArch.Persistance
             services.AddScoped<IAddressReadRepository, AddressReadRepository>();
             services.AddScoped<IAddressService,AddressService>();
 
+            services.AddScoped<ICategoryServices, CategoryServices>();
 
 
 

@@ -48,10 +48,8 @@
     <Folder Include="Abstractions\Storage\LocalStorage\" />
     <Folder Include="Features\Commands\Product\" />
     <Folder Include="Features\Commands\Product\DeleteProductById\" />
-    <Folder Include="Features\Queries\Product\" />
     <Folder Include="Features\Queries\Product\GetAllProducts\" />
     <Folder Include="Features\Queries\Product\GetSingleById\" />
-    <Folder Include="Features\Commands\Product\CreateOneProductNoImage\" />
     <Folder Include="Features\Commands\Product\CreateOneProductWithImage\" />
     <Folder Include="Features\Commands\Product\UpdateOneProduct\" />
     <Folder Include="Features\Commands\AppUser\" />

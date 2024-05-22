@@ -1,13 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OnionArch.Application.Features.Commands.Product.CreateOneProductNoImage;
 using OnionArch.Application.Features.Commands.Product.CreateOneProductWithImage;
 using OnionArch.Application.Features.Commands.Product.DeleteProductById;
 using OnionArch.Application.Features.Commands.Product.UpdateOneProduct;
 using OnionArch.Application.Features.Queries.Product.GetAllProducts;
+using OnionArch.Application.Features.Queries.Product.GetProductByCategory;
 using OnionArch.Application.Features.Queries.Product.GetSingleById;
 using OnionArch.Application.Features.Queries.Product.Product.GetAllProducts;
+using System.Net;
 
 namespace OnionArch.API.Controllers
 {
@@ -29,26 +30,39 @@ namespace OnionArch.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get([FromQuery] GetAllProductsQueryRequest getAllProductsQueryRequest)
         {
-            GetAllProductsQueryResponse productResponse = await _mediator.Send(getAllProductsQueryRequest);
-            if (productResponse.StatusCode == StatusCodes.Status200OK)
+            GetAllProductsQueryResponse ProductResponse = await _mediator.Send(getAllProductsQueryRequest);
+
+            switch (ProductResponse.StatusCode)
             {
-                // Başarılı güncelleme durumunda 200 OK kodunu dönün
-                return Ok(productResponse);
+                case HttpStatusCode.OK:
+                    return Ok(ProductResponse);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(ProductResponse);
+                case HttpStatusCode.NotFound:
+                    return NotFound(ProductResponse);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
             }
-            else if (productResponse.StatusCode == StatusCodes.Status404NotFound)
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetProductByCategory")]
+        public async Task<IActionResult> GetProductByCategory([FromQuery] GetProductByCategoryRequest getProductByCategoryRequest)
+        {
+            GetProductByCategoryResponse ProductResponse = await _mediator.Send(getProductByCategoryRequest);
+
+            switch (ProductResponse.StatusCode)
             {
-                // Ürün bulunamadı durumunda 404 Not Found kodunu dönün
-                return NotFound(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status500InternalServerError)
-            {
-                // İç sunucu hatası durumunda 500 Internal Server Error kodunu dönün
-                return StatusCode(StatusCodes.Status500InternalServerError, productResponse);
-            }
-            else
-            {
-                // Diğer durumlar için varsayılan bir hata kodu dönün
-                return BadRequest(productResponse);
+                case HttpStatusCode.OK:
+                    return Ok(ProductResponse);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(ProductResponse);
+                case HttpStatusCode.NotFound:
+                    return NotFound(ProductResponse);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
             }
         }
 
@@ -56,83 +70,44 @@ namespace OnionArch.API.Controllers
         [HttpGet("GetSingleById/{id}")]
         public async Task<IActionResult> GetSingle([FromRoute] GetSingleByIdQueryRequest getSingleByIdQueryRequest)
         {
-            GetSingleByIdQueryResponse productResponse = await _mediator.Send(getSingleByIdQueryRequest);
-            if (productResponse.StatusCode == StatusCodes.Status200OK)
+            GetSingleByIdQueryResponse ProductResponse = await _mediator.Send(getSingleByIdQueryRequest);
+
+            switch (ProductResponse.StatusCode)
             {
-                // Başarılı güncelleme durumunda 200 OK kodunu dönün
-                return Ok(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status404NotFound)
-            {
-                // Ürün bulunamadı durumunda 404 Not Found kodunu dönün
-                return NotFound(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status500InternalServerError)
-            {
-                // İç sunucu hatası durumunda 500 Internal Server Error kodunu dönün
-                return StatusCode(StatusCodes.Status500InternalServerError, productResponse);
-            }
-            else
-            {
-                // Diğer durumlar için varsayılan bir hata kodu dönün
-                return BadRequest(productResponse);
+                case HttpStatusCode.OK:
+                    return Ok(ProductResponse);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(ProductResponse);
+                case HttpStatusCode.NotFound:
+                    return NotFound(ProductResponse);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
             }
         }
 
         
         [HttpPost("CreateOneProduct")]
         
-        public async Task<IActionResult> CreateOneProduct([FromQuery] CreateOneProductNoImageRequest createOneProductNoImageRequest)
-        {
-            CreateOneProductNoImageResponse productResponse = await _mediator.Send(createOneProductNoImageRequest);
-            if (productResponse.StatusCode == StatusCodes.Status200OK)
-            {
-                // Başarılı güncelleme durumunda 200 OK kodunu dönün
-                return Ok(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status404NotFound)
-            {
-                // Ürün bulunamadı durumunda 404 Not Found kodunu dönün
-                return NotFound(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status500InternalServerError)
-            {
-                // İç sunucu hatası durumunda 500 Internal Server Error kodunu dönün
-                return StatusCode(StatusCodes.Status500InternalServerError, productResponse);
-            }
-            else
-            {
-                // Diğer durumlar için varsayılan bir hata kodu dönün
-                return BadRequest(productResponse);
-            }
-
-        }
+ 
 
 
         [HttpPut("UpdateProductById")]
         public async Task<IActionResult> UpdateProduct(UpdateOneProductRequest updateOneProductRequest)
         {
-            UpdateOneProductResponse productResponse = await _mediator.Send(updateOneProductRequest);
+            UpdateOneProductResponse ProductResponse = await _mediator.Send(updateOneProductRequest);
 
-            if (productResponse.StatusCode == StatusCodes.Status200OK)
+            switch (ProductResponse.StatusCode)
             {
-                // Başarılı güncelleme durumunda 200 OK kodunu dönün
-                return Ok(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status404NotFound)
-            {
-                // Ürün bulunamadı durumunda 404 Not Found kodunu dönün
-                return NotFound(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status500InternalServerError)
-            {
-                // İç sunucu hatası durumunda 500 Internal Server Error kodunu dönün
-                return StatusCode(StatusCodes.Status500InternalServerError, productResponse);
-            }
-            else
-            {
-                // Diğer durumlar için varsayılan bir hata kodu dönün
-                return BadRequest(productResponse);
+                case HttpStatusCode.OK:
+                    return Ok(ProductResponse);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(ProductResponse);
+                case HttpStatusCode.NotFound:
+                    return NotFound(ProductResponse);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
             }
         }
 
@@ -140,27 +115,19 @@ namespace OnionArch.API.Controllers
         [HttpDelete("DeleteProductById")]
         public async Task<IActionResult> DeleteProduct([FromQuery] DeleteProductByIdCommandsRequest deleteProductByIdCommandsRequest)
         {
-            DeleteProductByIdCommandsResponse productResponse = await _mediator.Send(deleteProductByIdCommandsRequest);
+            DeleteProductByIdCommandsResponse ProductResponse = await _mediator.Send(deleteProductByIdCommandsRequest);
 
-            if (productResponse.StatusCode == StatusCodes.Status200OK)
+            switch (ProductResponse.StatusCode)
             {
-                // Başarılı güncelleme durumunda 200 OK kodunu dönün
-                return Ok(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status404NotFound)
-            {
-                // Ürün bulunamadı durumunda 404 Not Found kodunu dönün
-                return NotFound(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status500InternalServerError)
-            {
-                // İç sunucu hatası durumunda 500 Internal Server Error kodunu dönün
-                return StatusCode(StatusCodes.Status500InternalServerError, productResponse);
-            }
-            else
-            {
-                // Diğer durumlar için varsayılan bir hata kodu dönün
-                return BadRequest(productResponse);
+                case HttpStatusCode.OK:
+                    return Ok(ProductResponse);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(ProductResponse);
+                case HttpStatusCode.NotFound:
+                    return NotFound(ProductResponse);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
             }
         }
         [AllowAnonymous]
@@ -171,26 +138,19 @@ namespace OnionArch.API.Controllers
             //Nasıl yollayacağımızı bulamadım normalde null gönderiyor ilerleyen aşamada düzeltilecek.
             createOneProductWithImageRequest.ImageFiles = Request.Form.Files;
 
-            CreateOneProductWithImageResponse productResponse = await _mediator.Send(createOneProductWithImageRequest);
-            if (productResponse.StatusCode == StatusCodes.Status201Created)
+            CreateOneProductWithImageResponse ProductResponse = await _mediator.Send(createOneProductWithImageRequest);
+
+            switch (ProductResponse.StatusCode)
             {
-                // Başarılı güncelleme durumunda 201 OK kodunu dönün
-                return Ok(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status404NotFound)
-            {
-                // Ürün bulunamadı durumunda 404 Not Found kodunu dönün
-                return NotFound(productResponse);
-            }
-            else if (productResponse.StatusCode == StatusCodes.Status500InternalServerError)
-            {
-                // İç sunucu hatası durumunda 500 Internal Server Error kodunu dönün
-                return StatusCode(StatusCodes.Status500InternalServerError, productResponse);
-            }
-            else
-            {
-                // Diğer durumlar için varsayılan bir hata kodu dönün
-                return BadRequest(productResponse);
+                case HttpStatusCode.OK:
+                    return Ok(ProductResponse);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(ProductResponse);
+                case HttpStatusCode.NotFound:
+                    return NotFound(ProductResponse);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
             }
         }
 

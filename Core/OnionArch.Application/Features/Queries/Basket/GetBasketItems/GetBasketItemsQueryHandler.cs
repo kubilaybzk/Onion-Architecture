@@ -44,13 +44,13 @@ namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
                             Path = bas.Path,
 
                         }).ToList(),
-                        Stock = ba.Quantity,
+                        StockQuantity = ba.Quantity,
                         Name = ba.Product.Name,
-                        Price = ba.Product.Price,
+                        UnitPrice = ba.Product.UnitPrice,
                     }
                 }).ToList();
 
-            var totalProductPrice = result.Sum(ba => ba.Product.Price * ba.Quantity);
+            var totalProductPrice = result.Sum(ba => ba.Product.UnitPrice * ba.Quantity);
 
             float totalDiscount;
             float totalCargoPrice;
@@ -59,9 +59,9 @@ namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
             // Toplam indirim hesaplaması (%10)
             if (totalProductPrice > 0)
             {
-                 totalDiscount = totalProductPrice * 0.10f;
+                 totalDiscount =/* totalProductPrice * 0.10f;*/ 100;
                  totalCargoPrice = totalProductPrice > 1000 ? 0 : 20.00f;
-                 totalPrice = totalProductPrice - totalDiscount + totalCargoPrice;
+                 totalPrice =/* totalProductPrice - totalDiscount*/ 100 + totalCargoPrice;
             }
             else
             {
@@ -74,7 +74,7 @@ namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
             return new GetBasketItemsQueryResponse()
             {
                 BasketItems = result,
-                TotalProductPrice = totalProductPrice,
+                TotalProductPrice = /*totalProductPrice*/ 100,
                 TotalDiscount = totalDiscount,
                 CargoPrice= totalCargoPrice,
                 TotalPrice= totalPrice,

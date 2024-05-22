@@ -18,6 +18,10 @@ namespace OnionArch.Domain.Entities
         public List<Category> SubCategories { get; set; } // List<Category> olarak değiştirildi
         public ICollection<CategoryImageFile> CategoryImageFiles { get; set; }
         public int CategoryOrder { get; set; } = 0;
+        public string MaterializedPath { get; set; } = "";
+        public Boolean IsSpecialCategory { get; set; } = false;
+        public Boolean IsCampanyCategory { get; set; } = false;
+        public ICollection<Product> Products { get; set; }
 
     }
 }

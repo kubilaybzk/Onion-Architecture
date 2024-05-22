@@ -30,9 +30,9 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.DeleteCategor
                 {
                     HassError = false,
                     Message = "Kategori silme işlemi başarılı",
-                    StatusCode = System.Net.HttpStatusCode.OK,
+                    StatusCode = System.Net.HttpStatusCode.Accepted,
                     ErrorMessage = null,
-                    StatusCodeString = System.Net.HttpStatusCode.OK.ToString()
+                    StatusCodeString = System.Net.HttpStatusCode.Accepted.ToString()
                 };
 
             }
@@ -42,10 +42,10 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.DeleteCategor
                 return new DeleteCategoryResponse()
                 {
                     HassError = true,
-                    Message = "Kategori silme işlemi başarısız Hata Kodu ",
+                    Message = "Kategori silme işlemi başarısız ",
                     StatusCode = System.Net.HttpStatusCode.InternalServerError,
                     ErrorMessage = ex.Message,
-                    StatusCodeString = System.Net.HttpStatusCode.OK.ToString()
+                    StatusCodeString = System.Net.HttpStatusCode.InternalServerError.ToString()
                 };
             };
         }

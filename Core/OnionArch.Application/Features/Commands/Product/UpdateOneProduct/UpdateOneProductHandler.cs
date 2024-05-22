@@ -33,15 +33,18 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateOneProduct
                     // Ürün bulunamadıysa 404 Not Found durum kodunu döndürebilirsiniz.
                     return new UpdateOneProductResponse
                     {
-                        StatusCode = StatusCodes.Status404NotFound,
-                        Message = "Ürün bulunamadı."
+                        ErrorMessage = null,
+                        HassError = true,
+                        Message = "Güncelleme işlemi başarısız",
+                        StatusCode = System.Net.HttpStatusCode.BadRequest,
+                        StatusCodeString = System.Net.HttpStatusCode.BadRequest.ToString()
                     };
                 }
 
                 // Model'den gelen verileri bu verilere atayalım.
                 product.Name = request.Name;
-                product.Price = request.Price;
-                product.Stock = request.Stock;
+                //product.Price = request.Price;
+                //product.Stock = request.Stock;
 
                 // Değişiklik veri tabanına yansısın.
                 await _productWriteRepository.SaveAsync();
@@ -57,8 +60,8 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateOneProduct
                 var productResult = new
                 {
                     product.Name,
-                    product.Price,
-                    product.Stock,
+                    //product.Price,
+                    //product.Stock,
                     product.ID,
                     productImages,
                     product.CreateTime,
@@ -68,8 +71,11 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateOneProduct
                 return new UpdateOneProductResponse
                 {
                     Product = productResult,
-                    StatusCode = StatusCodes.Status200OK,
-                    Message = "Ürün güncellendi"
+                    ErrorMessage = null,
+                    HassError = false,
+                    Message = "Güncelleme işlemi başarılı",
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    StatusCodeString = System.Net.HttpStatusCode.OK.ToString()
                 };
 
             }
@@ -78,8 +84,11 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateOneProduct
                 // Hata durumunda 500 Internal Server Error durum kodunu döndürebilirsiniz.
                 return new UpdateOneProductResponse
                 {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = ex.ToString()
+                    ErrorMessage = ex.Message,
+                    HassError = true,
+                    Message = "Bir hata oluştu",
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError,
+                    StatusCodeString = System.Net.HttpStatusCode.InternalServerError.ToString()
                 };
             }
         }

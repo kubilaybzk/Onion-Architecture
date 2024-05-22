@@ -1,16 +1,8 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using OnionArch.Application.Abstractions.Storage;
 using OnionArch.Application.Repositories.CategoryCrud;
-using OnionArch.Application.View_Models.Category;
 using OnionArch.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OnionArch.Application.Features.Queries.CategoryQueries.GetAllCategory
 {
@@ -58,6 +50,10 @@ namespace OnionArch.Application.Features.Queries.CategoryQueries.GetAllCategory
                     CategoryLinkTitle = p.CategoryLinkTitle,
                     CategoryOrder = p.CategoryOrder,
                     ID = p.ID,
+                    IsSpecialCategory = p.IsSpecialCategory,
+                    IsCampanyCategory = p.IsCampanyCategory,
+                    MaterializedPath = p.MaterializedPath,
+                    
 
                 }).ToList();
 

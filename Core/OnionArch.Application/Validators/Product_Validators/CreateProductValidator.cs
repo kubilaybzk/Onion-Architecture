@@ -20,20 +20,20 @@ namespace OnionArch.Application.Validators.Product_Validators
                     .MinimumLength(2)
                         .WithMessage("Ürün adı 2 ile 100 karakter arasında olmalıdır.");
 
-            RuleFor(p => p.Price)
-                .NotEmpty()
-                .NotNull()
-                    .WithMessage("Fiyat bilgisi boş olamaz")
-                    .Must(p => p > 0)
-                        .WithMessage("Fiyat bilgisi negatif olamaz");
+            //RuleFor(p => p.Price)
+            //    .NotEmpty()
+            //    .NotNull()
+            //        .WithMessage("Fiyat bilgisi boş olamaz")
+            //        .Must(p => p > 0)
+            //            .WithMessage("Fiyat bilgisi negatif olamaz");
 
 
-            RuleFor(p => p.Stock)
-                .NotEmpty()
-                .NotNull()
-                    .WithMessage("Stock bilgisi boş olamaz")
-                    .Must(p => p > 0)
-                        .WithMessage("Stock bilgisi negatif olamaz");
+            //RuleFor(p => p.Stock)
+            //    .NotEmpty()
+            //    .NotNull()
+            //        .WithMessage("Stock bilgisi boş olamaz")
+            //        .Must(p => p > 0)
+            //            .WithMessage("Stock bilgisi negatif olamaz");
 
         }
     }

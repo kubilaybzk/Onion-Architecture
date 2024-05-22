@@ -33,10 +33,10 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
                 var productResult = new
                 {
                     product.Name,
-                    product.Price,
-                    product.Stock,
+                    //product.Price,
+                    //product.Stock,
                     product.ID,
-                    productImages,
+                    productImages,   
                     product.CreateTime,
                     product.UpdateTime
                 };
@@ -46,8 +46,13 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
                 return new GetSingleByIdQueryResponse()
                 {
                     Products = productResult,
-                    StatusCode = StatusCodes.Status200OK,
-                    Message = "Ürün Gönderildi"
+                    ErrorMessage = "",
+                    HassError = false,
+                    Message = "Listeleme başarıyla gerçekleşmiştir.",
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
+
+                   
 
                 };
             }
@@ -55,8 +60,11 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
             {
                 return new GetSingleByIdQueryResponse()
                 {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = ex.ToString()
+                    ErrorMessage = ex.Message,
+                    HassError = true,
+                    Message = "Ekleme işlemi sırasında bir hata ile karşılaşıldı.",
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError,
+                    StatusCodeString = System.Net.HttpStatusCode.InternalServerError.ToString(),
                 };
             }
         }

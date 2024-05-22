@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Features.Commands.Product.UpdateOneProduct;
+using OnionArch.Domain.Entities;
 
 namespace OnionArch.Application.Features.Commands.Product.DeleteProductById
 {
@@ -20,31 +21,33 @@ namespace OnionArch.Application.Features.Commands.Product.DeleteProductById
         {
             var result = await _productWriteRepository.RemoveAsync(request.id);
 
-            switch (result)
+            if (result)
             {
-                case true:
+               
                     await _productWriteRepository.SaveAsync();
+                return new DeleteProductByIdCommandsResponse
+                {
+                    ErrorMessage = "",
+                    HassError = false,
+                    Message = "Silme başarıyla gerçekleşmiştir.",
+                    StatusCode = System.Net.HttpStatusCode.Accepted,
+                    StatusCodeString = System.Net.HttpStatusCode.Accepted.ToString(),
+                };
+            }
+            else { 
                     return new DeleteProductByIdCommandsResponse
                     {
-                        StatusCode = StatusCodes.Status200OK,
-                        Message = "Ürün başarıyla silindi."
+                        ErrorMessage = "",
+                        HassError = false,
+                        Message = "Silme başarıyla başarısız.",
+                        StatusCode = System.Net.HttpStatusCode.NotAcceptable,
+                        StatusCodeString = System.Net.HttpStatusCode.NotAcceptable.ToString(),
                     };
-                case false:
-                    return new DeleteProductByIdCommandsResponse
-                    {
-                        StatusCode = StatusCodes.Status404NotFound,
-                        Message = "Ürün bulunamadı."
-                    };
-                default:
-                    return new DeleteProductByIdCommandsResponse
-                    {
-                        StatusCode = StatusCodes.Status500InternalServerError,
-                        Message = "Sunucu kaynaklı bir hata"
-                    };
-                    
+                }
+
             }
 
         }
     }
-}
+
 

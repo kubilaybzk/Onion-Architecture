@@ -19,8 +19,9 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
         public string CategorySlug { get; set; }
         public bool CategoryDisplayStatus { get; set; }
         public IFormFileCollection? CategoryHeaderImage { get; set; }
-
         public int CategoryOrder { get; set; }
+        public Boolean IsSpecialCategory { get; set; }
+        public Boolean IsCampanyCategory { get; set; }
 
     }
 
