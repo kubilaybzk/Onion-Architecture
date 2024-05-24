@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnionArch.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class mig_Product_has_new_propertys : Migration
+    public partial class product_features : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,6 +51,20 @@ namespace OnionArch.Persistance.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Attributes",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attributes", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -324,6 +338,54 @@ namespace OnionArch.Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AttributeValues",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AttributeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AttributeValues", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_AttributeValues_Attributes_AttributeId",
+                        column: x => x.AttributeId,
+                        principalTable: "Attributes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoryAttributes",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AttributeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryAttributes", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_CategoryAttributes_Attributes_AttributeId",
+                        column: x => x.AttributeId,
+                        principalTable: "Attributes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryAttributes_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CategoryCategoryImageFile",
                 columns: table => new
                 {
@@ -453,6 +515,33 @@ namespace OnionArch.Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductAttributes",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AttributeValueId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductAttributes", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_ProductAttributes_AttributeValues_AttributeValueId",
+                        column: x => x.AttributeValueId,
+                        principalTable: "AttributeValues",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductAttributes_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderProduct",
                 columns: table => new
                 {
@@ -521,6 +610,11 @@ namespace OnionArch.Persistance.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AttributeValues_AttributeId",
+                table: "AttributeValues",
+                column: "AttributeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BasketItems_BasketId",
                 table: "BasketItems",
                 column: "BasketId");
@@ -539,6 +633,16 @@ namespace OnionArch.Persistance.Migrations
                 name: "IX_Categories_CategoryID",
                 table: "Categories",
                 column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryAttributes_AttributeId",
+                table: "CategoryAttributes",
+                column: "AttributeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryAttributes_CategoryId",
+                table: "CategoryAttributes",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CategoryCategoryImageFile_CategoryInfoID",
@@ -565,6 +669,16 @@ namespace OnionArch.Persistance.Migrations
                 name: "IX_Orders_CustomerID",
                 table: "Orders",
                 column: "CustomerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductAttributes_AttributeValueId",
+                table: "ProductAttributes",
+                column: "AttributeValueId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductAttributes_ProductId",
+                table: "ProductAttributes",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductProductImageFile_ProductsID",
@@ -600,6 +714,9 @@ namespace OnionArch.Persistance.Migrations
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
+                name: "CategoryAttributes");
+
+            migrationBuilder.DropTable(
                 name: "CategoryCategoryImageFile");
 
             migrationBuilder.DropTable(
@@ -607,6 +724,9 @@ namespace OnionArch.Persistance.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrderProduct");
+
+            migrationBuilder.DropTable(
+                name: "ProductAttributes");
 
             migrationBuilder.DropTable(
                 name: "ProductProductImageFile");
@@ -621,6 +741,9 @@ namespace OnionArch.Persistance.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "AttributeValues");
+
+            migrationBuilder.DropTable(
                 name: "Files");
 
             migrationBuilder.DropTable(
@@ -631,6 +754,9 @@ namespace OnionArch.Persistance.Migrations
 
             migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "Attributes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

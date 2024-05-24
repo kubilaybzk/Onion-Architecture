@@ -38,7 +38,11 @@ namespace OnionArch.Persistance.Contexts
 
         public DbSet<Category> Categories { get; set; }
 
-  
+        public DbSet<Domain.Entities.Attribute> Attributes { get; set; }
+        public DbSet<AttributeValue> AttributeValues { get; set; }
+        public DbSet<CategoryAttribute> CategoryAttributes { get; set; }
+        public DbSet<ProductAttribute> ProductAttributes { get; set; }
+
 
 
         //Burada veri tabanında otomatik olarka yapılan işlemlerde EFCore tarafından belirli alanlara değerler atanmasını istiyoruz.
@@ -56,6 +60,37 @@ namespace OnionArch.Persistance.Contexts
                 .HasOne(b => b.Order)
                 .WithOne(b => b.Basket)
                 .HasForeignKey<Order>(b => b.BasketId);
+
+            builder.Entity<Category>()
+                .HasMany(c => c.Products)
+                .WithMany(p => p.Categorys);
+
+            builder.Entity<Domain.Entities.Attribute>()
+                .HasMany(a => a.AttributeValues)
+                .WithOne(av => av.Attribute)
+                .HasForeignKey(av => av.AttributeId);
+
+            builder.Entity<Domain.Entities.Attribute>()
+                .HasMany(a => a.CategoryAttributes)
+                .WithOne(ca => ca.Attribute)
+                .HasForeignKey(ca => ca.AttributeId);
+
+            builder.Entity<Category>()
+                .HasMany(c => c.CategoryAttributes)
+                .WithOne(ca => ca.Category)
+                .HasForeignKey(ca => ca.CategoryId);
+
+            builder.Entity<AttributeValue>()
+                .HasMany(av => av.ProductAttributes)
+                .WithOne(pa => pa.AttributeValue)
+                .HasForeignKey(pa => pa.AttributeValueId);
+
+            builder.Entity<Product>()
+                .HasMany(p => p.ProductAttributes)
+                .WithOne(pa => pa.Product)
+                .HasForeignKey(pa => pa.ProductId);
+
+
 
             base.OnModelCreating(builder); // Biz IdentityDbContext kullandığımız için bunu eklemek zorundayız.
 

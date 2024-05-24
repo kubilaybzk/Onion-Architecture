@@ -28,6 +28,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
             // İlk olarak, ana kategoriyi ve ürünlerini yükleyin
             var category = await _categoryReadRepository.GetWhere(p => p.CategorySlug == request.CategorySlug)
                 .Include(p => p.Products)
+                .ThenInclude(p=>p.ProductImageFiles)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (category == null)
@@ -63,16 +64,25 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
                 Model=p.Model,
                 Name=p.Name,
                 ProductCode = p.ProductCode,
-                ProductImageFiles = p.ProductImageFiles,
+                ProductImageFiles = p.ProductImageFiles.Select(p=>new Domain.Entities.ProductImageFile
+                {
+                    CreateTime = DateTime.Now,
+                    Path = p.Path,
+                    Showcase = p.Showcase,
+                    Storage = p.Storage,
+                    FileName = p.FileName,
+                    ID = p.ID,
+                }).ToList(),
                 StockQuantity = p.StockQuantity,
-                UnitPrice=p.UnitPrice
+                UnitPrice=p.UnitPrice,
+                
             }).ToList();
 
             return new GetProductByCategoryResponse()
             {
                 ErrorMessage = null,
                 HassError = false,
-                Message = "Güncelleme işlemi başarılı",
+                Message = "Kategorileri çekme işlemi başarılı",
                 StatusCode = System.Net.HttpStatusCode.OK,
                 StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
                 CategoryProducts = Result
@@ -84,6 +94,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
             // Alt kategorileri ve ürünlerini yükleyin
             var subCategories = await _categoryReadRepository.GetWhere(c => c.ParentCategoryId == category.ID)
                 .Include(sc => sc.Products)
+                  .ThenInclude(p => p.ProductImageFiles)
                 .Include(sc=>sc.SubCategories)
                 .ToListAsync(cancellationToken);
 

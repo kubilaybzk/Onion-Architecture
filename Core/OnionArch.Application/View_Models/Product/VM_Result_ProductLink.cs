@@ -26,6 +26,6 @@ namespace OnionArch.Application.View_Models.Product
         public int MaxOrderQuantity { get; set; } = 99; // Maksimum sipariş adeti
         public string Condition { get; set; } // Ürün durumu (yeni, kullanılmış, yenilenmiş)
         public bool IsActive { get; set; } // Ürün aktif mi?
-        public ICollection<ProductImageFile> ProductImageFiles { get; set; }
+        public List<ProductImageFile> ProductImageFiles { get; set; }
     }
 }

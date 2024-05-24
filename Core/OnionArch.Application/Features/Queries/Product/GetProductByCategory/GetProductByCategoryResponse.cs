@@ -10,6 +10,9 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
 {
     public class GetProductByCategoryResponse:GlobalResponseResult
     {
+        public string MemorizedPath { get; set; }
+        public string CategoryName { get; set; }
+
         public List<VM_Result_ProductLink> CategoryProducts { get; set; }
     }
 }

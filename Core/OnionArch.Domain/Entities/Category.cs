@@ -22,6 +22,7 @@ namespace OnionArch.Domain.Entities
         public Boolean IsSpecialCategory { get; set; } = false;
         public Boolean IsCampanyCategory { get; set; } = false;
         public ICollection<Product> Products { get; set; }
+        public ICollection<CategoryAttribute> CategoryAttributes { get; set; }
 
     }
 }

@@ -12,8 +12,8 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20240518161606_mig_Product_has_new_propertys")]
-    partial class mig_Product_has_new_propertys
+    [Migration("20240524185847_product_features")]
+    partial class product_features
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -212,6 +212,53 @@ namespace OnionArch.Persistance.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.Attribute", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Attributes");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.AttributeValue", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AttributeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AttributeId");
+
+                    b.ToTable("AttributeValues");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.BackEndLogs", b =>
                 {
                     b.Property<Guid>("ID")
@@ -351,6 +398,33 @@ namespace OnionArch.Persistance.Migrations
                     b.HasIndex("CategoryID");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.CategoryAttribute", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AttributeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AttributeId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("CategoryAttributes");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Customer", b =>
@@ -627,6 +701,33 @@ namespace OnionArch.Persistance.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.ProductAttribute", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AttributeValueId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AttributeValueId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductAttributes");
+                });
+
             modelBuilder.Entity("OrderProduct", b =>
                 {
                     b.Property<Guid>("OrdersID")
@@ -797,6 +898,17 @@ namespace OnionArch.Persistance.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.AttributeValue", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.Attribute", "Attribute")
+                        .WithMany("AttributeValues")
+                        .HasForeignKey("AttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Attribute");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.Basket", b =>
                 {
                     b.HasOne("OnionArch.Domain.Entities.Identity.AppUser", "User")
@@ -834,6 +946,25 @@ namespace OnionArch.Persistance.Migrations
                         .HasForeignKey("CategoryID");
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.CategoryAttribute", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.Attribute", "Attribute")
+                        .WithMany("CategoryAttributes")
+                        .HasForeignKey("AttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnionArch.Domain.Entities.Category", "Category")
+                        .WithMany("CategoryAttributes")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Attribute");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.Order", b =>
                 {
                     b.HasOne("OnionArch.Domain.Entities.Basket", "Basket")
@@ -851,6 +982,25 @@ namespace OnionArch.Persistance.Migrations
                     b.Navigation("Basket");
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.ProductAttribute", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.AttributeValue", "AttributeValue")
+                        .WithMany("ProductAttributes")
+                        .HasForeignKey("AttributeValueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnionArch.Domain.Entities.Product", "Product")
+                        .WithMany("ProductAttributes")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AttributeValue");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("OrderProduct", b =>
@@ -883,6 +1033,18 @@ namespace OnionArch.Persistance.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.Attribute", b =>
+                {
+                    b.Navigation("AttributeValues");
+
+                    b.Navigation("CategoryAttributes");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.AttributeValue", b =>
+                {
+                    b.Navigation("ProductAttributes");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.Basket", b =>
                 {
                     b.Navigation("BasketItems");
@@ -893,6 +1055,8 @@ namespace OnionArch.Persistance.Migrations
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Category", b =>
                 {
+                    b.Navigation("CategoryAttributes");
+
                     b.Navigation("SubCategories");
                 });
 
@@ -911,6 +1075,8 @@ namespace OnionArch.Persistance.Migrations
             modelBuilder.Entity("OnionArch.Domain.Entities.Product", b =>
                 {
                     b.Navigation("BasketItems");
+
+                    b.Navigation("ProductAttributes");
                 });
 #pragma warning restore 612, 618
         }

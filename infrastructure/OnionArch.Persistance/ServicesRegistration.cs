@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using OnionArch.Application.Abstractions.AddressServices;
+using OnionArch.Application.Abstractions.AttributeServices;
 using OnionArch.Application.Abstractions.BasketServices;
 using OnionArch.Application.Abstractions.CategoryServices;
 using OnionArch.Application.Abstractions.CustomerCrud;
@@ -11,6 +12,10 @@ using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Abstractions.ProductImageFileCrud;
 using OnionArch.Application.Abstractions.UserServices;
 using OnionArch.Application.Repositories.AddressCrud;
+using OnionArch.Application.Repositories.AttributeCrud.AttributeCrud;
+using OnionArch.Application.Repositories.AttributeCrud.AttributeValueCrud;
+using OnionArch.Application.Repositories.AttributeCrud.CategoryAttributeCrud;
+using OnionArch.Application.Repositories.AttributeCrud.ProductAttributeCrud;
 using OnionArch.Application.Repositories.BackEndLogsCrud;
 using OnionArch.Application.Repositories.BasketCrud;
 using OnionArch.Application.Repositories.BasketItemCrud;
@@ -22,6 +27,10 @@ using OnionArch.Persistance.Concretes.OrderCrud;
 using OnionArch.Persistance.Concretes.ProductCrud;
 using OnionArch.Persistance.Contexts;
 using OnionArch.Persistance.Repositorys.AddressCrud;
+using OnionArch.Persistance.Repositorys.AttributeCrud.AttributeCrud;
+using OnionArch.Persistance.Repositorys.AttributeCrud.AttributeValueCrud;
+using OnionArch.Persistance.Repositorys.AttributeCrud.CategoryAttributeCrud;
+using OnionArch.Persistance.Repositorys.AttributeCrud.ProductAttributeCrud;
 using OnionArch.Persistance.Repositorys.BackEndLogsCrud;
 using OnionArch.Persistance.Repositorys.BasketCrud;
 using OnionArch.Persistance.Repositorys.BasketItemCrud;
@@ -100,6 +109,24 @@ namespace OnionArch.Persistance
             services.AddScoped<IAddressService,AddressService>();
 
             services.AddScoped<ICategoryServices, CategoryServices>();
+
+
+            services.AddScoped<IAttributeReadRepository, AttributeReadRepository>();
+            services.AddScoped<IAttributeWriteRepository, AttributeWriteRepository>();
+
+            services.AddScoped<IAttributeValueReadRepository, AttributeValueReadRepository>();
+            services.AddScoped<IAttributeValueWriteRepository, AttributeValueWriteRepository>();
+
+            services.AddScoped<ICategoryAttributeReadRepository, CategoryAttributeReadRepository>();
+            services.AddScoped<ICategoryAttributeWriteRepository, CategoryAttributeWriteRepository>();
+
+            services.AddScoped<IProductAttributeReadRepository, ProductAttributeReadRepository>();
+            services.AddScoped<IProductAttributeWriteRepository, ProductAttributeWriteRepository>();
+            
+            services.AddScoped<IAttributeService, AttributeService>();
+
+
+
 
 
 

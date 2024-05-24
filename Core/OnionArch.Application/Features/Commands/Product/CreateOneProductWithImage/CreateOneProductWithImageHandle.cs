@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using OnionArch.Application.Abstractions.AttributeServices;
 using OnionArch.Application.Abstractions.HubServices;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Abstractions.Storage;
@@ -14,17 +16,20 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
     private readonly ILogger<CreateOneProductWithImageHandle> _logger;
     private readonly IProductHubService _productHubService;
     private readonly ICategoryReadRepository _categoryReadRepository;
+    private readonly IAttributeService _attributeService;
     public CreateOneProductWithImageHandle(IStorageService storageService,
                                             ILogger<CreateOneProductWithImageHandle> logger,
                                             IProductHubService productHubService,
                                             IProductWriteRepository productWriteRepository,
-                                            ICategoryReadRepository categoryReadRepository)
+                                            ICategoryReadRepository categoryReadRepository,
+                                            IAttributeService attributeService)
     {
         _storageService = storageService;
         _productWriteRepository = productWriteRepository;
         _logger = logger;
         _productHubService = productHubService;
         _categoryReadRepository = categoryReadRepository;
+        _attributeService = attributeService;
     }
 
     public async Task<CreateOneProductWithImageResponse> Handle(CreateOneProductWithImageRequest request, CancellationToken cancellationToken)
@@ -32,9 +37,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
         try
         {
             var result = await _storageService.UploadAsync("product-images", request.ImageFiles);
-            Console.Write(result);
-            Category test = await _categoryReadRepository.GetByIdAsync(request.Category);
-
+            var category = await _categoryReadRepository.GetWhere(c => c.ID == Guid.Parse(request.Category)).FirstOrDefaultAsync(); //ÜRÜNÜN KATEGORİSİNİ BELİRTMEK İÇİN.
             // İndirim oranı ve fiyatının uygulanması
             decimal appliedDiscountRate = 0;
             decimal appliedDiscountPrice = 0;
@@ -99,14 +102,31 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
                 Condition = ValidateCondition(request.Condition), // Durumun doğrulanması
                 Brand = request.Brand,
                 Description = request.Description,
-                Categorys = new List<Category> { test },
+                Categorys = new List<Category> { category },
                 IsActive = request.IsActive,
                 MaxOrderQuantity = request.MaxOrderQuantity,
                 MinOrderQuantity = request.MinOrderQuantity,
                 ProductCode = request.ProductCode,
                 StockQuantity = request.StockQuantity,
-                Model = request.Model,  
+                Model = request.Model,
+                ProductAttributes = new List<ProductAttribute>()
             };
+
+            // Dinamik ürün özelliklerini ekleme
+            if (request.Attributes != null)
+            {
+                foreach (var attribute in request.Attributes)
+                {
+                    var attributeEntity = await _attributeService.AddOrGetAttributeAsync(attribute.Key);
+                    var attributeValueEntity = await _attributeService.AddOrGetAttributeValueAsync(attributeEntity.ID, attribute.Value);
+
+                    product.ProductAttributes.Add(new ProductAttribute
+                    {
+                        AttributeValueId = attributeValueEntity.ID,
+                        Product = product
+                    });
+                }
+            }
 
             await _productWriteRepository.AddAsync(product);
             _logger.LogInformation("Başarılı bir şekilde ürün eklendi");

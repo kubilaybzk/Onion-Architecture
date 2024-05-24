@@ -46,7 +46,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
                     IsCampanyCategory = request.IsCampanyCategory,
                     IsSpecialCategory = request.IsSpecialCategory,
                     SubCategories= new List<Category>(),
-            };
+                };
 
                 //Add category's headerImage
                 if (request.CategoryHeaderImage != null)
@@ -118,50 +118,5 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
             }
         }
 
-        //public static string RemoveTurkishCharacters(string input)
-        //{
-        //    // Türkçe karakterleri çevirme
-        //    input = input.Replace("ı", "i").Replace("İ", "I")
-        //                 .Replace("ş", "s").Replace("Ş", "S")
-        //                 .Replace("ğ", "g").Replace("Ğ", "G")
-        //                 .Replace("ç", "c").Replace("Ç", "C")
-        //                 .Replace("ö", "o").Replace("Ö", "O")
-        //                 .Replace("ü", "u").Replace("Ü", "U");
-
-        //    return input;
-        //}
-
-        //public static string GenerateSlug(string phrase)
-        //{
-        //    // Türkçe karakterleri çıkar
-        //    string str = RemoveTurkishCharacters(phrase).ToLower();
-
-        //    // Geçersiz karakterleri temizle
-        //    str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
-        //    // Birden fazla boşluğu tek boşluğa dönüştür
-        //    str = Regex.Replace(str, @"\s+", " ").Trim();
-        //    // 45 karakteri aşmayacak şekilde kırp ve boşlukları kes
-        //    str = str.Substring(0, Math.Min(str.Length, 45)).Trim();
-        //    // Boşlukları tireye dönüştür
-        //    str = Regex.Replace(str, @"\s", "-");
-
-        //    return str;
-        //}
-
-        //public async Task<string> GenerateMaterializedPath(Guid? parentCategoryId, string categoryName)
-        //{
-        //    // Eğer bir üst kategori yoksa, malzeme kodu kategori adıyla başlar
-        //    if (!parentCategoryId.HasValue)
-        //    {
-        //        return GenerateSlug(categoryName);
-        //    }
-        //    else
-        //    {
-        //        // Eğer bir üst kategori varsa, üst kategorinin malzeme kodunu alıp kendi adını ekler
-        //        var parentCategory = await _categoryReadRepository.GetByIdAsync(parentCategoryId.ToString());
-        //        return $"{parentCategory.MaterializedPath}.{GenerateSlug(categoryName)}";
-        //    }
-
-        //}
     }
 }
