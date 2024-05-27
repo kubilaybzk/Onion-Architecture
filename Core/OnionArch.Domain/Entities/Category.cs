@@ -19,6 +19,8 @@ namespace OnionArch.Domain.Entities
         public ICollection<CategoryImageFile> CategoryImageFiles { get; set; }
         public int CategoryOrder { get; set; } = 0;
         public string MaterializedPath { get; set; } = "";
+        public string MaterializedPathByName { get; set; } = "";
+        public string MaterializedPathBySlug { get; set; } = "";
         public Boolean IsSpecialCategory { get; set; } = false;
         public Boolean IsCampanyCategory { get; set; } = false;
         public ICollection<Product> Products { get; set; }

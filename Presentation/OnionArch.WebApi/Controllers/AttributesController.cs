@@ -18,7 +18,7 @@ namespace OnionArch.WebApi.Controllers
             _attributeService = attributeService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllAttributes")]
         public async Task<IActionResult> GetAllAttributes()
         {
             var attributes = await _attributeService.GetAllAttributesAsync();
@@ -32,7 +32,7 @@ namespace OnionArch.WebApi.Controllers
             return Ok(values);
         }
 
-        [HttpPost]
+        [HttpPost("AddAttribute")]
         public async Task<IActionResult> AddAttribute([FromBody] AddAttributeRequest request)
         {
             var attribute = await _attributeService.AddOrGetAttributeAsync(request.Name);

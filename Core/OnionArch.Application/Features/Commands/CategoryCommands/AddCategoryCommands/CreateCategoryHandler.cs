@@ -46,6 +46,8 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
                     IsCampanyCategory = request.IsCampanyCategory,
                     IsSpecialCategory = request.IsSpecialCategory,
                     SubCategories= new List<Category>(),
+                    MaterializedPathByName= request.CategoryName,
+                    MaterializedPathBySlug=request.CategorySlug
                 };
 
                 //Add category's headerImage

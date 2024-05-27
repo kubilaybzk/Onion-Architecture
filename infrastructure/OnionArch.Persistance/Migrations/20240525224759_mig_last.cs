@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnionArch.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class product_features : Migration
+    public partial class mig_last : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -98,6 +98,8 @@ namespace OnionArch.Persistance.Migrations
                     CategoryDisplayStatus = table.Column<bool>(type: "bit", nullable: false),
                     CategoryOrder = table.Column<int>(type: "int", nullable: false),
                     MaterializedPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaterializedPathByName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaterializedPathBySlug = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsSpecialCategory = table.Column<bool>(type: "bit", nullable: false),
                     IsCampanyCategory = table.Column<bool>(type: "bit", nullable: false),
                     CategoryID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),

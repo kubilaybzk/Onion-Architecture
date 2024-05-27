@@ -12,8 +12,8 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20240524185847_product_features")]
-    partial class product_features
+    [Migration("20240525224759_mig_last")]
+    partial class mig_last
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -384,6 +384,14 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("MaterializedPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaterializedPathByName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaterializedPathBySlug")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

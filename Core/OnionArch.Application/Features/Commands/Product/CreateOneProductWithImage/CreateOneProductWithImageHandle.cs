@@ -16,20 +16,19 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
     private readonly ILogger<CreateOneProductWithImageHandle> _logger;
     private readonly IProductHubService _productHubService;
     private readonly ICategoryReadRepository _categoryReadRepository;
-    private readonly IAttributeService _attributeService;
+
     public CreateOneProductWithImageHandle(IStorageService storageService,
                                             ILogger<CreateOneProductWithImageHandle> logger,
                                             IProductHubService productHubService,
                                             IProductWriteRepository productWriteRepository,
-                                            ICategoryReadRepository categoryReadRepository,
-                                            IAttributeService attributeService)
+                                            ICategoryReadRepository categoryReadRepository)
     {
         _storageService = storageService;
         _productWriteRepository = productWriteRepository;
         _logger = logger;
         _productHubService = productHubService;
         _categoryReadRepository = categoryReadRepository;
-        _attributeService = attributeService;
+   
     }
 
     public async Task<CreateOneProductWithImageResponse> Handle(CreateOneProductWithImageRequest request, CancellationToken cancellationToken)
@@ -50,12 +49,14 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
                 decimal priceAfterRateDiscount = request.UnitPrice - (request.UnitPrice * appliedDiscountRate / 100);
                 finalPrice = priceAfterRateDiscount - request.DiscountPrice;
             }
+            
             else if (request.DiscountRate > 0)
             {
                 // Yalnızca yüzdesel indirim uygulanmışsa
                 appliedDiscountRate = request.DiscountRate;
                 finalPrice = request.UnitPrice - (request.UnitPrice * appliedDiscountRate / 100);
             }
+            
             else if (request.DiscountPrice > 0)
             {
                 // Yalnızca birim indirimi uygulanmışsa
@@ -63,15 +64,11 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
             }
 
             // KDV oranı
-
             decimal? kdvRateFromRequest = request.KDVRate;
             decimal kdvRate = kdvRateFromRequest ?? 20m;      // Türkiye'de genellikle KDV oranı %20 olarak uygulanır.
 
-
-
             // Kdv uygulandıktan sonraki son fiyat Vergi miktarı
             finalPrice = finalPrice-(finalPrice * (kdvRate / 100));
-
 
             // Tax (vergi) oranını belirleme
             decimal? taxRateFromRequest = request.Tax;
@@ -111,22 +108,6 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
                 Model = request.Model,
                 ProductAttributes = new List<ProductAttribute>()
             };
-
-            // Dinamik ürün özelliklerini ekleme
-            if (request.Attributes != null)
-            {
-                foreach (var attribute in request.Attributes)
-                {
-                    var attributeEntity = await _attributeService.AddOrGetAttributeAsync(attribute.Key);
-                    var attributeValueEntity = await _attributeService.AddOrGetAttributeValueAsync(attributeEntity.ID, attribute.Value);
-
-                    product.ProductAttributes.Add(new ProductAttribute
-                    {
-                        AttributeValueId = attributeValueEntity.ID,
-                        Product = product
-                    });
-                }
-            }
 
             await _productWriteRepository.AddAsync(product);
             _logger.LogInformation("Başarılı bir şekilde ürün eklendi");

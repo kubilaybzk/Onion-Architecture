@@ -22,6 +22,10 @@ namespace OnionArch.Persistance.ServicesConcreates
         private readonly IProductWriteRepository _productWriteRepository;
         private readonly IProductAttributeWriteRepository _productAttributeWriteRepository;
 
+
+        // Servis yapılma sebebi ilerleyen süreçte buranın ürün eklerken kullanılabilme ihtimali.
+
+
         public AttributeService(
             IAttributeWriteRepository attributeWriteRepository,
             IAttributeReadRepository attributeReadRepository,
@@ -42,7 +46,15 @@ namespace OnionArch.Persistance.ServicesConcreates
 
         public async Task<Domain.Entities.Attribute> AddOrGetAttributeAsync(string attributeName)
         {
-            var attribute = await _attributeReadRepository.GetWhere(a => a.Name == attributeName).FirstOrDefaultAsync();
+            var attribute = await _attributeReadRepository.GetWhere(a => a.Name == attributeName).Select(p=>new Domain.Entities.Attribute()
+            {
+                //AttributeValues=p.AttributeValues,
+                //CategoryAttributes=p.CategoryAttributes,
+                ID=p.ID,
+                CreateTime=p.CreateTime,
+                UpdateTime=p.UpdateTime,
+                Name=p.Name,
+            }).FirstOrDefaultAsync();
             if (attribute == null)
             {
                 attribute = new Domain.Entities.Attribute { Name = attributeName };
@@ -54,7 +66,12 @@ namespace OnionArch.Persistance.ServicesConcreates
 
         public async Task<AttributeValue> AddOrGetAttributeValueAsync(Guid attributeId, string value)
         {
-            var attributeValue = await _attributeValueReadRepository.GetWhere(av => av.AttributeId == attributeId && av.Value == value).FirstOrDefaultAsync();
+            var attributeValue = await _attributeValueReadRepository.GetWhere(av => av.AttributeId == attributeId && av.Value == value).Select(p=>new AttributeValue()
+            {
+                AttributeId=p.AttributeId,
+                Value=p.Value,
+                ID=p.ID,
+            }).FirstOrDefaultAsync();
             if (attributeValue == null)
             {
                 attributeValue = new AttributeValue { AttributeId = attributeId, Value = value };

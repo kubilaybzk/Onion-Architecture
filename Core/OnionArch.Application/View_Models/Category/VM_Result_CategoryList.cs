@@ -15,8 +15,11 @@ namespace OnionArch.Application.View_Models.Category
         public bool CategoryHasTitleImage { get; set; }
         public string CategorySlug { get; set; }
         public bool CategoryDisplayStatus { get; set; }
-        public List<OnionArch.Domain.Entities.Category> SubCategories { get; set; } // List<Category> olarak değiştirildi
-        public ICollection<CategoryImageFile> CategoryImageFiles { get; set; }
-        public Guid ID { get; set; }
+        public int CategoryOrder { get; set; } 
+        public string MaterializedPath { get; set; } 
+        public string MaterializedPathByName { get; set; } 
+        public string MaterializedPathBySlug { get; set; } 
+        public Boolean IsSpecialCategory { get; set; } 
+        public Boolean IsCampanyCategory { get; set; } 
     }
 }
