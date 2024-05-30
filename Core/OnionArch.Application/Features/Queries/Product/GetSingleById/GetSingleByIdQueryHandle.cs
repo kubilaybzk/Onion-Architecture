@@ -81,6 +81,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
                             MaterializedPathBySlug = p.MaterializedPathBySlug,
                         }).ToList()
                     }); 
+                   
                     result.Products = productresult;
                     result.ErrorMessage = "";
                     result.HassError = false;

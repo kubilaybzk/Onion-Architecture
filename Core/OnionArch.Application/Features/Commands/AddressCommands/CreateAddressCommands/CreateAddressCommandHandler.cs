@@ -30,22 +30,43 @@ namespace OnionArch.Application.Features.Commands.AddressCommands.CreateAddressC
             resquestparams.Country = request.Country;
             resquestparams.District = request.District;
 
-            bool? result = await _addressService.CreateAddressAsync(resquestparams);
-            if (result == true)
+            try
             {
-                return new()
+                bool? result = await _addressService.CreateAddressAsync(resquestparams);
+                if (result == true)
                 {
-                    Message = "Ekleme işlemi başarılı",
-                    StatusCode = StatusCodes.Status201Created
-                };
+                    return new()
+                    {
+                        Message = "Adress Ekleme işlemi başarılı",
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        ErrorMessage = "",
+                        HassError = false,
+                        StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
+                    };
+                }
+                else
+                {
+                    return new()
+                    {
+                        Message = "Adress Ekleme işlemi başarısız",
+                        StatusCode = System.Net.HttpStatusCode.NotAcceptable,
+                        HassError=true,
+                        ErrorMessage="Ekleme yapılamadı",
+                        StatusCodeString = System.Net.HttpStatusCode.NotAcceptable.ToString()
+                    };
+                }
             }
-            else
+            catch (Exception ex)
             {
                 return new()
                 {
-                    Message = "Ekleme işlemi başarısız",
-                    StatusCode = StatusCodes.Status500InternalServerError
+                    Message = "Adress Ekleme işlemi başarısız",
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError,
+                    HassError = true,
+                    ErrorMessage = ex.Message.ToString(),
+                    StatusCodeString = System.Net.HttpStatusCode.InternalServerError.ToString()
                 };
+
             }
         }
     }

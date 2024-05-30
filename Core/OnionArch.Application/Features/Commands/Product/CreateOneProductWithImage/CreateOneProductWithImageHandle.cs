@@ -110,7 +110,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
             };
 
             await _productWriteRepository.AddAsync(product);
-            _logger.LogInformation("Başarılı bir şekilde ürün eklendi");
+            _logger.LogInformation("Ürün ekleme işlemi başarılı");
             await _productHubService.ProductAddOperationMessage("Ürün listesine bir adet ürün eklendi");
             await _productWriteRepository.SaveAsync();
 
@@ -118,7 +118,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
             {
                 ErrorMessage = "",
                 HassError = false,
-                Message = "Ekleme başarıyla gerçekleşmiştir.",
+                Message = "Ürün ekleme işlemi başarıyla gerçekleşti",
                 StatusCode = System.Net.HttpStatusCode.Created,
                 StatusCodeString = System.Net.HttpStatusCode.Created.ToString(),
             };
@@ -130,7 +130,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
             {
                 ErrorMessage = ex.Message,
                 HassError = true,
-                Message = "Ekleme işlemi sırasında bir hata ile karşılaşıldı.",
+                Message = "Ürün ekleme işlemi sırasında bir hata ile karşılaşıldı.",
                 StatusCode = System.Net.HttpStatusCode.BadRequest,
                 StatusCodeString = System.Net.HttpStatusCode.BadRequest.ToString(),
             };

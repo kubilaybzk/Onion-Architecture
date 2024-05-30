@@ -1,8 +1,22 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OnionArch.Application.Abstractions.AttributeServices;
+using OnionArch.Application.Features.Commands.AttributeCommands.AddAttribute;
+using OnionArch.Application.Features.Commands.AttributeCommands.AssignAttributesToProduct;
+using OnionArch.Application.Features.Commands.AttributeCommands.DeleteAttribute;
+using OnionArch.Application.Features.Commands.AttributeCommands.DeleteAttributeValue;
+using OnionArch.Application.Features.Commands.AttributeCommands.RemoveAttributeFromProduct;
+using OnionArch.Application.Features.Commands.AttributeCommands.UpdateAttribute;
+using OnionArch.Application.Features.Commands.AttributeCommands.UpdateAttributeValue;
+using OnionArch.Application.Features.Queries.Attribute.GetAllAttributes;
+using OnionArch.Application.Features.Queries.Attribute.GetAllAttributeValues;
+using OnionArch.Application.Features.Queries.Attribute.GetProductAttributes;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace OnionArch.WebApi.Controllers
@@ -12,76 +26,196 @@ namespace OnionArch.WebApi.Controllers
     public class AttributesController : ControllerBase
     {
         private readonly IAttributeService _attributeService;
+        readonly IMediator _mediator;
 
-        public AttributesController(IAttributeService attributeService)
+        public AttributesController(IAttributeService attributeService, IMediator mediator)
         {
             _attributeService = attributeService;
+            _mediator = mediator;
         }
 
         [HttpGet("GetAllAttributes")]
-        public async Task<IActionResult> GetAllAttributes()
+        public async Task<IActionResult> GetAllAttributes([FromQuery] GetAllAttributesRequest request)
         {
-            var attributes = await _attributeService.GetAllAttributesAsync();
-            return Ok(attributes);
+            GetAllAttributesResponse attributes = await _mediator.Send(request);
+            switch (attributes.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(attributes);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(attributes);
+                case HttpStatusCode.NotFound:
+                    return NotFound(attributes);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)attributes.StatusCode, attributes);
+            }
         }
 
-        [HttpGet("{attributeId}/values")]
-        public async Task<IActionResult> GetAttributeValues(Guid attributeId)
+        [HttpGet("GetAttributeValues")]
+        public async Task<IActionResult> GetAttributeValues([FromQuery]GetAllAttributeValuesRequest request )
         {
-            var values = await _attributeService.GetAttributeValuesAsync(attributeId);
-            return Ok(values);
+            GetAllAttributeValuesResponse attributes = await _mediator.Send(request);
+            switch (attributes.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(attributes);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(attributes);
+                case HttpStatusCode.NotFound:
+                    return NotFound(attributes);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)attributes.StatusCode, attributes);
+            }
+        }
+
+        [HttpGet("GetProductAttributes")]
+        public async Task<IActionResult> GetProductAttributes([FromQuery] GetProductAttributesRequest request)
+        {
+            GetProductAttributesResponse attributes = await _mediator.Send(request);
+            switch (attributes.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(attributes);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(attributes);
+                case HttpStatusCode.NotFound:
+                    return NotFound(attributes);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)attributes.StatusCode, attributes);
+            }
         }
 
         [HttpPost("AddAttribute")]
         public async Task<IActionResult> AddAttribute([FromBody] AddAttributeRequest request)
         {
-            var attribute = await _attributeService.AddOrGetAttributeAsync(request.Name);
-            var attributeValue = await _attributeService.AddOrGetAttributeValueAsync(attribute.ID, request.DefaultValue);
-            return Ok(new { attribute, attributeValue });
+            AddAttributeResponse attributes = await _mediator.Send(request);
+            switch (attributes.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(attributes);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(attributes);
+                case HttpStatusCode.NotFound:
+                    return NotFound(attributes);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)attributes.StatusCode, attributes);
+            }
         }
 
-        [HttpGet("products/{productId}/attributes")]
-        public async Task<IActionResult> GetProductAttributes(Guid productId)
+        [HttpPost("AssignAttributesToProduct")]
+        public async Task<IActionResult> AssignAttributesToProduct([FromBody] AssignAttributesToProductRequest request)
         {
-            var attributes = await _attributeService.GetProductAttributesAsync(productId);
-            return Ok(attributes);
+            AssignAttributesToProductResponse attributes = await _mediator.Send(request);
+            switch (attributes.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(attributes);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(attributes);
+                case HttpStatusCode.NotFound:
+                    return NotFound(attributes);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)attributes.StatusCode, attributes);
+            }
         }
 
-        [HttpPost("products/{productId}/attributes")]
-        public async Task<IActionResult> AssignAttributesToProduct(Guid productId, [FromBody] AssignAttributesRequest request)
+        [HttpPut("UpdateAttributeValue")]
+        public async Task<IActionResult> UpdateAttributeValue([FromBody] UpdateAttributeValueRequest request)
         {
-            await _attributeService.AssignAttributesToProductAsync(productId, request.AttributeValueIds);
-            return Ok();
+            UpdateAttributeValueResponse attributes = await _mediator.Send(request);
+            switch (attributes.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(attributes);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(attributes);
+                case HttpStatusCode.NotFound:
+                    return NotFound(attributes);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)attributes.StatusCode, attributes);
+            }
         }
 
-        [HttpDelete("products/{productId}/attributes/{attributeValueId}")]
-        public async Task<IActionResult> RemoveAttributeFromProduct(Guid productId, Guid attributeValueId)
-        {
-            await _attributeService.RemoveAttributeFromProductAsync(productId, attributeValueId);
-            return NoContent();
+        [HttpPut("UpdateAttribute")]
+        public async Task<IActionResult> UpdateAttribute([FromBody] UpdateAttributeRequest request){
+            UpdateAttributeResponse attributes = await _mediator.Send(request);
+            switch (attributes.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(attributes);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(attributes);
+                case HttpStatusCode.NotFound:
+                    return NotFound(attributes);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)attributes.StatusCode, attributes);
+            }
         }
 
-        [HttpPut("attributes/{attributeValueId}")]
-        public async Task<IActionResult> UpdateAttributeValue(Guid attributeValueId, [FromBody] UpdateAttributeValueRequest request)
+        [HttpDelete("DeleteAttribute")]
+        public async Task<IActionResult> DeleteAttribute ([FromQuery] DeleteAttributeRequest request)
         {
-            await _attributeService.UpdateAttributeValueAsync(attributeValueId, request.NewValue);
-            return NoContent();
+            DeleteAttributeResponse attributes = await _mediator.Send(request);
+            switch (attributes.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(attributes);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(attributes);
+                case HttpStatusCode.NotFound:
+                    return NotFound(attributes);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)attributes.StatusCode, attributes);
+            }
+        }
+
+        [HttpDelete("DeleteAttributeValue")]
+        public async Task<IActionResult> DeleteAttributeValue([FromQuery] DeleteAttributeValueRequest request)
+        {
+            DeleteAttributeValueResponse attributes = await _mediator.Send(request);
+            switch (attributes.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(attributes);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(attributes);
+                case HttpStatusCode.NotFound:
+                    return NotFound(attributes);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)attributes.StatusCode, attributes);
+            }
+        }
+
+        [HttpDelete("RemoveAttributeFromProduct")]
+        public async Task<IActionResult> RemoveAttributeFromProduct([FromQuery] RemoveAttributeFromProductRequest request)
+        {
+            RemoveAttributeFromProductResponse attributes = await _mediator.Send(request);
+            switch (attributes.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(attributes);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(attributes);
+                case HttpStatusCode.NotFound:
+                    return NotFound(attributes);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)attributes.StatusCode, attributes);
+            }
         }
     }
 
-    public class AddAttributeRequest
-    {
-        public string Name { get; set; }
-        public string DefaultValue { get; set; }
-    }
+     
 
-    public class AssignAttributesRequest
-    {
-        public IEnumerable<Guid> AttributeValueIds { get; set; }
-    }
+ 
 
-    public class UpdateAttributeValueRequest
-    {
-        public string NewValue { get; set; }
-    }
 }

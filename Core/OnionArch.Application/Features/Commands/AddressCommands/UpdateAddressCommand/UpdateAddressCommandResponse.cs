@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OnionArch.Application.GlobalResponse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Commands.AddressCommands.UpdateAddressCommand
 {
-    public class UpdateAddressCommandResponse
+    public class UpdateAddressCommandResponse:GlobalResponseResult
     {
-        public string Message { get; set; }
-        public int StatusCode { get; set; }
+
     }
 }

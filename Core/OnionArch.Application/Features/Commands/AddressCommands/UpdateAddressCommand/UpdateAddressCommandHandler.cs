@@ -7,6 +7,7 @@ using OnionArch.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,24 +37,45 @@ namespace OnionArch.Application.Features.Commands.AddressCommands.UpdateAddressC
             currentAddres.City = request.City;
             currentAddres.Country = request.Country;
             currentAddres.District = request.District;
-            int result = await _addressWriteRepository.SaveAsync();
 
-            if (result > 0)
+
+            try
+            {
+                int result = await _addressWriteRepository.SaveAsync();
+
+                    if (result > 0)
+                    {
+                        return new()
+                        {
+                            Message = "Address Güncelleme başarılı",
+                            StatusCode = HttpStatusCode.OK,
+                            HassError = false,
+
+                        };
+                    }
+                    else
+                    {
+                        return new()
+                        {
+                            Message = "Address Güncelleme başarısız",
+                            StatusCode = HttpStatusCode.NotFound,
+                            HassError = true,
+                        };
+                    }
+            }
+            catch (Exception ex)
             {
                 return new()
                 {
-                    Message = "Düzenleme başarılı",
-                    StatusCode = StatusCodes.Status200OK
+                    Message = "Addres güncelleme işlemi başarısız sunucu taraflı bir hata",
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusCodeString = HttpStatusCode.InternalServerError.ToString(),
+                    HassError = true,
+                    ErrorMessage = ex.Message
                 };
             }
-            else
-            {
-                return new()
-                {
-                    Message = "Düzenleme başarısız",
-                    StatusCode = StatusCodes.Status500InternalServerError
-                };
-            }
+
+            
 
         }
     }

@@ -68,7 +68,7 @@ namespace OnionArch.Application.Features.Queries.CategoryQueries.GetAllCategory
                 // Response oluştur
                 var response = new GetAllCategoryResponse {
                     Categories = topLevelCategories,
-                    Message="Başarıyla Kategoriler gönderildi",
+                    Message="Başarıyla Kategoriler listelendi",
                     HassError=false,
                     StatusCode=HttpStatusCode.OK,
                     StatusCodeString=HttpStatusCode.OK.ToString(),
@@ -82,7 +82,7 @@ namespace OnionArch.Application.Features.Queries.CategoryQueries.GetAllCategory
                 var response = new GetAllCategoryResponse
                 {
                     Categories = null,
-                    Message = "Kategoriler oluşturulurken bir hata ile karşılaşıldı.",
+                    Message = "Kategoriler listelenirken bir hata ile karşılaşıldı.",
                     HassError = true,
                     StatusCode = HttpStatusCode.InternalServerError,
                     StatusCodeString = HttpStatusCode.InternalServerError.ToString(),

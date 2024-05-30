@@ -1,4 +1,5 @@
-﻿using OnionArch.Domain.Entities;
+﻿using OnionArch.Application.GlobalResponse;
+using OnionArch.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Queries.Address.GetAddress
 {
-    public class GetAddressResonse
+    public class GetAddressResonse:GlobalResponseResult
     {
-        public int StatusCode { get; set; }
-        public string Message { get; set; }
         public List<OnionArch.Domain.Entities.Address> Addresses { get; set; }
     }
 }

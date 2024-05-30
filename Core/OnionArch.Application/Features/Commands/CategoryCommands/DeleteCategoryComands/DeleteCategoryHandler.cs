@@ -30,11 +30,10 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.DeleteCategor
                 {
                     HassError = false,
                     Message = "Kategori silme işlemi başarılı",
-                    StatusCode = System.Net.HttpStatusCode.Accepted,
-                    ErrorMessage = null,
-                    StatusCodeString = System.Net.HttpStatusCode.Accepted.ToString()
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    StatusCodeString = System.Net.HttpStatusCode.OK.ToString()
                 };
-
+       
             }
             catch (Exception ex)
             {

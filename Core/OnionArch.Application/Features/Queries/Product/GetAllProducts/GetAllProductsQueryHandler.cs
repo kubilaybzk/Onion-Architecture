@@ -96,10 +96,8 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
                     HasPrev = hasPrevPage,
                     PageSize = pageSize,
                     Products = productResult,
-
-                    ErrorMessage = "",
                     HassError = false,
-                    Message = "Listeleme başarıyla gerçekleşmiştir.",
+                    Message = "Ürünler  başarıyla listelendi.",
                     StatusCode = System.Net.HttpStatusCode.OK,
                     StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
 
@@ -112,10 +110,9 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
                 _logger.LogError("Ürün listelerken bir hata oluştu.");
                 return new GetAllProductsQueryResponse()
                 {
-
                     ErrorMessage = ex.Message,
                     HassError = true,
-                    Message = "Listeleme işlemi sırasında bir hata ile karşılaşıldı.",
+                    Message = "Ürün Listeleme işlemi sırasında bir hata ile karşılaşıldı.",
                     StatusCode = System.Net.HttpStatusCode.InternalServerError,
                     StatusCodeString = System.Net.HttpStatusCode.InternalServerError.ToString(),
                 };

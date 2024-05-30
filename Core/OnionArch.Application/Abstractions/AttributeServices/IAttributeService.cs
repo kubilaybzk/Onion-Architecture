@@ -1,4 +1,5 @@
 ﻿using OnionArch.Application.GlobalResponse;
+using OnionArch.Application.View_Models.Attribute;
 using OnionArch.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,17 +13,14 @@ namespace OnionArch.Application.Abstractions.AttributeServices
         Task<AttributeValue> AddOrGetAttributeValueAsync(Guid attributeId, string value);
         Task<IEnumerable<Domain.Entities.Attribute>> GetAllAttributesAsync();
         Task<IEnumerable<AttributeValue>> GetAttributeValuesAsync(Guid attributeId);
-        Task<IEnumerable<ProductAttributeDto>> GetProductAttributesAsync(Guid productId);
-        Task AssignAttributesToProductAsync(Guid productId, IEnumerable<Guid> attributeValueIds);
-        Task RemoveAttributeFromProductAsync(Guid productId, Guid attributeValueId);
-        Task UpdateAttributeValueAsync(Guid attributeValueId, string newValue);
+        Task<IEnumerable<VM_Product_Attributes>> GetProductAttributesAsync(Guid productId);
+        Task <Boolean> AssignAttributesToProductAsync(Guid productId, IEnumerable<Guid> attributeValueIds);
+        Task<Boolean> RemoveAttributeFromProductAsync(Guid productId, Guid attributeValueId);
+        Task<Boolean> DeleteAttributeAsync (Guid attributeId);
+        Task<Boolean> DeleteAttributeValueAsync(Guid attributeId);
+        Task<Boolean> UpdateAttributeAsync(Guid attributeId,string AttributeName);
+        Task<Boolean> UpdateAttributeValueAsync(Guid attributeValueId, string newValue);
     }
 
-    public class ProductAttributeDto
-    {
-        public string? AttributeName { get; set; }
-        public string? AttributeValue { get; set; }
-        public string? AttributeId {  get; set; }
-        public string? AttributeValueId { get; set; }
-    }
+
 }

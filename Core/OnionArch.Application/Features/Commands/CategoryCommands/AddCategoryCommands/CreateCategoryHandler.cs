@@ -100,9 +100,8 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
 
                 return new CreateCategoryResponse()
                 {
-                    ErrorMessage = "",
                     HassError = false,
-                    Message = "Ekleme başarıyla gerçekleşmiştir.",
+                    Message = "Kategori Ekleme başarıyla gerçekleşmiştir.",
                     StatusCode = System.Net.HttpStatusCode.Created,
                     StatusCodeString = System.Net.HttpStatusCode.Created.ToString(),
                 };
@@ -113,7 +112,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
                 {
                     ErrorMessage = ex.Message.ToString(),
                     HassError = true,
-                    Message = "Ekleme işlemi sırasında sunucu kaynaklı bir hata.",
+                    Message = "Kategori Ekleme işlemi sırasında sunucu kaynaklı bir hata.",
                     StatusCode = System.Net.HttpStatusCode.InternalServerError,
                     StatusCodeString = System.Net.HttpStatusCode.InternalServerError.ToString(),
                 };

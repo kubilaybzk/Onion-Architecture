@@ -5,6 +5,7 @@ using OnionArch.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,23 +22,42 @@ namespace OnionArch.Application.Features.Queries.Address.GetAddress
 
         public async Task<GetAddressResonse> Handle(GetAddressRequest request, CancellationToken cancellationToken)
         {
-            var userAddresses= await _addressService.GetUserAddressesAsync();
-           if(userAddresses.Count > 0)
+            try
             {
-                return new GetAddressResonse()
+                var userAddresses = await _addressService.GetUserAddressesAsync();
+                if (userAddresses.Count > 0)
                 {
-                    Addresses = userAddresses,
-                    Message = "Başarılı",
-                    StatusCode = StatusCodes.Status200OK
-                };
+                    return new GetAddressResonse()
+                    {
+                        Addresses = userAddresses,
+                        HassError = false,
+                        Message = "Addresler başarıyla listelendi.",
+                        StatusCode = HttpStatusCode.OK,
+                        StatusCodeString = HttpStatusCode.OK.ToString()
+
+                    };
+                }
+                else
+                {
+                    return new GetAddressResonse()
+                    {
+                        Addresses = null,
+                        HassError = false,
+                        Message ="Addres listesinde bir address bulunamadı",
+                        StatusCode = HttpStatusCode.OK,
+                        StatusCodeString = HttpStatusCode.OK.ToString()
+                    };
+                }
             }
-            else
+            catch (Exception ex)
             {
                 return new GetAddressResonse()
                 {
                     Addresses = null,
-                    Message = "Başarısız",
-                    StatusCode = StatusCodes.Status404NotFound
+                    HassError=true,
+                    Message = "Addres listelenirken bir hata ile karşılaşıldı.",
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusCodeString = HttpStatusCode.InternalServerError.ToString()
                 };
             }
         }

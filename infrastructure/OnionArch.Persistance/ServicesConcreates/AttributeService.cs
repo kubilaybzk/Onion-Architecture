@@ -4,6 +4,7 @@ using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Repositories.AttributeCrud.AttributeCrud;
 using OnionArch.Application.Repositories.AttributeCrud.AttributeValueCrud;
 using OnionArch.Application.Repositories.AttributeCrud.ProductAttributeCrud;
+using OnionArch.Application.View_Models.Attribute;
 using OnionArch.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,7 @@ namespace OnionArch.Persistance.ServicesConcreates
             return await _attributeValueReadRepository.GetWhere(av => av.AttributeId == attributeId).ToListAsync();
         }
 
-        public async Task<IEnumerable<ProductAttributeDto>> GetProductAttributesAsync(Guid productId)
+        public async Task<IEnumerable<VM_Product_Attributes>> GetProductAttributesAsync(Guid productId)
         {
             var product = await _productReadRepository.GetWhere(p => p.ID == productId)
                 .Include(p => p.ProductAttributes)
@@ -104,7 +105,7 @@ namespace OnionArch.Persistance.ServicesConcreates
                 throw new Exception("Product not found");
             }
 
-            var productAttributes = product.ProductAttributes.Select(pa => new ProductAttributeDto
+            var productAttributes = product.ProductAttributes.Select(pa => new VM_Product_Attributes
             {
                 AttributeName = pa.AttributeValue.Attribute.Name,
                 AttributeId= pa.AttributeValue.Attribute.ID.ToString(),
@@ -115,12 +116,12 @@ namespace OnionArch.Persistance.ServicesConcreates
             return productAttributes;
         }
 
-        public async Task AssignAttributesToProductAsync(Guid productId, IEnumerable<Guid> attributeValueIds)
+        public async Task<bool> AssignAttributesToProductAsync(Guid productId, IEnumerable<Guid> attributeValueIds)
         {
             var product = await _productReadRepository.GetByIdAsync(productId.ToString());
             if (product == null)
             {
-                throw new Exception("Product not found");
+                return false;
             }
 
             product.ProductAttributes ??= new List<ProductAttribute>();
@@ -129,26 +130,39 @@ namespace OnionArch.Persistance.ServicesConcreates
 
             foreach (var attributeValueId in attributeValueIds)
             {
-                if (!existingProductAttributes.Any(pa => pa.AttributeValueId == attributeValueId))
+                var attributeValue = await _attributeValueReadRepository.GetByIdAsync(attributeValueId.ToString());
+                if (attributeValue == null)
                 {
-                    var attributeValue = await _attributeValueReadRepository.GetByIdAsync(attributeValueId.ToString());
-                    if (attributeValue != null)
+                    continue;
+                }
+
+                var existingProductAttribute = existingProductAttributes
+                    .FirstOrDefault(pa => pa.AttributeValue.AttributeId == attributeValue.AttributeId);
+
+                if (existingProductAttribute != null)
+                {
+                    // Eğer aynı Attribute adı altında bir AttributeValue zaten mevcutsa, sadece değerini güncelle
+                    existingProductAttribute.AttributeValue = attributeValue;
+                    _productAttributeWriteRepository.Update(existingProductAttribute);
+                }
+                else
+                {
+                    // Eğer aynı Attribute adı altında bir AttributeValue mevcut değilse, yeni bir özellik ekle
+                    var productAttribute = new ProductAttribute
                     {
-                        var productAttribute = new ProductAttribute
-                        {
-                            ProductId = productId,
-                            AttributeValueId = attributeValueId,
-                            AttributeValue = attributeValue
-                        };
-                        await _productAttributeWriteRepository.AddAsync(productAttribute);
-                    }
+                        ProductId = productId,
+                        AttributeValueId = attributeValueId,
+                        AttributeValue = attributeValue
+                    };
+                    await _productAttributeWriteRepository.AddAsync(productAttribute);
                 }
             }
 
             await _productWriteRepository.SaveAsync();
+            return true;
         }
 
-        public async Task RemoveAttributeFromProductAsync(Guid productId, Guid attributeValueId)
+        public async Task<bool> RemoveAttributeFromProductAsync(Guid productId, Guid attributeValueId)
         {
             var product = await _productReadRepository.GetWhere(p => p.ID == productId)
                 .Include(p => p.ProductAttributes)
@@ -156,7 +170,7 @@ namespace OnionArch.Persistance.ServicesConcreates
 
             if (product == null)
             {
-                throw new Exception("Product not found");
+                return false;
             }
 
             var productAttribute = product.ProductAttributes.FirstOrDefault(pa => pa.AttributeValueId == attributeValueId);
@@ -165,20 +179,69 @@ namespace OnionArch.Persistance.ServicesConcreates
                 product.ProductAttributes.Remove(productAttribute);
                 _productAttributeWriteRepository.Remove(productAttribute);
                 await _productWriteRepository.SaveAsync();
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
-        public async Task UpdateAttributeValueAsync(Guid attributeValueId, string newValue)
+        public async Task<bool> DeleteAttributeAsync(Guid attributeId)
+        {
+            var attribute = await _attributeReadRepository.GetByIdAsync(attributeId.ToString());
+            if (attribute == null)
+            {
+                return false;
+            }
+
+            _attributeWriteRepository.Remove(attribute);
+            await _attributeWriteRepository.SaveAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteAttributeValueAsync(Guid attributeValueId)
         {
             var attributeValue = await _attributeValueReadRepository.GetByIdAsync(attributeValueId.ToString());
             if (attributeValue == null)
             {
-                throw new Exception("Attribute value not found");
+                return false;
+            }
+
+            _attributeValueWriteRepository.Remove(attributeValue);
+            await _attributeValueWriteRepository.SaveAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateAttributeAsync(Guid attributeId, string AttributeName)
+        {
+            var attribute = await _attributeReadRepository.GetByIdAsync(attributeId.ToString());
+            if (attribute == null)
+            {
+                return false;
+            }
+            else
+            {
+            attribute.Name = AttributeName;
+            _attributeWriteRepository.Update(attribute);
+            await _attributeValueWriteRepository.SaveAsync();
+            return true;
+            }
+        }
+
+        public async Task<bool> UpdateAttributeValueAsync(Guid attributeValueId, string newValue)
+        {
+            var attributeValue = await _attributeValueReadRepository.GetByIdAsync(attributeValueId.ToString());
+            if (attributeValue == null)
+            {
+                return false;
             }
 
             attributeValue.Value = newValue;
             _attributeValueWriteRepository.Update(attributeValue);
             await _attributeValueWriteRepository.SaveAsync();
+            return true;
         }
+
     }
 }

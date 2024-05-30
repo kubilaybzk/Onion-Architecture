@@ -25,68 +25,82 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
 
         public async Task<GetProductByCategoryResponse> Handle(GetProductByCategoryRequest request, CancellationToken cancellationToken)
         {
-            // İlk olarak, ana kategoriyi ve ürünlerini yükleyin
-            var category = await _categoryReadRepository.GetWhere(p => p.CategorySlug == request.CategorySlug)
-                .Include(p => p.Products)
-                .ThenInclude(p=>p.ProductImageFiles)
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (category == null)
+            try
             {
-                // Kategori bulunamazsa, boş bir yanıt döndürün
+                // İlk olarak, ana kategoriyi ve ürünlerini yükleyin
+                var category = await _categoryReadRepository.GetWhere(p => p.CategorySlug == request.CategorySlug)
+                    .Include(p => p.Products)
+                    .ThenInclude(p => p.ProductImageFiles)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (category == null)
+                {
+                    // Kategori bulunamazsa, boş bir yanıt döndürün
+                    return new GetProductByCategoryResponse()
+                    {
+                        CategoryProducts = new List<VM_Result_ProductLink>()
+                    };
+                }
+
+                // Tüm ürünleri saklamak için bir liste oluşturun
+                var allProducts = new List<OnionArch.Domain.Entities.Product>();
+                allProducts.AddRange(category.Products);
+
+                // Alt kategorileri ve ürünlerini yüklemek için rekürsif fonksiyonu çağırın
+                await LoadSubCategoriesWithProducts(category, allProducts, cancellationToken);
+
+                var Result = allProducts.Select(p => new VM_Result_ProductLink()
+                {
+                    AppliedDiscountPrice = p.DiscountPrice,
+                    AppliedDiscountRate = p.DiscountRate,
+                    Brand = p.Brand,
+                    Condition = p.Condition,
+                    Currency = p.Currency,
+                    Description = p.Description,
+                    DiscountPrice = p.DiscountPrice,
+                    DiscountRate = p.DiscountRate,
+                    IsActive = p.IsActive,
+                    LastPrice = p.LastPrice,
+                    MaxOrderQuantity = p.MaxOrderQuantity,
+                    MinOrderQuantity = p.MinOrderQuantity,
+                    Model = p.Model,
+                    Name = p.Name,
+                    ProductCode = p.ProductCode,
+                    ProductImageFiles = p.ProductImageFiles.Select(p => new Domain.Entities.ProductImageFile
+                    {
+                        CreateTime = DateTime.Now,
+                        Path = p.Path,
+                        Showcase = p.Showcase,
+                        Storage = p.Storage,
+                        FileName = p.FileName,
+                        ID = p.ID,
+                    }).ToList(),
+                    StockQuantity = p.StockQuantity,
+                    UnitPrice = p.UnitPrice,
+
+                }).ToList();
+
                 return new GetProductByCategoryResponse()
                 {
-                    CategoryProducts = new List<VM_Result_ProductLink>()
+                    ErrorMessage = null,
+                    HassError = false,
+                    Message = "Kategoriye göre ürünleri çekme işlemi başarılı",
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
+                    CategoryProducts = Result
                 };
             }
-
-            // Tüm ürünleri saklamak için bir liste oluşturun
-            var allProducts = new List<OnionArch.Domain.Entities.Product>();
-            allProducts.AddRange(category.Products);
-
-            // Alt kategorileri ve ürünlerini yüklemek için rekürsif fonksiyonu çağırın
-            await LoadSubCategoriesWithProducts(category, allProducts, cancellationToken);
-
-            var Result = allProducts.Select(p => new VM_Result_ProductLink()
+            catch (Exception ex)
             {
-                AppliedDiscountPrice = p.DiscountPrice,
-                AppliedDiscountRate = p.DiscountRate,
-                Brand = p.Brand,
-                Condition = p.Condition,
-                Currency = p.Currency,
-                Description = p.Description,
-                DiscountPrice = p.DiscountPrice,
-                DiscountRate = p.DiscountRate,
-                IsActive = p.IsActive,
-                LastPrice = p.LastPrice,
-                MaxOrderQuantity = p.MaxOrderQuantity,
-                MinOrderQuantity = p.MinOrderQuantity,
-                Model=p.Model,
-                Name=p.Name,
-                ProductCode = p.ProductCode,
-                ProductImageFiles = p.ProductImageFiles.Select(p=>new Domain.Entities.ProductImageFile
+                return new GetProductByCategoryResponse()
                 {
-                    CreateTime = DateTime.Now,
-                    Path = p.Path,
-                    Showcase = p.Showcase,
-                    Storage = p.Storage,
-                    FileName = p.FileName,
-                    ID = p.ID,
-                }).ToList(),
-                StockQuantity = p.StockQuantity,
-                UnitPrice=p.UnitPrice,
-                
-            }).ToList();
-
-            return new GetProductByCategoryResponse()
-            {
-                ErrorMessage = null,
-                HassError = false,
-                Message = "Kategorileri çekme işlemi başarılı",
-                StatusCode = System.Net.HttpStatusCode.OK,
-                StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
-                CategoryProducts = Result
-            };
+                    ErrorMessage = ex.Message.ToString(),
+                    HassError = true,
+                    Message = "Kategoriye göre ürünleri çekme işlemi başarısız",
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
+                };
+            }
         }
 
         private async Task LoadSubCategoriesWithProducts(Category category, List<OnionArch.Domain.Entities.Product> allProducts, CancellationToken cancellationToken)
