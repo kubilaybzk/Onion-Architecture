@@ -1,4 +1,5 @@
 ﻿using OnionArch.Application.GlobalResponse;
+using OnionArch.Application.View_Models.Product;
 using System;
 namespace OnionArch.Application.Features.Queries.Product.Product.GetAllProducts
 {

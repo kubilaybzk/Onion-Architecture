@@ -21,9 +21,9 @@ namespace OnionArch.WebApi.Controllers
         {
             _mediator = mediator;
         }
-        [AllowAnonymous]
+       
+
         [HttpPost("CreateCategory")]
-        
         public async Task<IActionResult> CreateCategory([FromForm] CreateCategoryRequest createCategoryRequest)
         {
             CreateCategoryResponse CategoryResponse = await _mediator.Send(createCategoryRequest);
@@ -62,7 +62,7 @@ namespace OnionArch.WebApi.Controllers
                     return StatusCode((int)CategoryResponse.StatusCode, CategoryResponse);
             }
         }
-        [AllowAnonymous]
+
         [HttpDelete("DeleteCategory")]
         public async Task<IActionResult> DeleteCategory([FromQuery] DeleteCategoryRequest deleteCategoryRequest)
         {
@@ -82,7 +82,7 @@ namespace OnionArch.WebApi.Controllers
             }
         }
 
-        [AllowAnonymous]
+   
         [HttpPut("UpdateCategory")]
         public async Task<IActionResult> UpdateCategory([FromForm] UpdateCategoryRequest updateCategoryRequest)
         {

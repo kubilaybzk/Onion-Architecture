@@ -3,6 +3,7 @@ using OnionArch.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ namespace OnionArch.Application.View_Models.Product
 
     public class VM_Result_ProductLink
     {
+        public Guid Id { get; set; }
         public string Name { get; set; } // Ürün adı
         public string Description { get; set; } // Ürün açıklaması
         public string Brand { get; set; } // Ürün markası
@@ -34,5 +36,6 @@ namespace OnionArch.Application.View_Models.Product
         public bool IsActive { get; set; } // Ürün aktif mi?
         public List<ProductImageFile>? ProductImageFiles { get; set; }
         public List<VM_Result_CategoryList>? CategoryLists { get; set; }
+        public List<ProductAttribute>? ProductAttributes { get; set; }
     }
 }

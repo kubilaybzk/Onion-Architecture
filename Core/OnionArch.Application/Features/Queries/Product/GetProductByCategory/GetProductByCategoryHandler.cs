@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Features.Queries.CategoryQueries.GetOnlyCategoryName;
 using OnionArch.Application.Repositories.CategoryCrud;
+using OnionArch.Application.View_Models.Category;
 using OnionArch.Application.View_Models.Product;
 using OnionArch.Domain.Entities;
 using System;
@@ -38,7 +39,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
                     // Kategori bulunamazsa, boş bir yanıt döndürün
                     return new GetProductByCategoryResponse()
                     {
-                        CategoryProducts = new List<VM_Result_ProductLink>()
+                        Products = new List<VM_Result_ProductLink>()
                     };
                 }
 
@@ -54,28 +55,38 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
                     AppliedDiscountPrice = p.DiscountPrice,
                     AppliedDiscountRate = p.DiscountRate,
                     Brand = p.Brand,
+                    CategoryLists = p.Categorys.Select(p=>new VM_Result_CategoryList() {
+                        MaterializedPathByName = p.MaterializedPathByName,
+                        MaterializedPathBySlug = p.MaterializedPathBySlug,
+                        MaterializedPath = p.MaterializedPath
+                    }).ToList(),
                     Condition = p.Condition,
                     Currency = p.Currency,
                     Description = p.Description,
                     DiscountPrice = p.DiscountPrice,
                     DiscountRate = p.DiscountRate,
+                    Id = Guid.Parse(p.ID.ToString()),
                     IsActive = p.IsActive,
+                    KDVRate = p.KDVRate,
                     LastPrice = p.LastPrice,
                     MaxOrderQuantity = p.MaxOrderQuantity,
                     MinOrderQuantity = p.MinOrderQuantity,
                     Model = p.Model,
                     Name = p.Name,
+                    ProductAttributes = null,
                     ProductCode = p.ProductCode,
-                    ProductImageFiles = p.ProductImageFiles.Select(p => new Domain.Entities.ProductImageFile
+                    ProductImageFiles = p.ProductImageFiles.Select(p => new Domain.Entities.ProductImageFile()
                     {
+                        FileName = p.FileName,
                         CreateTime = DateTime.Now,
+                        ID = p.ID,
                         Path = p.Path,
                         Showcase = p.Showcase,
                         Storage = p.Storage,
-                        FileName = p.FileName,
-                        ID = p.ID,
+                        UpdateTime = DateTime.Now,
                     }).ToList(),
                     StockQuantity = p.StockQuantity,
+                    Tax = p.Tax,
                     UnitPrice = p.UnitPrice,
 
                 }).ToList();
@@ -87,7 +98,12 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
                     Message = "Kategoriye göre ürünleri çekme işlemi başarılı",
                     StatusCode = System.Net.HttpStatusCode.OK,
                     StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
-                    CategoryProducts = Result
+                    Products = Result,
+                    CategoryName= category.CategoryName,
+                    MemorizedPath=category.MaterializedPath,
+                    MaterializedPathByName= category.MaterializedPathByName,
+                    MaterializedPathBySlug = category.MaterializedPathBySlug
+                    
                 };
             }
             catch (Exception ex)

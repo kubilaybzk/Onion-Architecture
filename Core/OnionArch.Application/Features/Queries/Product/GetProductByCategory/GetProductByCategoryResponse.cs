@@ -13,6 +13,10 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
         public string MemorizedPath { get; set; }
         public string CategoryName { get; set; }
 
-        public List<VM_Result_ProductLink> CategoryProducts { get; set; }
+        public string MaterializedPathByName { get; set; }
+
+        public string MaterializedPathBySlug { get; set; }
+
+        public List<VM_Result_ProductLink> Products { get; set; }
     }
 }

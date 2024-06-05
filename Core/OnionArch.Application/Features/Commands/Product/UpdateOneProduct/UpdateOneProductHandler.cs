@@ -33,6 +33,7 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateOneProduct
                     // Ürün bulunamadıysa 404 Not Found durum kodunu döndürebilirsiniz.
                     return new UpdateOneProductResponse
                     {
+                        isUpdated=false,
                         ErrorMessage = null,
                         HassError = true,
                         Message = "Güncelleme işlemi başarısız",
@@ -70,6 +71,7 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateOneProduct
 
                 return new UpdateOneProductResponse
                 {
+                    isUpdated=true,
                     Product = productResult,
                     ErrorMessage = null,
                     HassError = false,
@@ -84,6 +86,7 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateOneProduct
                 // Hata durumunda 500 Internal Server Error durum kodunu döndürebilirsiniz.
                 return new UpdateOneProductResponse
                 {
+                    isUpdated = false,
                     ErrorMessage = ex.Message,
                     HassError = true,
                     Message = "Bir hata oluştu",

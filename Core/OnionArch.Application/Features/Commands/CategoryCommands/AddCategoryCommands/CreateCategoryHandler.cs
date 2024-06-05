@@ -100,6 +100,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
 
                 return new CreateCategoryResponse()
                 {
+                    isCreated = true,
                     HassError = false,
                     Message = "Kategori Ekleme başarıyla gerçekleşmiştir.",
                     StatusCode = System.Net.HttpStatusCode.Created,
@@ -110,6 +111,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
             {
                 return new CreateCategoryResponse()
                 {
+                    isCreated = false,
                     ErrorMessage = ex.Message.ToString(),
                     HassError = true,
                     Message = "Kategori Ekleme işlemi sırasında sunucu kaynaklı bir hata.",

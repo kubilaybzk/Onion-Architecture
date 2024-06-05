@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,8 @@ namespace OnionArch.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = "Admin")]
+
     public class AttributesController : ControllerBase
     {
         private readonly IAttributeService _attributeService;
@@ -33,7 +36,7 @@ namespace OnionArch.WebApi.Controllers
             _attributeService = attributeService;
             _mediator = mediator;
         }
-
+        [AllowAnonymous]
         [HttpGet("GetAllAttributes")]
         public async Task<IActionResult> GetAllAttributes([FromQuery] GetAllAttributesRequest request)
         {
@@ -51,7 +54,8 @@ namespace OnionArch.WebApi.Controllers
                     return StatusCode((int)attributes.StatusCode, attributes);
             }
         }
-
+        
+        [AllowAnonymous]
         [HttpGet("GetAttributeValues")]
         public async Task<IActionResult> GetAttributeValues([FromQuery]GetAllAttributeValuesRequest request )
         {
@@ -69,7 +73,8 @@ namespace OnionArch.WebApi.Controllers
                     return StatusCode((int)attributes.StatusCode, attributes);
             }
         }
-
+        
+        [AllowAnonymous]
         [HttpGet("GetProductAttributes")]
         public async Task<IActionResult> GetProductAttributes([FromQuery] GetProductAttributesRequest request)
         {

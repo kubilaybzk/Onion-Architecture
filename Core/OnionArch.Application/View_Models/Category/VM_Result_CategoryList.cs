@@ -9,6 +9,7 @@ namespace OnionArch.Application.View_Models.Category
 {
     public class VM_Result_CategoryList
     {
+        public Guid Id { get; set; }
         public string CategoryName { get; set; }
         public string CategoryLinkTitle { get; set; }
         public Guid? ParentCategoryId { get; set; }
@@ -20,6 +21,9 @@ namespace OnionArch.Application.View_Models.Category
         public string MaterializedPathByName { get; set; } 
         public string MaterializedPathBySlug { get; set; } 
         public Boolean IsSpecialCategory { get; set; } 
-        public Boolean IsCampanyCategory { get; set; } 
+        public Boolean IsCampanyCategory { get; set; }
+        public List<VM_Result_CategoryList>? SubCategories { get; set; } // List<Category> olarak değiştirildi
+        public ICollection<CategoryImageFile>? CategoryImageFiles { get; set; }
+        public ICollection<CategoryAttribute>? CategoryAttributes { get; set; }
     }
 }

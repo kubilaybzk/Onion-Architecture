@@ -28,6 +28,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.DeleteCategor
                 await _categoryWriteRepository.SaveAsync();
                 return new DeleteCategoryResponse()
                 {
+                    isDeleted = true,
                     HassError = false,
                     Message = "Kategori silme işlemi başarılı",
                     StatusCode = System.Net.HttpStatusCode.OK,
@@ -40,6 +41,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.DeleteCategor
 
                 return new DeleteCategoryResponse()
                 {
+                    isDeleted=false,
                     HassError = true,
                     Message = "Kategori silme işlemi başarısız ",
                     StatusCode = System.Net.HttpStatusCode.InternalServerError,

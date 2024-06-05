@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Features.Queries.Product.Product.GetAllProducts;
+using OnionArch.Application.View_Models.Category;
+using OnionArch.Application.View_Models.Product;
 using OnionArch.Domain.Entities;
 
 namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
@@ -52,34 +54,42 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
                 var pagedProductQuery = productQuery.Skip(request.Size * request.Page).Take(request.Size);
                 int pageSize = await pagedProductQuery.CountAsync();
                 var productResult = await pagedProductQuery
-                .Select(p => new
+                .Select(p => new VM_Result_ProductLink()
                 {
-                    p.Name,// Ürün adı
-                    p.Description,// Ürün açıklaması
-                    p.Brand,// Ürün markası
-                    p.Model,// Ürün modeli
-                    p.Categorys,// Ürün kategorisi
-                    p.ProductCode,// Ürün kodu
-                    p.UnitPrice,// Birim fiyatı
-                    p.DiscountRate,// İndirim oranı
-                    p.DiscountPrice,// İndirimli fiyatı
-                    p.AppliedDiscountRate,// İndirim oranı uygulanmış hali
-                    p.AppliedDiscountPrice,// İndirimli fiyat uygulanmış hali
-                    p.Tax,// Vergi miktarı
-                    p.KDVRate,// KDV oranı
-                    p.LastPrice,//Tüm hesaplamalardan sonraki fiyat
-                    p.Currency,// Para birimi
-                    p.StockQuantity,// Stok miktarı
-                    p.MinOrderQuantity,// Minimum stok seviyesi
-                    p.MaxOrderQuantity,// Maksimum stok seviyesi
-                    p.Condition,// Ürün durumu (yeni, kullanılmış, yenilenmiş)
-                    p.IsActive,// Ürün aktif mi?
-                    p.CreateTime,
-                    p.UpdateTime,
-                    p.ID,
-                    p.ProductImageFiles
-
-                })
+                    AppliedDiscountPrice = p.DiscountPrice,
+                    AppliedDiscountRate = p.DiscountRate,
+                    Brand=p.Brand,
+                    CategoryLists=null,
+                    Condition=p.Condition,
+                    Currency=p.Currency,
+                    Description=p.Description,
+                    DiscountPrice=p.DiscountPrice,
+                    DiscountRate=p.DiscountRate,
+                    Id = Guid.Parse(p.ID.ToString()),
+                    IsActive=p.IsActive,
+                    KDVRate=p.KDVRate,
+                    LastPrice=p.LastPrice,
+                    MaxOrderQuantity=p.MaxOrderQuantity,
+                    MinOrderQuantity=p.MinOrderQuantity,
+                    Model = p.Model,
+                    Name = p.Name,
+                    ProductAttributes = null,
+                    ProductCode = p.ProductCode,
+                    ProductImageFiles = p.ProductImageFiles.Select(p=>new Domain.Entities.ProductImageFile()
+                    {
+                        FileName = p.FileName,
+                        CreateTime = DateTime.Now,
+                        ID=p.ID,
+                        Path=p.Path,
+                        Showcase=p.Showcase,
+                        Storage = p.Storage,
+                        UpdateTime=DateTime.Now,
+                    }).ToList(),
+                    StockQuantity=p.StockQuantity,
+                    Tax=p.Tax,
+                    UnitPrice = p.UnitPrice,
+                }
+                )
                 .ToListAsync();
                 // JSON dönüşümü için liste haline getiriyoruz
 

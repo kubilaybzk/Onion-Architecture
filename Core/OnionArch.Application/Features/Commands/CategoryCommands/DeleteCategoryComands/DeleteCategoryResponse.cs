@@ -9,5 +9,6 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.DeleteCategor
 {
     public class DeleteCategoryResponse : GlobalResponseResult
     {
+        public bool isDeleted { get; set; }
     }
 }

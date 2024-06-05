@@ -86,11 +86,6 @@ namespace OnionArch.API.Controllers
             }
         }
 
-        
-        [HttpPost("CreateOneProduct")]
-        
- 
-
 
         [HttpPut("UpdateProductById")]
         public async Task<IActionResult> UpdateProduct(UpdateOneProductRequest updateOneProductRequest)
@@ -130,7 +125,7 @@ namespace OnionArch.API.Controllers
                     return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
             }
         }
-        [AllowAnonymous]
+
         [HttpPost("CreateOneProductWithImage")]
 
         public async Task<IActionResult> CreateOneProductWithImage([FromForm] CreateOneProductWithImageRequest createOneProductWithImageRequest)

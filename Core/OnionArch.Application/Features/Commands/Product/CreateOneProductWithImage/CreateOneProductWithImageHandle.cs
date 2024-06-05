@@ -116,6 +116,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
 
             return new CreateOneProductWithImageResponse
             {
+                isCreated = true,
                 ErrorMessage = "",
                 HassError = false,
                 Message = "Ürün ekleme işlemi başarıyla gerçekleşti",
@@ -128,6 +129,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
             _logger.LogError($"Ürün eklenirken bir sorun ile karşılaşıldı: {ex.Message}");
             return new CreateOneProductWithImageResponse
             {
+                isCreated=false,
                 ErrorMessage = ex.Message,
                 HassError = true,
                 Message = "Ürün ekleme işlemi sırasında bir hata ile karşılaşıldı.",

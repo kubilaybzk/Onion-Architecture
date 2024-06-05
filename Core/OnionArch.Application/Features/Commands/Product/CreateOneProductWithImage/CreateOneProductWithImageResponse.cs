@@ -7,6 +7,7 @@ namespace OnionArch.Application.Features.Commands.Product.CreateOneProductWithIm
 	{
 
         public P.Product CreatedProduct { get; set; }
+        public bool isCreated { get; set; }
     }
 }
 

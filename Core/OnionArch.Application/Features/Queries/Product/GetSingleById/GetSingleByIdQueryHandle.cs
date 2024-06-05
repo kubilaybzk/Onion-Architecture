@@ -4,6 +4,7 @@ using OnionArch.Application.Abstractions.ProductCrud;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using OnionArch.Application.View_Models.Product;
+using OnionArch.Application.View_Models.Category;
 
 namespace OnionArch.Application.Features.Queries.Product.GetSingleById
 {
@@ -42,45 +43,42 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
                     var productresult = product.Select(p => new VM_Result_ProductLink()
                     {
                         AppliedDiscountPrice = p.DiscountPrice,
-                        ProductImageFiles = p.ProductImageFiles.Select(p => new Domain.Entities.ProductImageFile()
-                        {
-                            ID = p.ID,
-                            FileName = p.FileName,
-                            Path = p.Path,
-                            Showcase = p.Showcase,
-                            Storage = p.Storage,
-                        }).ToList(),
                         AppliedDiscountRate = p.DiscountRate,
                         Brand = p.Brand,
+                        CategoryLists = p.Categorys.Select(p=>new VM_Result_CategoryList()
+                        {
+                            MaterializedPathByName = p.MaterializedPathByName,
+                            MaterializedPathBySlug = p.MaterializedPathBySlug,
+                        }).ToList(),
                         Condition = p.Condition,
                         Currency = p.Currency,
                         Description = p.Description,
                         DiscountPrice = p.DiscountPrice,
                         DiscountRate = p.DiscountRate,
-                        KDVRate = p.KDVRate,
+                        Id = Guid.Parse(p.ID.ToString()),
                         IsActive = p.IsActive,
+                        KDVRate = p.KDVRate,
                         LastPrice = p.LastPrice,
                         MaxOrderQuantity = p.MaxOrderQuantity,
                         MinOrderQuantity = p.MinOrderQuantity,
                         Model = p.Model,
                         Name = p.Name,
+                        ProductAttributes = null,
                         ProductCode = p.ProductCode,
+                        ProductImageFiles = p.ProductImageFiles.Select(p => new Domain.Entities.ProductImageFile()
+                        {
+                            FileName = p.FileName,
+                            CreateTime = DateTime.Now,
+                            ID = p.ID,
+                            Path = p.Path,
+                            Showcase = p.Showcase,
+                            Storage = p.Storage,
+                            UpdateTime = DateTime.Now,
+                        }).ToList(),
                         StockQuantity = p.StockQuantity,
                         Tax = p.Tax,
                         UnitPrice = p.UnitPrice,
-                        CategoryLists = p.Categorys.Select(p => new View_Models.Category.VM_Result_CategoryList()
-                        {
-                            CategoryDisplayStatus = p.CategoryDisplayStatus,
-                            CategoryLinkTitle = p.CategoryLinkTitle,
-                            CategoryName = p.CategoryName,
-                            CategorySlug = p.CategorySlug,
-                            MaterializedPath = p.MaterializedPath,
-                            IsSpecialCategory = p.IsSpecialCategory,
-                            IsCampanyCategory = p.IsCampanyCategory,
-                            MaterializedPathByName = p.MaterializedPathByName,
-                            MaterializedPathBySlug = p.MaterializedPathBySlug,
-                        }).ToList()
-                    }); 
+                    }).ToList(); 
                    
                     result.Products = productresult;
                     result.ErrorMessage = "";

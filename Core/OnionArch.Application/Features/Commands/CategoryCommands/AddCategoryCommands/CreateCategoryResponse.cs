@@ -9,5 +9,6 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
 {
     public class CreateCategoryResponse: GlobalResponseResult
     {
+        public Boolean isCreated {  get; set; }
     }
 }

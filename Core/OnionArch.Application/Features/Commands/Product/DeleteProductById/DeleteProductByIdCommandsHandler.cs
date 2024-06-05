@@ -27,6 +27,7 @@ namespace OnionArch.Application.Features.Commands.Product.DeleteProductById
                     await _productWriteRepository.SaveAsync();
                 return new DeleteProductByIdCommandsResponse
                 {
+                    isDeleted=true,
                     ErrorMessage = "",
                     HassError = false,
                     Message = "Silme başarıyla gerçekleşmiştir.",
@@ -37,6 +38,7 @@ namespace OnionArch.Application.Features.Commands.Product.DeleteProductById
             else { 
                     return new DeleteProductByIdCommandsResponse
                     {
+                        isDeleted=false,
                         ErrorMessage = "",
                         HassError = false,
                         Message = "Silme başarıyla başarısız.",
