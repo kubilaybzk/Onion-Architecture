@@ -21,8 +21,8 @@ namespace OnionArch.WebApi.Controllers
         {
             _mediator = mediator;
         }
-       
 
+        [AllowAnonymous]
         [HttpPost("CreateCategory")]
         public async Task<IActionResult> CreateCategory([FromForm] CreateCategoryRequest createCategoryRequest)
         {

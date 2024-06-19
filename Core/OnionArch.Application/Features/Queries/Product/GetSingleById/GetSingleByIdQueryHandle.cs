@@ -49,6 +49,8 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
                         {
                             MaterializedPathByName = p.MaterializedPathByName,
                             MaterializedPathBySlug = p.MaterializedPathBySlug,
+                            Id=p.ID,
+                            CategoryName= p.CategoryName,
                         }).ToList(),
                         Condition = p.Condition,
                         Currency = p.Currency,
@@ -78,6 +80,9 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
                         StockQuantity = p.StockQuantity,
                         Tax = p.Tax,
                         UnitPrice = p.UnitPrice,
+                        MaterializedProductPath = p.MaterializedProductPath,
+                        MaterializedProductPathByName = p.MaterializedProductPathByName,
+                        MaterializedProductPathBySlug = p.MaterializedProductPathBySlug
                     }).ToList(); 
                    
                     result.Products = productresult;

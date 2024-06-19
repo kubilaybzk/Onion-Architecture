@@ -671,6 +671,18 @@ namespace OnionArch.Persistance.Migrations
                     b.Property<decimal>("LastPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("MaterializedProductPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaterializedProductPathByName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaterializedProductPathBySlug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MaxOrderQuantity")
                         .HasColumnType("int");
 

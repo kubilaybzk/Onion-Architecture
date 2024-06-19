@@ -26,6 +26,9 @@ namespace OnionArch.Domain.Entities
         public int MaxOrderQuantity { get; set; } = 99; // Maksimum sipariş adeti
         public string Condition { get; set; } // Ürün durumu (yeni, kullanılmış, yenilenmiş)
         public bool IsActive { get; set; } // Ürün aktif mi?
+        public string MaterializedProductPath { get; set; } = "";
+        public string MaterializedProductPathByName { get; set; } = "";
+        public string MaterializedProductPathBySlug { get; set; } = "";
 
         //Bir ürün birden fazla sipariş içerebilir Many-to-many relation
         public ICollection<Order> Orders { get; set; }

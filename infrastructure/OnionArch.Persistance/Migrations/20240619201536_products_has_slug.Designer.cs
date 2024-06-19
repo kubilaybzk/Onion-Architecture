@@ -12,8 +12,8 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20240525224759_mig_last")]
-    partial class mig_last
+    [Migration("20240619201536_products_has_slug")]
+    partial class products_has_slug
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -673,6 +673,18 @@ namespace OnionArch.Persistance.Migrations
 
                     b.Property<decimal>("LastPrice")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("MaterializedProductPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaterializedProductPathByName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaterializedProductPathBySlug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaxOrderQuantity")
                         .HasColumnType("int");

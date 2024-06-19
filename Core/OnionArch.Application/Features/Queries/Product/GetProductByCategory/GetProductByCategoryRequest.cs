@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OnionArch.Application.CQRS_Globals.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
         public string? CategorySlug { get; set; }
         public string? Id { get; set; }
         public string? CategoryName { get; set; }
+        public GlobalPaginationRequest  PaginationValues { get; set; }
+
     }
 }

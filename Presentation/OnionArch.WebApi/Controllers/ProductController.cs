@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnionArch.Application.Features.Commands.Product.CreateOneProductWithImage;
 using OnionArch.Application.Features.Commands.Product.DeleteProductById;
-using OnionArch.Application.Features.Commands.Product.UpdateOneProduct;
+using OnionArch.Application.Features.Commands.Product.UpdateProductByIDCommands;
 using OnionArch.Application.Features.Queries.Product.GetAllProducts;
+using OnionArch.Application.Features.Queries.Product.GetLatesProducts;
 using OnionArch.Application.Features.Queries.Product.GetProductByCategory;
 using OnionArch.Application.Features.Queries.Product.GetSingleById;
 using OnionArch.Application.Features.Queries.Product.Product.GetAllProducts;
@@ -87,24 +88,7 @@ namespace OnionArch.API.Controllers
         }
 
 
-        [HttpPut("UpdateProductById")]
-        public async Task<IActionResult> UpdateProduct(UpdateOneProductRequest updateOneProductRequest)
-        {
-            UpdateOneProductResponse ProductResponse = await _mediator.Send(updateOneProductRequest);
 
-            switch (ProductResponse.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return Ok(ProductResponse);
-                case HttpStatusCode.BadRequest:
-                    return BadRequest(ProductResponse);
-                case HttpStatusCode.NotFound:
-                    return NotFound(ProductResponse);
-                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
-                default:
-                    return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
-            }
-        }
 
 
         [HttpDelete("DeleteProductById")]
@@ -126,14 +110,62 @@ namespace OnionArch.API.Controllers
             }
         }
 
-        [HttpPost("CreateOneProductWithImage")]
 
+        [AllowAnonymous]
+        [HttpPost("CreateOneProductWithImage")]
         public async Task<IActionResult> CreateOneProductWithImage([FromForm] CreateOneProductWithImageRequest createOneProductWithImageRequest)
         {
             //Nasıl yollayacağımızı bulamadım normalde null gönderiyor ilerleyen aşamada düzeltilecek.
             createOneProductWithImageRequest.ImageFiles = Request.Form.Files;
 
             CreateOneProductWithImageResponse ProductResponse = await _mediator.Send(createOneProductWithImageRequest);
+
+            switch (ProductResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(ProductResponse);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(ProductResponse);
+                case HttpStatusCode.NotFound:
+                    return NotFound(ProductResponse);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetLatesCreatedProducts")]
+
+        public async Task<IActionResult> GetLatesCreatedProducts([FromQuery] GetLatesProductsRequest getLatesProductsRequest)
+        {
+
+            GetLatesProductsResponse ProductResponse = await _mediator.Send(getLatesProductsRequest);
+
+            switch (ProductResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(ProductResponse);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(ProductResponse);
+                case HttpStatusCode.NotFound:
+                    return NotFound(ProductResponse);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
+            }
+        }
+
+
+
+        [HttpPut("UpdateProduct")]
+
+        public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductByIDCommandsRequest updateProductByIDCommandsRequest)
+        {
+            //Nasıl yollayacağımızı bulamadım normalde null gönderiyor ilerleyen aşamada düzeltilecek.
+            updateProductByIDCommandsRequest.ImageFiles = Request.Form.Files;
+
+            UpdateProductByIDCommandsResponse ProductResponse = await _mediator.Send(updateProductByIDCommandsRequest);
 
             switch (ProductResponse.StatusCode)
             {

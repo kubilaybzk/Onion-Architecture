@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using OnionArch.Application.Abstractions.ProductCrud;
-using OnionArch.Application.Features.Commands.Product.UpdateOneProduct;
 using OnionArch.Domain.Entities;
 
 namespace OnionArch.Application.Features.Commands.Product.DeleteProductById

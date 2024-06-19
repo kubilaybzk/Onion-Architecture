@@ -2,12 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnionArch.Application.Abstractions.AttributeServices;
+using OnionArch.Application.Abstractions.CategoryServices;
 using OnionArch.Application.Abstractions.HubServices;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Abstractions.Storage;
 using OnionArch.Application.Features.Commands.Product.CreateOneProductWithImage;
 using OnionArch.Application.Repositories.CategoryCrud;
 using OnionArch.Domain.Entities;
+using System.Text.RegularExpressions;
 
 public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductWithImageRequest, CreateOneProductWithImageResponse>
 {
@@ -16,19 +18,21 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
     private readonly ILogger<CreateOneProductWithImageHandle> _logger;
     private readonly IProductHubService _productHubService;
     private readonly ICategoryReadRepository _categoryReadRepository;
+ 
 
     public CreateOneProductWithImageHandle(IStorageService storageService,
                                             ILogger<CreateOneProductWithImageHandle> logger,
                                             IProductHubService productHubService,
                                             IProductWriteRepository productWriteRepository,
-                                            ICategoryReadRepository categoryReadRepository)
+                                            ICategoryReadRepository categoryReadRepository,
+                                             )
     {
         _storageService = storageService;
         _productWriteRepository = productWriteRepository;
         _logger = logger;
         _productHubService = productHubService;
         _categoryReadRepository = categoryReadRepository;
-   
+ 
     }
 
     public async Task<CreateOneProductWithImageResponse> Handle(CreateOneProductWithImageRequest request, CancellationToken cancellationToken)
@@ -36,7 +40,18 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
         try
         {
             var result = await _storageService.UploadAsync("product-images", request.ImageFiles);
-            var category = await _categoryReadRepository.GetWhere(c => c.ID == Guid.Parse(request.Category)).FirstOrDefaultAsync(); //ÜRÜNÜN KATEGORİSİNİ BELİRTMEK İÇİN.
+            //var category = await _categoryReadRepository.GetWhere(c => c.ID == Guid.Parse(request.Categories)).FirstOrDefaultAsync(); //ÜRÜNÜN KATEGORİSİNİ BELİRTMEK İÇİN.
+             
+            List<Category> categories = new List<Category>();
+            foreach (var item in request.Categories)
+            {
+                var category = await _categoryReadRepository.GetWhere(c => c.ID == Guid.Parse(item)).FirstOrDefaultAsync();
+                if (category != null)
+                {
+                    categories.Add(category);
+                }
+            }
+
             // İndirim oranı ve fiyatının uygulanması
             decimal appliedDiscountRate = 0;
             decimal appliedDiscountPrice = 0;
@@ -99,14 +114,16 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
                 Condition = ValidateCondition(request.Condition), // Durumun doğrulanması
                 Brand = request.Brand,
                 Description = request.Description,
-                Categorys = new List<Category> { category },
+                Categorys = categories,
                 IsActive = request.IsActive,
                 MaxOrderQuantity = request.MaxOrderQuantity,
                 MinOrderQuantity = request.MinOrderQuantity,
                 ProductCode = request.ProductCode,
                 StockQuantity = request.StockQuantity,
                 Model = request.Model,
-                ProductAttributes = new List<ProductAttribute>()
+                MaterializedProductPath=  GenerateSlug(request.Name),
+                MaterializedProductPathByName =  GenerateSlug(request.Name),
+                MaterializedProductPathBySlug =  GenerateSlug(string.Concat(request.Brand,"-",request.Name))
             };
 
             await _productWriteRepository.AddAsync(product);
@@ -145,5 +162,34 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
         // Condition sadece belirli değerleri alabilir: "Yeni", "Kullanılmış", "Yenilenmiş"
         string[] validConditions = { "Yeni", "Kullanılmış", "Yenilenmiş" };
         return validConditions.Contains(condition) ? condition : "Yeni"; // Varsayılan değer "Yeni" olarak ayarlanır
+    }
+    public string GenerateSlug(string phrase)
+    {
+        // Türkçe karakterleri çıkar
+        string str = RemoveTurkishCharacters(phrase).ToLower();
+
+        // Geçersiz karakterleri temizle
+        str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
+        // Birden fazla boşluğu tek boşluğa dönüştür
+        str = Regex.Replace(str, @"\s+", " ").Trim();
+        // 45 karakteri aşmayacak şekilde kırp ve boşlukları kes
+        str = str.Substring(0, Math.Min(str.Length, 45)).Trim();
+        // Boşlukları tireye dönüştür
+        str = Regex.Replace(str, @"\s", "-");
+
+        return str;
+    }
+
+    public string RemoveTurkishCharacters(string input)
+    {
+        // Türkçe karakterleri çevirme
+        input = input.Replace("ı", "i").Replace("İ", "I")
+                     .Replace("ş", "s").Replace("Ş", "S")
+                     .Replace("ğ", "g").Replace("Ğ", "G")
+                     .Replace("ç", "c").Replace("Ç", "C")
+                     .Replace("ö", "o").Replace("Ö", "O")
+                     .Replace("ü", "u").Replace("Ü", "U");
+
+        return input;
     }
 }

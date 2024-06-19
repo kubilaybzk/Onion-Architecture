@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
@@ -21,8 +22,6 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
         {
             _categoryReadRepository = categoryReadRepository;
         }
-
-
 
         public async Task<GetProductByCategoryResponse> Handle(GetProductByCategoryRequest request, CancellationToken cancellationToken)
         {
@@ -50,12 +49,22 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
                 // Alt kategorileri ve ürünlerini yüklemek için rekürsif fonksiyonu çağırın
                 await LoadSubCategoriesWithProducts(category, allProducts, cancellationToken);
 
-                var Result = allProducts.Select(p => new VM_Result_ProductLink()
+                // Toplam ürün sayısı
+                var totalCount = allProducts.Count;
+
+                // Sayfalama işlemi
+                var paginatedProducts = allProducts
+                    .Skip(request.PaginationValues.Page * request.PaginationValues.Size)
+                    .Take(request.PaginationValues.Size)
+                    .ToList();
+
+                var Result = paginatedProducts.Select(p => new VM_Result_ProductLink()
                 {
                     AppliedDiscountPrice = p.DiscountPrice,
                     AppliedDiscountRate = p.DiscountRate,
                     Brand = p.Brand,
-                    CategoryLists = p.Categorys.Select(p=>new VM_Result_CategoryList() {
+                    CategoryLists = p.Categorys.Select(p => new VM_Result_CategoryList()
+                    {
                         MaterializedPathByName = p.MaterializedPathByName,
                         MaterializedPathBySlug = p.MaterializedPathBySlug,
                         MaterializedPath = p.MaterializedPath
@@ -88,8 +97,16 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
                     StockQuantity = p.StockQuantity,
                     Tax = p.Tax,
                     UnitPrice = p.UnitPrice,
+                    MaterializedProductPath = p.MaterializedProductPath,
+                    MaterializedProductPathByName = p.MaterializedProductPathByName,
+                    MaterializedProductPathBySlug = p.MaterializedProductPathBySlug
 
                 }).ToList();
+
+                // Sayfalama bilgilerini hesaplayın
+                var totalPages = (int)Math.Ceiling(totalCount / (double)request.PaginationValues.Size);
+                var hasNext = request.PaginationValues.Page < totalPages - 1;
+                var hasPrev = request.PaginationValues.Page > 0;
 
                 return new GetProductByCategoryResponse()
                 {
@@ -99,11 +116,16 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
                     StatusCode = System.Net.HttpStatusCode.OK,
                     StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
                     Products = Result,
-                    CategoryName= category.CategoryName,
-                    MemorizedPath=category.MaterializedPath,
-                    MaterializedPathByName= category.MaterializedPathByName,
-                    MaterializedPathBySlug = category.MaterializedPathBySlug
-                    
+                    CategoryName = category.CategoryName,
+                    MemorizedPath = category.MaterializedPath,
+                    MaterializedPathByName = category.MaterializedPathByName,
+                    MaterializedPathBySlug = category.MaterializedPathBySlug,
+                    TotalCount = totalCount,
+                    TotalPageSize = totalPages,
+                    CurrentPage = request.PaginationValues.Page,
+                    HasNext = hasNext,
+                    HasPrev = hasPrev,
+                    PageSize = request.PaginationValues.Size
                 };
             }
             catch (Exception ex)
@@ -124,8 +146,8 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
             // Alt kategorileri ve ürünlerini yükleyin
             var subCategories = await _categoryReadRepository.GetWhere(c => c.ParentCategoryId == category.ID)
                 .Include(sc => sc.Products)
-                  .ThenInclude(p => p.ProductImageFiles)
-                .Include(sc=>sc.SubCategories)
+                .ThenInclude(p => p.ProductImageFiles)
+                .Include(sc => sc.SubCategories)
                 .ToListAsync(cancellationToken);
 
             // Eğer alt kategoriler yoksa işleme devam etmeyin
@@ -143,8 +165,5 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
                 await LoadSubCategoriesWithProducts(subCategory, allProducts, cancellationToken);
             }
         }
-
-
     }
 }
-

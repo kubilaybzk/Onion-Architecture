@@ -12,7 +12,7 @@ namespace OnionArch.Application.Features.Commands.Product.CreateOneProductWithIm
         public string Description { get; set; } // Ürün açıklaması
         public string Brand { get; set; } // Ürün markası
         public string Model { get; set; } // Ürün modeli
-        public string Category { get; set; } // Ürün kategorisi
+        public List<string> Categories { get; set; } // Ürün kategorisi
         public string ProductCode { get; set; } // Ürün kodu
         public decimal UnitPrice { get; set; } // Birim fiyatı
         public decimal DiscountRate { get; set; } // İndirim oranı

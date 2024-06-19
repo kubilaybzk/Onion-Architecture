@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnionArch.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class mig_last : Migration
+    public partial class products_has_slug : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -178,6 +178,9 @@ namespace OnionArch.Persistance.Migrations
                     MaxOrderQuantity = table.Column<int>(type: "int", nullable: false),
                     Condition = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    MaterializedProductPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaterializedProductPathByName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaterializedProductPathBySlug = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

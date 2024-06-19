@@ -18,5 +18,14 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
         public string MaterializedPathBySlug { get; set; }
 
         public List<VM_Result_ProductLink> Products { get; set; }
+
+        public int TotalCount { get; set; }
+        public int TotalPageSize { get; set; }
+        public int CurrentPage { get; set; }
+        public bool HasNext { get; set; }
+        public bool HasPrev { get; set; }
+        public int PageSize { get; set; }
+
+
     }
 }

@@ -88,6 +88,9 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
                     StockQuantity=p.StockQuantity,
                     Tax=p.Tax,
                     UnitPrice = p.UnitPrice,
+                    MaterializedProductPath=p.MaterializedProductPath,
+                    MaterializedProductPathByName=p.MaterializedProductPathByName,
+                    MaterializedProductPathBySlug = p.MaterializedProductPathBySlug
                 }
                 )
                 .ToListAsync();
