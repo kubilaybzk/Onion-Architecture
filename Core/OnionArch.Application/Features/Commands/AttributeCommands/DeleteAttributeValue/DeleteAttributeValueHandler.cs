@@ -56,7 +56,8 @@ namespace OnionArch.Application.Features.Commands.AttributeCommands.DeleteAttrib
                     HassError = true,
                     StatusCode = HttpStatusCode.InternalServerError,
                     StatusCodeString = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Özelliğin değerini  silme işlemi başarısız"
+                    Message = "Özelliğin değerini  silme işlemi başarısız",
+                    ErrorMessage = ex.Message
                 };
             }
         }

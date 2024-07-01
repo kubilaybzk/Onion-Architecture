@@ -44,6 +44,7 @@ namespace OnionArch.Application.Features.Queries.Attribute.GetProductAttributes
                     Message = "Ürüne özel özellikler başarıyla listelenirken hata",
                     StatusCode = HttpStatusCode.InternalServerError,
                     StatusCodeString = HttpStatusCode.InternalServerError.ToString(),
+                    ErrorMessage = ex.Message
                 };
             }
         }

@@ -16,7 +16,8 @@ namespace OnionArch.Application.View_Models.Product
     {
         public Guid Id { get; set; }
         public string Name { get; set; } // Ürün adı
-        public string Description { get; set; } // Ürün açıklaması
+        public string SmallDescription { get; set; } // Ürün hakkında ufak  açıklaması
+        public string LongDescription { get; set; }  //Ürün hakkında ana açıklama 
         public string Brand { get; set; } // Ürün markası
         public string Model { get; set; } // Ürün modeli
         public string ProductCode { get; set; } // Ürün kodu

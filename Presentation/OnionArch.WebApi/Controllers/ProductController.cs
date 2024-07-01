@@ -7,6 +7,7 @@ using OnionArch.Application.Features.Commands.Product.UpdateProductByIDCommands;
 using OnionArch.Application.Features.Queries.Product.GetAllProducts;
 using OnionArch.Application.Features.Queries.Product.GetLatesProducts;
 using OnionArch.Application.Features.Queries.Product.GetProductByCategory;
+using OnionArch.Application.Features.Queries.Product.GetProductBySlug;
 using OnionArch.Application.Features.Queries.Product.GetSingleById;
 using OnionArch.Application.Features.Queries.Product.Product.GetAllProducts;
 using System.Net;
@@ -181,7 +182,25 @@ namespace OnionArch.API.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet("GetProdutByMaterializedProductPath")]
+        public async Task<IActionResult> GetProdutByMaterializedProductPath([FromQuery] GetProductBySlugRequest getProductBySlugRequest)
+        {
+            GetProductBySlugResponse ProductResponse = await _mediator.Send(getProductBySlugRequest);
 
+            switch (ProductResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(ProductResponse);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(ProductResponse);
+                case HttpStatusCode.NotFound:
+                    return NotFound(ProductResponse);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)ProductResponse.StatusCode, ProductResponse);
+            }
+        }
 
     }
 }

@@ -22,7 +22,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
             GetSingleByIdQueryResponse result = new();
             try
             {
-                var product = _productReadRepository.GetWhere(p => p.ID == Guid.Parse(request.id.ToString()))
+                var product =  _productReadRepository.GetWhere(p => p.ID == Guid.Parse(request.id.ToString()))
                     .Include(p => p.ProductImageFiles);
 
               
@@ -54,7 +54,8 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
                         }).ToList(),
                         Condition = p.Condition,
                         Currency = p.Currency,
-                        Description = p.Description,
+                        SmallDescription = p.SmallDescription,
+                        LongDescription = p.LongDescription,
                         DiscountPrice = p.DiscountPrice,
                         DiscountRate = p.DiscountRate,
                         Id = Guid.Parse(p.ID.ToString()),

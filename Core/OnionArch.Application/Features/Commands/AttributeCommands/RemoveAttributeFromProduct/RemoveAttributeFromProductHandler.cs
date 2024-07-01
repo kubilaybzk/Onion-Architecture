@@ -58,7 +58,8 @@ namespace OnionArch.Application.Features.Commands.AttributeCommands.RemoveAttrib
                     HassError = true,
                     StatusCode = HttpStatusCode.InternalServerError,
                     StatusCodeString = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Özellik üründen  kaldırılırken hata alındı."
+                    Message = "Özellik üründen  kaldırılırken hata alındı.",
+                    ErrorMessage = ex.Message
                 };
             }
         }

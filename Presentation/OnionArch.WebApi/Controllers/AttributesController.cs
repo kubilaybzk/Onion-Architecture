@@ -92,7 +92,7 @@ namespace OnionArch.WebApi.Controllers
                     return StatusCode((int)attributes.StatusCode, attributes);
             }
         }
-
+        [AllowAnonymous]
         [HttpPost("AddAttribute")]
         public async Task<IActionResult> AddAttribute([FromBody] AddAttributeRequest request)
         {

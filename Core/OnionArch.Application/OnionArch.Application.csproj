@@ -43,7 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Features\Commands\CategoryCommands\AddCategoryCommands\" />
-    <Folder Include="Features\Queries\CategoryQueries\NewFolder\" />
     <Folder Include="RequestParamaters\" />
     <Folder Include="Abstractions\Storage\" />
     <Folder Include="Abstractions\Storage\LocalStorage\" />

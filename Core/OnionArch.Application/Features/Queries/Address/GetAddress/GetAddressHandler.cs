@@ -57,7 +57,8 @@ namespace OnionArch.Application.Features.Queries.Address.GetAddress
                     HassError=true,
                     Message = "Addres listelenirken bir hata ile karşılaşıldı.",
                     StatusCode = HttpStatusCode.InternalServerError,
-                    StatusCodeString = HttpStatusCode.InternalServerError.ToString()
+                    StatusCodeString = HttpStatusCode.InternalServerError.ToString(),
+                    ErrorMessage = ex.Message,
                 };
             }
         }

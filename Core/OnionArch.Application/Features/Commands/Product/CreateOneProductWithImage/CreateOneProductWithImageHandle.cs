@@ -18,21 +18,20 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
     private readonly ILogger<CreateOneProductWithImageHandle> _logger;
     private readonly IProductHubService _productHubService;
     private readonly ICategoryReadRepository _categoryReadRepository;
- 
+
 
     public CreateOneProductWithImageHandle(IStorageService storageService,
                                             ILogger<CreateOneProductWithImageHandle> logger,
                                             IProductHubService productHubService,
                                             IProductWriteRepository productWriteRepository,
-                                            ICategoryReadRepository categoryReadRepository,
-                                             )
+                                            ICategoryReadRepository categoryReadRepository)
     {
         _storageService = storageService;
         _productWriteRepository = productWriteRepository;
         _logger = logger;
         _productHubService = productHubService;
         _categoryReadRepository = categoryReadRepository;
- 
+
     }
 
     public async Task<CreateOneProductWithImageResponse> Handle(CreateOneProductWithImageRequest request, CancellationToken cancellationToken)
@@ -41,7 +40,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
         {
             var result = await _storageService.UploadAsync("product-images", request.ImageFiles);
             //var category = await _categoryReadRepository.GetWhere(c => c.ID == Guid.Parse(request.Categories)).FirstOrDefaultAsync(); //ÜRÜNÜN KATEGORİSİNİ BELİRTMEK İÇİN.
-             
+
             List<Category> categories = new List<Category>();
             foreach (var item in request.Categories)
             {
@@ -64,14 +63,14 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
                 decimal priceAfterRateDiscount = request.UnitPrice - (request.UnitPrice * appliedDiscountRate / 100);
                 finalPrice = priceAfterRateDiscount - request.DiscountPrice;
             }
-            
+
             else if (request.DiscountRate > 0)
             {
                 // Yalnızca yüzdesel indirim uygulanmışsa
                 appliedDiscountRate = request.DiscountRate;
                 finalPrice = request.UnitPrice - (request.UnitPrice * appliedDiscountRate / 100);
             }
-            
+
             else if (request.DiscountPrice > 0)
             {
                 // Yalnızca birim indirimi uygulanmışsa
@@ -83,7 +82,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
             decimal kdvRate = kdvRateFromRequest ?? 20m;      // Türkiye'de genellikle KDV oranı %20 olarak uygulanır.
 
             // Kdv uygulandıktan sonraki son fiyat Vergi miktarı
-            finalPrice = finalPrice-(finalPrice * (kdvRate / 100));
+            finalPrice = finalPrice - (finalPrice * (kdvRate / 100));
 
             // Tax (vergi) oranını belirleme
             decimal? taxRateFromRequest = request.Tax;
@@ -110,10 +109,11 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
                 Tax = taxRate,
                 KDVRate = kdvRate,
                 LastPrice = finalPrice,
-                Currency = request.Currency?? "TRY", // Türk Lirası
+                Currency = request.Currency ?? "TRY", // Türk Lirası
                 Condition = ValidateCondition(request.Condition), // Durumun doğrulanması
                 Brand = request.Brand,
-                Description = request.Description,
+                SmallDescription = request.SmallDescription,
+                LongDescription = request.LongDescription,
                 Categorys = categories,
                 IsActive = request.IsActive,
                 MaxOrderQuantity = request.MaxOrderQuantity,
@@ -121,9 +121,9 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
                 ProductCode = request.ProductCode,
                 StockQuantity = request.StockQuantity,
                 Model = request.Model,
-                MaterializedProductPath=  GenerateSlug(request.Name),
-                MaterializedProductPathByName =  GenerateSlug(request.Name),
-                MaterializedProductPathBySlug =  GenerateSlug(string.Concat(request.Brand,"-",request.Name))
+                MaterializedProductPath = GenerateSlug(string.Concat(request.Brand, "-", request.Name)),
+                MaterializedProductPathByName = string.Concat(categories[0].MaterializedPathByName, ".", string.Concat(request.Brand, "-", request.Name)),
+                MaterializedProductPathBySlug = string.Concat(categories[0].MaterializedPathBySlug, ".", GenerateSlug(string.Concat(request.Brand, "-", request.Name))),
             };
 
             await _productWriteRepository.AddAsync(product);
@@ -146,7 +146,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
             _logger.LogError($"Ürün eklenirken bir sorun ile karşılaşıldı: {ex.Message}");
             return new CreateOneProductWithImageResponse
             {
-                isCreated=false,
+                isCreated = false,
                 ErrorMessage = ex.Message,
                 HassError = true,
                 Message = "Ürün ekleme işlemi sırasında bir hata ile karşılaşıldı.",
@@ -173,7 +173,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
         // Birden fazla boşluğu tek boşluğa dönüştür
         str = Regex.Replace(str, @"\s+", " ").Trim();
         // 45 karakteri aşmayacak şekilde kırp ve boşlukları kes
-        str = str.Substring(0, Math.Min(str.Length, 45)).Trim();
+        //str = str.Substring(0, Math.Min(str.Length, 45)).Trim();
         // Boşlukları tireye dönüştür
         str = Regex.Replace(str, @"\s", "-");
 

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -24,8 +25,7 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateProductByIDComma
         private readonly IProductHubService _productHubService;
         private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly IProductReadRepository _productReadRepository;
-        private readonly ICategoryServices _categoryServices;
-        public UpdateProductByIDCommandsHandler(IStorageService storageService, IProductWriteRepository productWriteRepository, ILogger<CreateOneProductWithImageHandle> logger, IProductHubService productHubService, ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository, ICategoryServices categoryServices)
+        public UpdateProductByIDCommandsHandler(IStorageService storageService, IProductWriteRepository productWriteRepository, ILogger<CreateOneProductWithImageHandle> logger, IProductHubService productHubService, ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository)
         {
             _storageService = storageService;
             _productWriteRepository = productWriteRepository;
@@ -33,7 +33,6 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateProductByIDComma
             _productHubService = productHubService;
             _categoryReadRepository = categoryReadRepository;
             _productReadRepository = productReadRepository;
-            _categoryServices = categoryServices;
         }
 
 
@@ -121,7 +120,8 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateProductByIDComma
                 Product.Currency = request.Currency ?? "TRY"; // Türk Lirası
                 Product.Condition = ValidateCondition(request.Condition); // Durumun doğrulanması
                 Product.Brand = request.Brand;
-                Product.Description = request.Description;
+                Product.SmallDescription = request.SmallDescription;
+                Product.LongDescription = request.LongDescription;
                 Product.IsActive = request.IsActive;
                 Product.MaxOrderQuantity = request.MaxOrderQuantity;
                 Product.MinOrderQuantity = request.MinOrderQuantity;
@@ -129,9 +129,9 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateProductByIDComma
                 Product.StockQuantity = request.StockQuantity;
                 Product.Model = request.Model;
                 Product.Categorys = categories;
-                Product.MaterializedProductPath = _categoryServices.GenerateSlug(request.Name);
-                Product.MaterializedProductPathByName = _categoryServices.GenerateSlug(request.Name);
-                Product.MaterializedProductPathBySlug = _categoryServices.GenerateSlug(string.Concat(request.Brand, "-", request.Name));
+                Product.MaterializedProductPath =       GenerateSlug(string.Concat(request.Brand, "-", request.Name));
+                Product.MaterializedProductPathByName = string.Concat(categories[0].MaterializedPathByName, ".", string.Concat(request.Brand, "-", request.Name));
+                Product.MaterializedProductPathBySlug = string.Concat(categories[0].MaterializedPathBySlug, ".", GenerateSlug(string.Concat(request.Brand, "-", request.Name)));
 
                 _logger.LogInformation("Ürün güncelleme işlemi başarılı");
                 await _productWriteRepository.SaveAsync();
@@ -166,6 +166,35 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateProductByIDComma
             // Condition sadece belirli değerleri alabilir: "Yeni", "Kullanılmış", "Yenilenmiş"
             string[] validConditions = { "Yeni", "Kullanılmış", "Yenilenmiş" };
             return validConditions.Contains(condition) ? condition : "Yeni"; // Varsayılan değer "Yeni" olarak ayarlanır
+        }
+        public string GenerateSlug(string phrase)
+        {
+            // Türkçe karakterleri çıkar
+            string str = RemoveTurkishCharacters(phrase).ToLower();
+
+            // Geçersiz karakterleri temizle
+            str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
+            // Birden fazla boşluğu tek boşluğa dönüştür
+            str = Regex.Replace(str, @"\s+", " ").Trim();
+            // 45 karakteri aşmayacak şekilde kırp ve boşlukları kes
+            //str = str.Substring(0, Math.Min(str.Length, 45)).Trim();
+            // Boşlukları tireye dönüştür
+            str = Regex.Replace(str, @"\s", "-");
+
+            return str;
+        }
+
+        public string RemoveTurkishCharacters(string input)
+        {
+            // Türkçe karakterleri çevirme
+            input = input.Replace("ı", "i").Replace("İ", "I")
+                         .Replace("ş", "s").Replace("Ş", "S")
+                         .Replace("ğ", "g").Replace("Ğ", "G")
+                         .Replace("ç", "c").Replace("Ç", "C")
+                         .Replace("ö", "o").Replace("Ö", "O")
+                         .Replace("ü", "u").Replace("Ü", "U");
+
+            return input;
         }
     }
     

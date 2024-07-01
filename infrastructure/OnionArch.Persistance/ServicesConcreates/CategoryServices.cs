@@ -47,7 +47,7 @@ namespace OnionArch.Persistance.ServicesConcreates
             if (!parentCategoryId.HasValue)
             {
                 category.MaterializedPath = GenerateSlug(category.CategoryName);
-                //category.MaterializedPathByName = GenerateSlug(category.CategoryName);
+                category.MaterializedPathByName = category.CategoryName;
                 category.MaterializedPathBySlug = GenerateSlug(category.CategorySlug);
             }
             else
@@ -56,14 +56,14 @@ namespace OnionArch.Persistance.ServicesConcreates
                 if (parentCategory == null)
                 {
                     category.MaterializedPath = GenerateSlug(category.CategoryName);
-                    //category.MaterializedPathByName = GenerateSlug(category.CategoryName);
+                    category.MaterializedPathByName = category.CategoryName;
                     category.MaterializedPathBySlug = GenerateSlug(category.CategorySlug);
                 }
                 else
                 {
                     category.MaterializedPath = $"{parentCategory.MaterializedPath}.{GenerateSlug(category.CategoryName)}";
                     category.MaterializedPathByName = $"{parentCategory.MaterializedPathByName}.{category.MaterializedPathByName}";
-                    category.MaterializedPathBySlug = $"{parentCategory.MaterializedPathBySlug}.{category.MaterializedPathBySlug}";
+                    category.MaterializedPathBySlug = $"{parentCategory.MaterializedPathBySlug}.{GenerateSlug(category.MaterializedPathBySlug)}";
                 }
             }
 

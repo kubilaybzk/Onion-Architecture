@@ -38,15 +38,15 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
                     CategoryName = request.CategoryName,
                     ParentCategoryId = request.ParentCategoryId,
                     CategoryHasTitleImage = request.CategoryHasTitleImage,
-                    CategorySlug = _categoryServices.GenerateSlug(request.CategorySlug),
                     CategoryDisplayStatus = request.CategoryDisplayStatus,
                     CategoryLinkTitle = request.CategoryLinkTitle,
                     CategoryOrder = request.CategoryOrder,
-                    MaterializedPath = "",
                     IsCampanyCategory = request.IsCampanyCategory,
                     IsSpecialCategory = request.IsSpecialCategory,
                     SubCategories= new List<Category>(),
-                    MaterializedPathByName= request.CategoryName,
+                    CategorySlug = _categoryServices.GenerateSlug(request.CategorySlug),
+                    MaterializedPath = "",
+                    MaterializedPathByName = request.CategoryName,
                     MaterializedPathBySlug=request.CategorySlug
                 };
 
@@ -91,7 +91,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
 
                 await _categoryWriteRepository.AddAsync(category);
                 await _categoryWriteRepository.SaveAsync();
-
+                //Eğer bir parent kategory Id değeri yollanmış ise burada kategoriyi yollanan değere sahip kategorinin child kategorisi olarak ekliyoruz.
                 if (request.ParentCategoryId != null)
                 {
                     await _categoryServices.AddSubCategoryAsync(Guid.Parse(request.ParentCategoryId.ToString()), category, false);
