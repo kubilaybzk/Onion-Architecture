@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnionArch.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class products_has_slug : Migration
+    public partial class v2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -160,7 +160,8 @@ namespace OnionArch.Persistance.Migrations
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SmallDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LongDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductCode = table.Column<string>(type: "nvarchar(max)", nullable: false),

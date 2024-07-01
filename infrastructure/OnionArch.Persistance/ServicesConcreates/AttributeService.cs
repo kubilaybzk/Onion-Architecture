@@ -116,9 +116,9 @@ namespace OnionArch.Persistance.ServicesConcreates
             return productAttributes;
         }
 
-        public async Task<bool> AssignAttributesToProductAsync(Guid productId, IEnumerable<Guid> attributeValueIds)
+        public async Task<bool> AssignAttributesToProductAsync(Guid productId, Guid attributeValueIds)
         {
-            var product = await _productReadRepository.GetByIdAsync(productId.ToString());
+            var product = await _productReadRepository.GetWhere(p=>p.ID==productId).Include(p => p.ProductAttributes).ThenInclude(p=>p.AttributeValue).FirstOrDefaultAsync();
             if (product == null)
             {
                 return false;
@@ -128,12 +128,11 @@ namespace OnionArch.Persistance.ServicesConcreates
 
             var existingProductAttributes = product.ProductAttributes.ToList();
 
-            foreach (var attributeValueId in attributeValueIds)
-            {
-                var attributeValue = await _attributeValueReadRepository.GetByIdAsync(attributeValueId.ToString());
+           
+                var attributeValue = await _attributeValueReadRepository.GetByIdAsync(attributeValueIds.ToString());
                 if (attributeValue == null)
                 {
-                    continue;
+                return false;
                 }
 
                 var existingProductAttribute = existingProductAttributes
@@ -151,12 +150,12 @@ namespace OnionArch.Persistance.ServicesConcreates
                     var productAttribute = new ProductAttribute
                     {
                         ProductId = productId,
-                        AttributeValueId = attributeValueId,
+                        AttributeValueId = attributeValueIds,
                         AttributeValue = attributeValue
                     };
                     await _productAttributeWriteRepository.AddAsync(productAttribute);
                 }
-            }
+            
 
             await _productWriteRepository.SaveAsync();
             return true;

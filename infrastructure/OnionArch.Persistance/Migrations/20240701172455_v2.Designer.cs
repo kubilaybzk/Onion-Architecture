@@ -12,8 +12,8 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20240623111510_product_details_description_added")]
-    partial class product_details_description_added
+    [Migration("20240701172455_v2")]
+    partial class v2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

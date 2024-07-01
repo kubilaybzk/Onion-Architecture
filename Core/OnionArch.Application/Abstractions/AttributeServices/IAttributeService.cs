@@ -14,7 +14,7 @@ namespace OnionArch.Application.Abstractions.AttributeServices
         Task<IEnumerable<Domain.Entities.Attribute>> GetAllAttributesAsync();
         Task<IEnumerable<AttributeValue>> GetAttributeValuesAsync(Guid attributeId);
         Task<IEnumerable<VM_Product_Attributes>> GetProductAttributesAsync(Guid productId);
-        Task <Boolean> AssignAttributesToProductAsync(Guid productId, IEnumerable<Guid> attributeValueIds);
+        Task <Boolean> AssignAttributesToProductAsync(Guid productId, Guid attributeValueIds);
         Task<Boolean> RemoveAttributeFromProductAsync(Guid productId, Guid attributeValueId);
         Task<Boolean> DeleteAttributeAsync (Guid attributeId);
         Task<Boolean> DeleteAttributeValueAsync(Guid attributeId);

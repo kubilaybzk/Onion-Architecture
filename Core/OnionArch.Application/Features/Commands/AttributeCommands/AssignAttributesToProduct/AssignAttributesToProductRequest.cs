@@ -9,7 +9,7 @@ namespace OnionArch.Application.Features.Commands.AttributeCommands.AssignAttrib
 {
     public class AssignAttributesToProductRequest:IRequest<AssignAttributesToProductResponse>
     {
-        public IEnumerable<Guid> AttributeValueIds { get; set; }
+        public Guid AttributeValueIds { get; set; }
         public Guid ProductId { get; set; }
     }
 }

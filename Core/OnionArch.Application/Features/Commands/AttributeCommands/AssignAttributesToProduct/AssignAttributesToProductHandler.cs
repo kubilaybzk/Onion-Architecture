@@ -28,7 +28,7 @@ namespace OnionArch.Application.Features.Commands.AttributeCommands.AssignAttrib
                     {
                         IsAssign = true,
                         HassError = false,
-                        Message = "Özellik Başarılı bir şekilde ürüne atandı",
+                        Message = "Özellik Başarılı bir şekilde ürün atandı veya güncellendi.",
                         StatusCode = System.Net.HttpStatusCode.OK,
                         StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
                     };
