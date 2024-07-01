@@ -43,16 +43,28 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateProductByIDComma
                 var Product = await _productReadRepository.Table.Include(p=>p.Categorys).Include(p=>p.ProductImageFiles).FirstOrDefaultAsync(p=>p.ID==Guid.Parse(request.Id));
 
 
-                if(request.ImageFiles?.Count>0)
+                if (request.ImageFiles?.Count > 0)
                 {
+                    // Mevcut resimleri al
+                    var existingImages = Product.ProductImageFiles?.ToList() ?? new List<ProductImageFile>();
+
+                    // Yeni resimleri yükle
                     var result = await _storageService.UploadAsync("product-images", request.ImageFiles);
-                    Product.ProductImageFiles = result.Select((d, index) => new ProductImageFile
+
+                    // Yeni resimleri oluştur
+                    var newImages = result.Select((d, index) => new ProductImageFile
                     {
                         FileName = d.fileName,
                         Path = d.PathOrContainerName,
                         Storage = _storageService.StorageType,
-                        Showcase = (index == 0)
+                        Showcase = false
                     }).ToList();
+
+                    // Mevcut resimlere yeni resimleri ekle
+                    existingImages.AddRange(newImages);
+
+                    // Güncellenmiş resim listesini ürüne ata
+                    Product.ProductImageFiles = existingImages;
                 }
 
 

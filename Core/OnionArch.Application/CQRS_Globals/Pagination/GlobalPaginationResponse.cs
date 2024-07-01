@@ -9,11 +9,16 @@ namespace OnionArch.Application.CQRS_Globals.Pagination
 {
     public  class GlobalPaginationResponse: GlobalResponseResult
     {
-        public int TotalCount { get; set; }
-        public int TotalPageSize { get; set; }
-        public int CurrentPage { get; set; }
-        public bool HasNext { get; set; }
-        public bool HasPrev { get; set; }
-        public int PageSize { get; set; }
+        public int TotalCount { get; set; }        //Toplam bulunan ürün 
+
+        public int TotalPageSize { get; set; }  //Toplam oluşan sayfa 
+
+        public int CurrentPage { get; set; }    //O anki sayfa 
+
+        public bool HasNext { get; set; }        //Sonraki sayfa var mı ?
+
+        public bool HasPrev { get; set; }       //Önceki sayfa var mı  ?
+
+        public int PageSize { get; set; }       //Sayfada gözükecek item sayısı
     }
 }
