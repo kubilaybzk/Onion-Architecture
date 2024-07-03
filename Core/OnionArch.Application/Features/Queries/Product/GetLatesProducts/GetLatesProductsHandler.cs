@@ -28,15 +28,17 @@ namespace OnionArch.Application.Features.Queries.Product.GetLatesProducts
         {
             try
             {
+                var lowercaseSearchTerm = request.ProductCodeOrProductName?.ToLower();
+
                 var query = _productReadRepository.Table
                     .Include(p => p.ProductImageFiles)
                     .Include(p => p.Categorys)
-                        .Where(p => string.IsNullOrEmpty(request.ProductCodeOrProductName) ||
-                        p.Name.Contains(request.ProductCodeOrProductName) ||
-                        p.ProductCode.Contains(request.ProductCodeOrProductName))
+                    .Where(p => string.IsNullOrEmpty(request.ProductCodeOrProductName) ||
+                        p.Name.ToLower().Contains(lowercaseSearchTerm) ||
+                        p.ProductCode.ToLower().Contains(lowercaseSearchTerm))
                     .AsQueryable();
 
-                
+
 
                 var totalCount = await query.CountAsync();
                 var totalPageSize = (int)Math.Ceiling(totalCount / (double)request.Size);

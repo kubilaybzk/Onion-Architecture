@@ -110,7 +110,7 @@ namespace OnionArch.WebApi.Controllers
                     return StatusCode((int)attributes.StatusCode, attributes);
             }
         }
-
+        [AllowAnonymous]
         [HttpPost("AssignAttributesToProduct")]
         public async Task<IActionResult> AssignAttributesToProduct([FromBody] AssignAttributesToProductRequest request)
         {

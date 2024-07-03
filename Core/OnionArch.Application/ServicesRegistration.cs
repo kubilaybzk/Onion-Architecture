@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace OnionArch.Application
 {
@@ -7,7 +8,7 @@ namespace OnionArch.Application
     {
         public static void AddApplicationServices(this IServiceCollection collection)
         {
-            collection.AddMediatR(typeof(ServiceRegistration));
+            collection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             collection.AddHttpClient();
         }
     
