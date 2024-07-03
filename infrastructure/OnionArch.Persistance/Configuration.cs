@@ -21,7 +21,7 @@ namespace OnionArch.Persistance
                     configurationManager.AddJsonFile("appsettings.Production.json");
                 }
 
-                return configurationManager.GetConnectionString("SqlConnectionString");
+                return configurationManager.GetConnectionString("PostgressConnectionString");
             }
         }
     }

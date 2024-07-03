@@ -50,7 +50,7 @@ namespace OnionArch.Persistance
 		public static void AddPersistanceServices(this IServiceCollection services)
         {
 
-            services.AddDbContext<OnionArchDBContext>(options => options.UseSqlServer(Configuration.ConnectionString));
+            services.AddDbContext<OnionArchDBContext>(options => options.UseNpgsql(Configuration.ConnectionString));
 
             //Identity için gerekli olan düzenlemeler . 
             services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<OnionArchDBContext>();

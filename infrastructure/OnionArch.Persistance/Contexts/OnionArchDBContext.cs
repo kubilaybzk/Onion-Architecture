@@ -108,11 +108,11 @@ namespace OnionArch.Persistance.Contexts
                 {
                     //Eklenme işlemi varsa CreateTime değerini atıyoruz.
                     case EntityState.Added:
-                        data.Entity.CreateTime = DateTime.Now;
+                        data.Entity.CreateTime = DateTime.Now.ToUniversalTime();
                         break;
                     //Değişme işlemi varsa CreateTime değerini atıyoruz.
                     case EntityState.Modified:
-                        data.Entity.UpdateTime = DateTime.Now;
+                        data.Entity.UpdateTime = DateTime.Now.ToUniversalTime();
                         break;
                     //Silme işlemi varsa Burada hiçbir şey yapmasını istiyoruz Burada EFCore bu Case olmazsa hataya düşüyor.
                     case EntityState.Deleted:

@@ -21,7 +21,7 @@ namespace OnionArch.Application.Features.Queries.CategoryQueries.GetAllCategory
         {
             try
             {
-                var data2 = _categoryReadRepository.GetAll().Include(p => p.CategoryImageFiles) ; // Verilerin asenkron olarak alınması
+                var data2 = _categoryReadRepository.GetAll().Include(p => p.CategoryImageFiles).OrderBy(p=>p.CategoryOrder); // Verilerin asenkron olarak alınması
 
                 var data = data2.Select(p => new Category()
                 {
