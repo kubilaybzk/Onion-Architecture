@@ -9,17 +9,20 @@ using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NpgsqlTypes;
 using OnionArch.Application;
 using OnionArch.Application.Validators.Product_Validators;
 using OnionArch.infrastructure;
 using OnionArch.infrastructure.Filters;
 using OnionArch.infrastructure.Services.Storage.LocalStorage;
 using OnionArch.Persistance;
+using OnionArch.WebApi.Configurations.ColumnWriters;
 using OnionArch.WebApi.Middlewares;
 using Serilog;
 using Serilog.Context;
 using Serilog.Core;
 using Serilog.Sinks.MSSqlServer;
+using Serilog.Sinks.PostgreSQL;
 using SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,29 +54,41 @@ builder.Services.AddControllers(options => options.Filters.Add<ValidationFilters
 
 //Tabloya yeni bir alan ekleyelim.
 
-ColumnOptions columnOptions=new ColumnOptions();
-columnOptions.AdditionalColumns = new Collection<SqlColumn>
-{
-    //Yeni bir alan oluşturup bu alanda kendimize özel allanlar ekliyoruz.
-    new SqlColumn
-    {
-        ColumnName="EmailOrUserNameLogs",
-        DataType=SqlDbType.NVarChar,
-        DataLength=100
-    },
-};
+//ColumnOptions columnOptions=new ColumnOptions();
+//columnOptions.AdditionalColumns = new Collection<SqlColumn>
+//{
+//    //Yeni bir alan oluşturup bu alanda kendimize özel allanlar ekliyoruz.
+//    new SqlColumn
+//    {
+//        ColumnName="EmailOrUserNameLogs",
+//        DataType=SqlDbType.NVarChar,
+//        DataLength=100
+//    },
+//};
 
 
 
 Logger log = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("Logs/Logs.txt")
-    .WriteTo.MSSqlServer(
-    builder.Configuration.GetConnectionString("SqlConnectionString"),
-    tableName: "BackEndLogs",
-    autoCreateSqlTable: true,
-    columnOptions:columnOptions
-    )
+    //.WriteTo.MSSqlServer(
+    //builder.Configuration.GetConnectionString("SqlConnectionString"),
+    //tableName: "BackEndLogs",
+    //autoCreateSqlTable: true,
+    //columnOptions:columnOptions
+    //)
+    .WriteTo.PostgreSQL(builder.Configuration.GetConnectionString("PostgressConnectionString"), "logs",
+        needAutoCreateTable: true,
+        columnOptions: new Dictionary<string, ColumnWriterBase>
+        {
+            {"message", new RenderedMessageColumnWriter(NpgsqlDbType.Text)},
+            {"message_template", new MessageTemplateColumnWriter(NpgsqlDbType.Text)},
+            {"level", new LevelColumnWriter(true , NpgsqlDbType.Varchar)},
+            {"time_stamp", new TimestampColumnWriter(NpgsqlDbType.Timestamp)},
+            {"exception", new ExceptionColumnWriter(NpgsqlDbType.Text)},
+            {"log_event", new LogEventSerializedColumnWriter(NpgsqlDbType.Json)},
+            {"EmailOrUserNameLogs", new UsernameColumnWriter()}
+        })
     .Enrich.FromLogContext()
     .CreateLogger();
 
