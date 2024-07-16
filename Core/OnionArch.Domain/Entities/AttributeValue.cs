@@ -12,6 +12,7 @@ namespace OnionArch.Domain.Entities
         public Guid AttributeId { get; set; }
         public Attribute Attribute { get; set; }
         public string Value { get; set; } // Özellik değeri (örneğin: Kırmızı, Deri)
+        public string ValueForSlug { get; set; }
         public ICollection<ProductAttribute> ProductAttributes { get; set; }
     }
 

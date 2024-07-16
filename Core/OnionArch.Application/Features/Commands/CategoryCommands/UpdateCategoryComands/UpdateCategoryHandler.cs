@@ -178,6 +178,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategor
 
                 return new UpdateCategoryResponse
                 {
+                    isUpdated=true,
                     HassError = false,
                     Message = "Ürün Güncelleme işlemi başarılı",
                     StatusCode = System.Net.HttpStatusCode.OK,
@@ -188,6 +189,7 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategor
             {
                 return new UpdateCategoryResponse
                 {
+                    isUpdated=false,
                     ErrorMessage = ex.Message,
                     HassError = true,
                     Message = "Ürün Güncelleme işlemi sırasında bir hata oluştu",

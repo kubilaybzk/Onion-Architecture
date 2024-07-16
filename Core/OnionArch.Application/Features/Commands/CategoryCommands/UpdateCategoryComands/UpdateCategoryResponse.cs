@@ -9,5 +9,6 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategor
 {
     public class UpdateCategoryResponse: GlobalResponseResult
     {
+        public Boolean isUpdated { get; set; }
     }
 }

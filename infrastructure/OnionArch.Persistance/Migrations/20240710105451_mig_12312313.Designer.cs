@@ -12,15 +12,15 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20240703123220_mig_1")]
-    partial class mig_1
+    [Migration("20240710105451_mig_12312313")]
+    partial class mig_12312313
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -225,6 +225,10 @@ namespace OnionArch.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("NameForSlug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -249,6 +253,10 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ValueForSlug")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -414,23 +422,30 @@ namespace OnionArch.Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AttributeId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("FilterId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FilterType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("AttributeId");
-
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("FilterId");
 
                     b.ToTable("CategoryAttributes");
                 });
@@ -467,7 +482,8 @@ namespace OnionArch.Persistance.Migrations
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(21)
+                        .HasColumnType("character varying(21)");
 
                     b.Property<string>("FileName")
                         .IsRequired()
@@ -970,21 +986,21 @@ namespace OnionArch.Persistance.Migrations
 
             modelBuilder.Entity("OnionArch.Domain.Entities.CategoryAttribute", b =>
                 {
-                    b.HasOne("OnionArch.Domain.Entities.Attribute", "Attribute")
-                        .WithMany("CategoryAttributes")
-                        .HasForeignKey("AttributeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("OnionArch.Domain.Entities.Category", "Category")
                         .WithMany("CategoryAttributes")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Attribute");
+                    b.HasOne("OnionArch.Domain.Entities.Attribute", "Filter")
+                        .WithMany("CategoryAttributes")
+                        .HasForeignKey("FilterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("Filter");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Order", b =>

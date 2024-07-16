@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnionArch.Persistance.Contexts;
@@ -11,9 +12,11 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    partial class OnionArchDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240705134736_mig_1")]
+    partial class mig_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -419,30 +422,23 @@ namespace OnionArch.Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("AttributeId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("FilterId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("FilterType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("AttributeId");
 
-                    b.HasIndex("FilterId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("CategoryAttributes");
                 });
@@ -983,21 +979,21 @@ namespace OnionArch.Persistance.Migrations
 
             modelBuilder.Entity("OnionArch.Domain.Entities.CategoryAttribute", b =>
                 {
+                    b.HasOne("OnionArch.Domain.Entities.Attribute", "Attribute")
+                        .WithMany("CategoryAttributes")
+                        .HasForeignKey("AttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OnionArch.Domain.Entities.Category", "Category")
                         .WithMany("CategoryAttributes")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OnionArch.Domain.Entities.Attribute", "Filter")
-                        .WithMany("CategoryAttributes")
-                        .HasForeignKey("FilterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Attribute");
 
                     b.Navigation("Category");
-
-                    b.Navigation("Filter");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Order", b =>

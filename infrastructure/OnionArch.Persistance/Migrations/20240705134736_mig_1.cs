@@ -60,6 +60,7 @@ namespace OnionArch.Persistance.Migrations
                 {
                     ID = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    NameForSlug = table.Column<string>(type: "text", nullable: false),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -139,7 +140,7 @@ namespace OnionArch.Persistance.Migrations
                     FileName = table.Column<string>(type: "text", nullable: false),
                     Path = table.Column<string>(type: "text", nullable: false),
                     Storage = table.Column<string>(type: "text", nullable: false),
-                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    Discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
                     ShowImage = table.Column<bool>(type: "boolean", nullable: true),
                     IsHeaderImage = table.Column<bool>(type: "boolean", nullable: true),
                     ImageTitle = table.Column<string>(type: "text", nullable: true),
@@ -351,6 +352,7 @@ namespace OnionArch.Persistance.Migrations
                     ID = table.Column<Guid>(type: "uuid", nullable: false),
                     AttributeId = table.Column<Guid>(type: "uuid", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: false),
+                    ValueForSlug = table.Column<string>(type: "text", nullable: false),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

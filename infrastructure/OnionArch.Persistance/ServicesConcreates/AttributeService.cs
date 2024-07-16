@@ -9,6 +9,7 @@ using OnionArch.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace OnionArch.Persistance.ServicesConcreates
@@ -55,10 +56,11 @@ namespace OnionArch.Persistance.ServicesConcreates
                 CreateTime=p.CreateTime,
                 UpdateTime=p.UpdateTime,
                 Name=p.Name,
+                NameForSlug=p.NameForSlug
             }).FirstOrDefaultAsync();
             if (attribute == null)
             {
-                attribute = new Domain.Entities.Attribute { Name = attributeName };
+                attribute = new Domain.Entities.Attribute { Name = attributeName,NameForSlug=GenerateSlug(attributeName) };
                 await _attributeWriteRepository.AddAsync(attribute);
                 await _attributeWriteRepository.SaveAsync();
             }
@@ -72,10 +74,11 @@ namespace OnionArch.Persistance.ServicesConcreates
                 AttributeId=p.AttributeId,
                 Value=p.Value,
                 ID=p.ID,
+                ValueForSlug=p.ValueForSlug
             }).FirstOrDefaultAsync();
             if (attributeValue == null)
             {
-                attributeValue = new AttributeValue { AttributeId = attributeId, Value = value };
+                attributeValue = new AttributeValue { AttributeId = attributeId, Value = value ,ValueForSlug=GenerateSlug(value) };
                 await _attributeValueWriteRepository.AddAsync(attributeValue);
                 await _attributeValueWriteRepository.SaveAsync();
             }
@@ -222,6 +225,7 @@ namespace OnionArch.Persistance.ServicesConcreates
             else
             {
             attribute.Name = AttributeName;
+            attribute.NameForSlug = GenerateSlug(AttributeName);
             _attributeWriteRepository.Update(attribute);
             await _attributeValueWriteRepository.SaveAsync();
             return true;
@@ -237,10 +241,40 @@ namespace OnionArch.Persistance.ServicesConcreates
             }
 
             attributeValue.Value = newValue;
+            attributeValue.ValueForSlug = GenerateSlug(newValue);
             _attributeValueWriteRepository.Update(attributeValue);
             await _attributeValueWriteRepository.SaveAsync();
             return true;
         }
 
+        static string GenerateSlug(string phrase)
+        {
+            // Türkçe karakterleri çıkar
+            string str = RemoveTurkishCharacters(phrase).ToLower();
+
+            // Geçersiz karakterleri temizle
+            str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
+            // Birden fazla boşluğu tek boşluğa dönüştür
+            str = Regex.Replace(str, @"\s+", " ").Trim();
+            // 45 karakteri aşmayacak şekilde kırp ve boşlukları kes
+            str = str.Substring(0, Math.Min(str.Length, 100)).Trim();
+            // Boşlukları tireye dönüştür
+            str = Regex.Replace(str, @"\s", "-");
+
+            return str;
+        }
+
+        static string RemoveTurkishCharacters(string input)
+        {
+            // Türkçe karakterleri çevirme
+            input = input.Replace("ı", "i").Replace("İ", "I")
+                         .Replace("ş", "s").Replace("Ş", "S")
+                         .Replace("ğ", "g").Replace("Ğ", "G")
+                         .Replace("ç", "c").Replace("Ç", "C")
+                         .Replace("ö", "o").Replace("Ö", "O")
+                         .Replace("ü", "u").Replace("Ü", "U");
+
+            return input;
+        }
     }
 }

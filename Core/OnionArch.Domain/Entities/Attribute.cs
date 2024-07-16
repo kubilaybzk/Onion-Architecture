@@ -10,7 +10,9 @@ namespace OnionArch.Domain.Entities
 {
     public class Attribute : BaseEntity
     {
-        public string Name { get; set; } // Özellik adı (örneğin: Renk, Kordon Cinsi)
+        public string Name { get; set; } // Özellik adı (örneğin: Renk, Kordon Cinsi
+                                         // 
+        public string NameForSlug { get; set; } // Özellik adı (örneğin: Renk, Kordon Cinsi)
         public ICollection<AttributeValue> AttributeValues { get; set; }
         public ICollection<CategoryAttribute> CategoryAttributes { get; set; }
     }

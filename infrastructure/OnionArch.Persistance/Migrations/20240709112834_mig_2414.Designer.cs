@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnionArch.Persistance.Contexts;
@@ -11,9 +12,11 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    partial class OnionArchDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240709112834_mig_2414")]
+    partial class mig_2414
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace OnionArch.Persistance.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("AttributeCategoryAttribute", b =>
+                {
+                    b.Property<Guid>("CategoryAttributesID")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FiltersID")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CategoryAttributesID", "FiltersID");
+
+                    b.HasIndex("FiltersID");
+
+                    b.ToTable("AttributeCategoryAttribute");
+                });
 
             modelBuilder.Entity("CategoryCategoryImageFile", b =>
                 {
@@ -419,30 +437,22 @@ namespace OnionArch.Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid>("CategoryID")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("FilterId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("FilterType")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("FilterId");
+                    b.HasIndex("CategoryID");
 
                     b.ToTable("CategoryAttributes");
                 });
@@ -841,6 +851,21 @@ namespace OnionArch.Persistance.Migrations
                     b.HasDiscriminator().HasValue("ProductImageFile");
                 });
 
+            modelBuilder.Entity("AttributeCategoryAttribute", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.CategoryAttribute", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryAttributesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnionArch.Domain.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("FiltersID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("CategoryCategoryImageFile", b =>
                 {
                     b.HasOne("OnionArch.Domain.Entities.CategoryImageFile", null)
@@ -985,19 +1010,11 @@ namespace OnionArch.Persistance.Migrations
                 {
                     b.HasOne("OnionArch.Domain.Entities.Category", "Category")
                         .WithMany("CategoryAttributes")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnionArch.Domain.Entities.Attribute", "Filter")
-                        .WithMany("CategoryAttributes")
-                        .HasForeignKey("FilterId")
+                        .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
-
-                    b.Navigation("Filter");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Order", b =>
@@ -1071,8 +1088,6 @@ namespace OnionArch.Persistance.Migrations
             modelBuilder.Entity("OnionArch.Domain.Entities.Attribute", b =>
                 {
                     b.Navigation("AttributeValues");
-
-                    b.Navigation("CategoryAttributes");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.AttributeValue", b =>

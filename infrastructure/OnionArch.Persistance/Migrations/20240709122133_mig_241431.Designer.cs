@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnionArch.Persistance.Contexts;
@@ -11,9 +12,11 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    partial class OnionArchDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240709122133_mig_241431")]
+    partial class mig_241431
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -431,9 +434,6 @@ namespace OnionArch.Persistance.Migrations
                     b.Property<string>("FilterType")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnType("timestamp with time zone");

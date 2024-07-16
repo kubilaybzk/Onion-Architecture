@@ -70,15 +70,15 @@ namespace OnionArch.Persistance.Contexts
                 .WithOne(av => av.Attribute)
                 .HasForeignKey(av => av.AttributeId);
 
-            builder.Entity<Domain.Entities.Attribute>()
-                .HasMany(a => a.CategoryAttributes)
-                .WithOne(ca => ca.Attribute)
-                .HasForeignKey(ca => ca.AttributeId);
+            //builder.Entity<Domain.Entities.Attribute>()
+            //    .HasMany(a => a.CategoryAttributes)
+            //    .WithOne(ca => ca.Attribute)
+            //    .HasForeignKey(ca => ca.AttributeId);
 
-            builder.Entity<Category>()
-                .HasMany(c => c.CategoryAttributes)
-                .WithOne(ca => ca.Category)
-                .HasForeignKey(ca => ca.CategoryId);
+            //builder.Entity<Category>()
+            //    .HasMany(c => c.CategoryAttributes)
+            //    .WithOne(ca => ca.Category)
+            //    .HasForeignKey(ca => ca.CategoryId);
 
             builder.Entity<AttributeValue>()
                 .HasMany(av => av.ProductAttributes)
