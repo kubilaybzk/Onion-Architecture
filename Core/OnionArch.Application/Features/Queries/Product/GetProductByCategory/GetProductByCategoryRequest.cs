@@ -15,5 +15,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductByCategory
         public string? CategoryName { get; set; }
         public GlobalPaginationRequest  PaginationValues { get; set; }
 
+        public Dictionary<string, List<string>>? AttributeFilters { get; set; }
+
     }
 }
