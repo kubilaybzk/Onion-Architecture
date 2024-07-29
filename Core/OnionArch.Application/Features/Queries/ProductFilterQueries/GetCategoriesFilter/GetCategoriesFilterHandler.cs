@@ -78,6 +78,7 @@ namespace OnionArch.Application.Features.Queries.ProductAttributesQueries.GetCat
                         AttributeId = ca.FilterId.ToString(),
                         AttributeName = ca.FilterName,
                         AttributeNameSlug = ca.FilterNameForSlug,
+                        Order = ca.Order,
                         AttributeValues = attributes
                             .Where(a => a.AttributeId == ca.FilterId)
                             .Select(a => new VM_Category_FilterValue_Result

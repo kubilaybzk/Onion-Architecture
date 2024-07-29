@@ -1,23 +1,20 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.View_Models.Product;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Queries.Product.GetProductBySlug
 {
     public class GetProductBySlugHandler : IRequestHandler<GetProductBySlugRequest, GetProductBySlugResponse>
     {
         private readonly IProductReadRepository _productReadRepository;
-
-        public GetProductBySlugHandler(IProductReadRepository productReadRepository)
+        private readonly ILogger<GetProductBySlugHandler> _logger;
+        public GetProductBySlugHandler(IProductReadRepository productReadRepository, ILogger<GetProductBySlugHandler> logger)
         {
             _productReadRepository = productReadRepository;
+            _logger = logger;
         }
 
         public async Task<GetProductBySlugResponse> Handle(GetProductBySlugRequest request, CancellationToken cancellationToken)
@@ -70,7 +67,8 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductBySlug
                     })
                     .FirstOrDefaultAsync();
 
-
+                _logger.LogInformation($"GetProductBySlugResponse Çalıştı {request.MaterializedProductPath}");
+                Console.WriteLine($"GetProductBySlugResponse Çalıştı {request.MaterializedProductPath}");
 
                 if (currentProduct != null)
                 {
@@ -98,6 +96,8 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductBySlug
                 }
             }
             catch (Exception ex) {
+                _logger.LogInformation("GetProductBySlugResponse Çalıştı ve Error verdi");
+                Console.WriteLine("GetProductBySlugResponse Çalıştı ve Error verdi");
                 return new GetProductBySlugResponse()
                 {
                     ErrorMessage = ex.Message.ToString(),
