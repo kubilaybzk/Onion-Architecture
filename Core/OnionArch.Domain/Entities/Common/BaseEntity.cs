@@ -10,6 +10,8 @@ namespace OnionArch.Domain.Entities.Common
 		//virtual olarak ayarlamamız gerkemekte bu sayede
 		//bunu override edebilir her yerde gözükmemesini notmap'ile ayralayabiliriz.
          virtual public DateTime UpdateTime { get; set; }
+
+        public Boolean isDeleted { get; set; }
     }
 }
 

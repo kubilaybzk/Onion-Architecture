@@ -1,4 +1,5 @@
-﻿using OnionArch.Application.View_Models.Category;
+﻿using OnionArch.Application.View_Models.Brands;
+using OnionArch.Application.View_Models.Category;
 using OnionArch.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace OnionArch.Application.View_Models.Product
         public string Name { get; set; } // Ürün adı
         public string SmallDescription { get; set; } // Ürün hakkında ufak  açıklaması
         public string LongDescription { get; set; }  //Ürün hakkında ana açıklama 
-        public string Brand { get; set; } // Ürün markası
+        public VM_BrandNameWithId_Result Brand { get; set; } // Ürün markası
         public string Model { get; set; } // Ürün modeli
         public string ProductCode { get; set; } // Ürün kodu
         public decimal UnitPrice { get; set; } // Birim fiyatı

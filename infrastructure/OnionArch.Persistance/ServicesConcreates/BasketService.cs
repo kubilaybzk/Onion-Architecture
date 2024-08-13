@@ -189,5 +189,46 @@ namespace OnionArch.Persistance.ServicesConcreates
             }
 
         }
+
+        public async Task<bool> AddMultipleBasketItemsToBasketAsync(List<VM_Add_BasketItem> addedBasketItems)
+        {
+            Basket userBasket = await CurrentUserBasket();
+
+            try
+            {
+                if (userBasket != null)
+                {
+                    foreach (var addedBasketItem in addedBasketItems)
+                    {
+                        BasketItem checkHasSameProduct = await _basketItemReadRepository.GetSingleAsync(
+                            bi => bi.BasketId == userBasket.ID && bi.ProductId == Guid.Parse(addedBasketItem.ProductId));
+
+                        if (checkHasSameProduct != null)
+                        {
+                            checkHasSameProduct.Quantity += addedBasketItem.Quantity;
+                        }
+                        else
+                        {
+                            await _basketItemWriteRepository.AddAsync(
+                                new BasketItem
+                                {
+                                    BasketId = userBasket.ID,
+                                    ProductId = Guid.Parse(addedBasketItem.ProductId),
+                                    Quantity = addedBasketItem.Quantity,
+                                });
+                        }
+                    }
+
+                    await _basketItemWriteRepository.SaveAsync();
+
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
     }
 }

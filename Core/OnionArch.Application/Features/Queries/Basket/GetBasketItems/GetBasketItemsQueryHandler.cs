@@ -34,23 +34,21 @@ namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
                 {
                     BasketItemId = ba.ID.ToString(),
                     Quantity = ba.Quantity,
-                    Product = new()
+                    Products = new VM_Result_BasketProductItem()
                     {
-                        ProductImageFiles = ba.Product.ProductImageFiles.Select(bas => new OnionArch.Domain.Entities.ProductImageFile()
-                        {
-                            FileName = bas.FileName,
-                            Showcase = bas.Showcase,
-                            ID = bas.ID,
-                            Path = bas.Path,
-
-                        }).ToList(),
-                        StockQuantity = ba.Quantity,
-                        Name = ba.Product.Name,
-                        UnitPrice = ba.Product.UnitPrice,
+                         ProductSlug=ba.Product.MaterializedProductPathBySlug,
+                         ProductName=ba.Product.Name,
+                         ProductQuantity=ba.Quantity,
+                         ProductLastPrice = ba.Product.LastPrice,
+                         ProductId=ba.Product.ID.ToString(),
+                         ProductCurrency=ba.Product.Currency,
+                         ProductImg = ba.Product.ProductImageFiles.Where(p => p.Showcase == true).Select(p => p.Path).ToList()[0].ToString(),
+                         ProductOriginalPrice=ba.Product.UnitPrice,
+                         ProductAddedTime=ba.CreateTime
                     }
                 }).ToList();
 
-            var totalProductPrice = result.Sum(ba => ba.Product.UnitPrice * ba.Quantity);
+            var totalProductPrice = result.Sum(ba => ba.Products.ProductLastPrice * ba.Quantity);
 
             float totalDiscount;
             float totalCargoPrice;

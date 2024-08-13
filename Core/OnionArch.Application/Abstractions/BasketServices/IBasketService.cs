@@ -23,7 +23,7 @@ namespace OnionArch.Application.Abstractions.BasketServices
 
         public Task RemoveBasketItemAsync(string id);
 
-
+        public Task<bool> AddMultipleBasketItemsToBasketAsync(List<VM_Add_BasketItem> addedBasketItems);
 
 
     }

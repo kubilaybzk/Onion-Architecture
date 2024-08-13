@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Abstractions.ProductCrud;
+using OnionArch.Application.View_Models.Brands;
 using OnionArch.Application.View_Models.Category;
 using OnionArch.Application.View_Models.Product;
 using OnionArch.Domain.Entities;
@@ -32,6 +33,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetLatesProducts
 
                 var query = _productReadRepository.Table
                     .Include(p => p.ProductImageFiles)
+                    .Include(p=>p.Brand)
                     .Include(p => p.Categorys)
                     .Where(p => string.IsNullOrEmpty(request.ProductCodeOrProductName) ||
                         p.Name.ToLower().Contains(lowercaseSearchTerm) ||
@@ -51,7 +53,12 @@ namespace OnionArch.Application.Features.Queries.Product.GetLatesProducts
                     {
                         AppliedDiscountRate = p.AppliedDiscountRate,
                         AppliedDiscountPrice = p.AppliedDiscountPrice,
-                        Brand = p.Brand,
+                        Brand = new VM_BrandNameWithId_Result()
+                        {
+                            BrandName = p.Brand.BrandName,
+                            BrandSlug = p.Brand.BrandSlug,
+                            Id = p.Brand.ID,
+                        },
                         Condition = p.Condition,
                         Currency = p.Currency,
                         SmallDescription = p.SmallDescription,

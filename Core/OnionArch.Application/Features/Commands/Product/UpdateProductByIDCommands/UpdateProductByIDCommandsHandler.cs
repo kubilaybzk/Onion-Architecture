@@ -131,7 +131,7 @@ namespace OnionArch.Application.Features.Commands.Product.UpdateProductByIDComma
                 Product.LastPrice = finalPrice;
                 Product.Currency = request.Currency ?? "TRY"; // Türk Lirası
                 Product.Condition = ValidateCondition(request.Condition); // Durumun doğrulanması
-                Product.Brand = request.Brand;
+                //Product.Brand = request.Brand;
                 Product.SmallDescription = request.SmallDescription;
                 Product.LongDescription = request.LongDescription;
                 Product.IsActive = request.IsActive;

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnionArch.Application.Abstractions.ProductCrud;
+using OnionArch.Application.View_Models.Brands;
 using OnionArch.Application.View_Models.Product;
 using System.Net;
 
@@ -24,12 +25,18 @@ namespace OnionArch.Application.Features.Queries.Product.GetProductBySlug
 
                 var currentProduct =  await _productReadRepository.Table
                     .Include(p=>p.ProductImageFiles)
+                    .Include(p=>p.Brand)
                     .Where(p => p.MaterializedProductPath == request.MaterializedProductPath)
                     .Select(p=>new VM_Result_ProductLink()
                     {
                         AppliedDiscountPrice = p.DiscountPrice,
                         AppliedDiscountRate = p.DiscountRate,
-                        Brand = p.Brand,
+                        Brand = new VM_BrandNameWithId_Result()
+                        {
+                            BrandName=p.Brand.BrandName,
+                            BrandSlug=p.Brand.BrandSlug,
+                            Id=p.Brand.ID,
+                        },
                         CategoryLists = null,
                         Condition = p.Condition,
                         Currency = p.Currency,

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnionArch.Application.Features.Commands.Basket.AddItemToBasket;
+using OnionArch.Application.Features.Commands.Basket.AddMultipleItemToBasket;
 using OnionArch.Application.Features.Commands.Basket.RemoveBasketItem;
 using OnionArch.Application.Features.Commands.Basket.UpdateQuantity;
 using OnionArch.Application.Features.Queries.Basket.GetBasketItems;
@@ -55,6 +56,13 @@ namespace OnionArch.WebApi.Controllers
         public async Task<IActionResult> GetOnlyBasketsPrice([FromQuery] GetOnlyBasketsPaymentRequest getOnlyBasketsPaymentRequest)
         {
             GetOnlyBasketsPaymentResponce response = await _mediator.Send(getOnlyBasketsPaymentRequest);
+            return Ok(response);
+        }
+
+        [HttpGet("AddMultipleItemToBasketRequest")]
+        public async Task<IActionResult> AddMultipleItemToBasketRequest([FromBody] AddMultipleItemToBasketRequest addMultipleItemToBasketRequest)
+        {
+            AddMultipleItemToBasketResponse response = await _mediator.Send(addMultipleItemToBasketRequest);
             return Ok(response);
         }
 

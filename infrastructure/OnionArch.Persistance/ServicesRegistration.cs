@@ -19,6 +19,8 @@ using OnionArch.Application.Repositories.AttributeCrud.ProductAttributeCrud;
 using OnionArch.Application.Repositories.BackEndLogsCrud;
 using OnionArch.Application.Repositories.BasketCrud;
 using OnionArch.Application.Repositories.BasketItemCrud;
+using OnionArch.Application.Repositories.BrandCrud;
+using OnionArch.Application.Repositories.BrandImageFileCrud;
 using OnionArch.Application.Repositories.CategoryCrud;
 using OnionArch.Application.Repositories.CategoryImageFileCrud;
 using OnionArch.Domain.Entities.Identity;
@@ -34,6 +36,8 @@ using OnionArch.Persistance.Repositorys.AttributeCrud.ProductAttributeCrud;
 using OnionArch.Persistance.Repositorys.BackEndLogsCrud;
 using OnionArch.Persistance.Repositorys.BasketCrud;
 using OnionArch.Persistance.Repositorys.BasketItemCrud;
+using OnionArch.Persistance.Repositorys.BrandCrud;
+using OnionArch.Persistance.Repositorys.BrandImageFileCrud;
 using OnionArch.Persistance.Repositorys.CategoryCrud;
 using OnionArch.Persistance.Repositorys.CategoryImageFileCrud;
 using OnionArch.Persistance.Repositorys.FileCrud;
@@ -126,8 +130,11 @@ namespace OnionArch.Persistance
             services.AddScoped<IAttributeService, AttributeService>();
 
 
+            services.AddScoped<IBrandReadRepository, BrandReadRepository>();
+            services.AddScoped<IBrandWriteRepository, BrandWriteRepository>();
 
-
+            services.AddScoped<IBrandImageFileReadRepository, BrandImageFileReadRepository>();
+            services.AddScoped<IBrandImageFileWriteRepository, BrandImageFileWriteRepository>();
 
 
         }

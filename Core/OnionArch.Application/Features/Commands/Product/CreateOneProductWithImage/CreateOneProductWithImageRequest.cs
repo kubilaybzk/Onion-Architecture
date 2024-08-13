@@ -28,8 +28,7 @@ namespace OnionArch.Application.Features.Commands.Product.CreateOneProductWithIm
         public bool IsActive { get; set; } // Ürün aktif mi?
 
         public IFormFileCollection? ImageFiles { get; set; }
-
-        public Dictionary<string, string>? Attributes { get; set; } // Dinamik ürün özellikleri
+ 
 
 
     }

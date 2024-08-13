@@ -31,7 +31,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
             try
             {
                 //Operasyonumuzu burada tanımlayacağız.
-                var productQuery = _productReadRepository.GetAll(false).Include(p=>p.ProductImageFiles);
+                var productQuery = _productReadRepository.GetAll(false).Include(p=>p.ProductImageFiles).Include(p => p.Brand);
 
                 /*
                  Şimdi buruda birden fazla yöntem kullanabiliriz.
@@ -58,7 +58,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetAllProducts
                 {
                     AppliedDiscountPrice = p.DiscountPrice,
                     AppliedDiscountRate = p.DiscountRate,
-                    Brand=p.Brand,
+                    //Brand=p.Brand,
                     CategoryLists=null,
                     Condition=p.Condition,
                     Currency=p.Currency,

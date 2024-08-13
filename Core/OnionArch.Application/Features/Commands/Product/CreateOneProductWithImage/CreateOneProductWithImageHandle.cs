@@ -7,6 +7,7 @@ using OnionArch.Application.Abstractions.HubServices;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Abstractions.Storage;
 using OnionArch.Application.Features.Commands.Product.CreateOneProductWithImage;
+using OnionArch.Application.Repositories.BrandCrud;
 using OnionArch.Application.Repositories.CategoryCrud;
 using OnionArch.Domain.Entities;
 using System.Text.RegularExpressions;
@@ -18,20 +19,22 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
     private readonly ILogger<CreateOneProductWithImageHandle> _logger;
     private readonly IProductHubService _productHubService;
     private readonly ICategoryReadRepository _categoryReadRepository;
+    private readonly IBrandReadRepository _brandReadRepository;
 
 
     public CreateOneProductWithImageHandle(IStorageService storageService,
                                             ILogger<CreateOneProductWithImageHandle> logger,
                                             IProductHubService productHubService,
                                             IProductWriteRepository productWriteRepository,
-                                            ICategoryReadRepository categoryReadRepository)
+                                            ICategoryReadRepository categoryReadRepository,
+                                            IBrandReadRepository brandReadRepository)
     {
         _storageService = storageService;
         _productWriteRepository = productWriteRepository;
         _logger = logger;
         _productHubService = productHubService;
         _categoryReadRepository = categoryReadRepository;
-
+        _brandReadRepository = brandReadRepository;
     }
 
     public async Task<CreateOneProductWithImageResponse> Handle(CreateOneProductWithImageRequest request, CancellationToken cancellationToken)
@@ -90,7 +93,7 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
 
             // Son fiyatı vergi uygulandıktan sonra hesaplama
             finalPrice = finalPrice + (finalPrice * (taxRate / 100));
-
+            var ProductsBrand = await _brandReadRepository.GetByIdAsync(request.Brand);
             var product = new Product
             {
                 UnitPrice = request.UnitPrice,
@@ -111,7 +114,6 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
                 LastPrice = finalPrice,
                 Currency = request.Currency ?? "TRY", // Türk Lirası
                 Condition = ValidateCondition(request.Condition), // Durumun doğrulanması
-                Brand = request.Brand,
                 SmallDescription = request.SmallDescription,
                 LongDescription = request.LongDescription,
                 Categorys = categories,
@@ -121,11 +123,13 @@ public class CreateOneProductWithImageHandle : IRequestHandler<CreateOneProductW
                 ProductCode = request.ProductCode,
                 StockQuantity = request.StockQuantity,
                 Model = request.Model,
-                MaterializedProductPath = GenerateSlug(string.Concat(request.Brand, "-", request.Name)),
-                MaterializedProductPathByName = string.Concat(categories[0].MaterializedPathByName, ".", string.Concat(request.Brand, "-", request.Name)),
-                MaterializedProductPathBySlug = string.Concat(categories[0].MaterializedPathBySlug, ".", GenerateSlug(string.Concat(request.Brand, "-", request.Name))),
-            };
+                Brand= ProductsBrand,
+                MaterializedProductPath = GenerateSlug(string.Concat(ProductsBrand.BrandName, "-", request.Name)),
+                MaterializedProductPathByName = string.Concat(categories[0].MaterializedPathByName, ".", string.Concat(ProductsBrand.BrandName, "-", request.Name)),
+                MaterializedProductPathBySlug = string.Concat(categories[0].MaterializedPathBySlug, ".", GenerateSlug(string.Concat(ProductsBrand.BrandName, "-", request.Name))),
 
+            };
+            
             await _productWriteRepository.AddAsync(product);
             _logger.LogInformation("Ürün ekleme işlemi başarılı");
             await _productHubService.ProductAddOperationMessage("Ürün listesine bir adet ürün eklendi");

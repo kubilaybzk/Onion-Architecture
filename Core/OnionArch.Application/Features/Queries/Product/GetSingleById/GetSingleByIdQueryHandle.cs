@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using OnionArch.Application.View_Models.Product;
 using OnionArch.Application.View_Models.Category;
+using OnionArch.Application.View_Models.Brands;
 
 namespace OnionArch.Application.Features.Queries.Product.GetSingleById
 {
@@ -23,7 +24,7 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
             try
             {
                 var product =  _productReadRepository.GetWhere(p => p.ID == Guid.Parse(request.id.ToString()))
-                    .Include(p => p.ProductImageFiles);
+                    .Include(p => p.ProductImageFiles).Include(p=>p.Brand);
 
               
                 
@@ -44,7 +45,12 @@ namespace OnionArch.Application.Features.Queries.Product.GetSingleById
                     {
                         AppliedDiscountPrice = p.DiscountPrice,
                         AppliedDiscountRate = p.DiscountRate,
-                        Brand = p.Brand,
+                        Brand = new VM_BrandNameWithId_Result()
+                        {
+                            BrandName = p.Brand.BrandName,
+                            BrandSlug = p.Brand.BrandSlug,
+                            Id = p.Brand.ID,
+                        },
                         CategoryLists = p.Categorys.Select(p=>new VM_Result_CategoryList()
                         {
                             MaterializedPathByName = p.MaterializedPathByName,

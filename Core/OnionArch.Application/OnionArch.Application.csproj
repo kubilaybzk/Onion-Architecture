@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\infrastructure\Common\Common\Common.csproj" />
     <ProjectReference Include="..\OnionArch.Domain\OnionArch.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>

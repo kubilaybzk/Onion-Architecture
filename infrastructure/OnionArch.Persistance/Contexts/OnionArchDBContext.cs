@@ -42,7 +42,8 @@ namespace OnionArch.Persistance.Contexts
         public DbSet<AttributeValue> AttributeValues { get; set; }
         public DbSet<CategoryAttribute> CategoryAttributes { get; set; }
         public DbSet<ProductAttribute> ProductAttributes { get; set; }
-
+        public DbSet<Brand> Brands { get; set; }
+        public DbSet<BrandImageFile> BrandImageFiles { get; set; }
 
 
         //Burada veri tabanında otomatik olarka yapılan işlemlerde EFCore tarafından belirli alanlara değerler atanmasını istiyoruz.
@@ -69,6 +70,11 @@ namespace OnionArch.Persistance.Contexts
                 .HasMany(a => a.AttributeValues)
                 .WithOne(av => av.Attribute)
                 .HasForeignKey(av => av.AttributeId);
+
+            builder.Entity<Brand>()
+               .HasOne(b => b.BrandLogo)
+               .WithOne(b => b.Brand)
+               .HasForeignKey<BrandImageFile>(b => b.BrandId);
 
             //builder.Entity<Domain.Entities.Attribute>()
             //    .HasMany(a => a.CategoryAttributes)

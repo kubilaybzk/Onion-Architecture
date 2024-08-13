@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Features.Queries.Product.GetProductByCategory;
 using OnionArch.Application.Repositories.CategoryCrud;
+using OnionArch.Application.View_Models.Brands;
 using OnionArch.Application.View_Models.Category;
 using OnionArch.Application.View_Models.Product;
 using OnionArch.Domain.Entities;
@@ -30,6 +31,7 @@ public class GetProductByCategoryHandler : IRequestHandler<GetProductByCategoryR
             // Tüm ürünleri ve gerekli ilişkileri tek sorguda yükleyelim
             var query = _productReadRepository.Table
                 .Include(p => p.Categorys)
+                .Include(p=>p.Brand)
                 .Include(p => p.ProductImageFiles)
                 .Include(p => p.ProductAttributes)
                     .ThenInclude(pa => pa.AttributeValue)
@@ -160,7 +162,12 @@ public class GetProductByCategoryHandler : IRequestHandler<GetProductByCategoryR
         {
             AppliedDiscountPrice = p.DiscountPrice,
             AppliedDiscountRate = p.DiscountRate,
-            Brand = p.Brand,
+            Brand = new VM_BrandNameWithId_Result()
+            {
+                BrandName = p.Brand.BrandName,
+                BrandSlug = p.Brand.BrandSlug,
+                Id = p.Brand.ID,
+            },
             CategoryLists = p.Categorys.Select(c => new VM_Result_CategoryList
             {
                 MaterializedPathByName = c.MaterializedPathByName,

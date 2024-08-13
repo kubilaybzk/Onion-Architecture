@@ -12,6 +12,6 @@ namespace OnionArch.Application.View_Models.BasketItem
         public string Name { get; set; }
         public float Price { get; set; }
         public int Quantity { get; set; }
-        public OnionArch.Domain.Entities.Product Product { get; set; }
+        public VM_Result_BasketProductItem Products { get; set; }
     }
 }
