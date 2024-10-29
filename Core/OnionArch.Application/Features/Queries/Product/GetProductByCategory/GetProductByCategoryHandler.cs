@@ -208,6 +208,7 @@ public class GetProductByCategoryHandler : IRequestHandler<GetProductByCategoryR
             MaterializedProductPathBySlug = p.MaterializedProductPathBySlug
         };
     }
+
 }
 
 

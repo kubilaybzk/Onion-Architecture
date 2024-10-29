@@ -10,6 +10,7 @@ using OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategoryCom
 using OnionArch.Application.Features.Commands.Product.CreateOneProductWithImage;
 using OnionArch.Application.Features.Queries.BrandQueries.GetAllBrandNameQueries;
 using OnionArch.Application.Features.Queries.BrandQueries.GetAllBrands;
+using OnionArch.Application.Features.Queries.BrandQueries.GetAllProductByBrandNameQueries;
 using OnionArch.Application.Features.Queries.BrandQueries.GetBrandNameWithIdQueries;
 using OnionArch.Application.Features.Queries.CategoryQueries.GetAllCategory;
 using OnionArch.Application.Features.Queries.CategoryQueries.GetOnlyCategoryName;
@@ -116,6 +117,27 @@ namespace OnionArch.WebApi.Controllers
         public async Task<IActionResult> GetAllBrandNameAndId([FromQuery] GetAllBrandNameRequest getAllBrandNameRequest)
         {
             GetAllBrandNameResponse result = await _mediator.Send(getAllBrandNameRequest);
+            switch (result.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(result);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(result);
+                case HttpStatusCode.NotFound:
+                    return NotFound(result);
+                // Diğer durumlar için gereken kodları buraya ekleyebilirsin
+                default:
+                    return StatusCode((int)result.StatusCode, result);
+            }
+
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("GetAllProductByBrandName")]
+        public async Task<IActionResult> GetAllProductByBrandName([FromQuery] GetAllProductByBrandNameRequest getAllProductByBrandNameRequest)
+        {
+            GetAllProductByBrandNameResponse result = await _mediator.Send(getAllProductByBrandNameRequest);
             switch (result.StatusCode)
             {
                 case HttpStatusCode.OK:

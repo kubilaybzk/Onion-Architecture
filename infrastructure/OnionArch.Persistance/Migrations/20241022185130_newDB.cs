@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace OnionArch.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class mig_1 : Migration
+    public partial class newDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -90,6 +90,30 @@ namespace OnionArch.Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Brands",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    BrandName = table.Column<string>(type: "text", nullable: false),
+                    BrandSlug = table.Column<string>(type: "text", nullable: false),
+                    DetailTitle = table.Column<string>(type: "text", nullable: false),
+                    DetailDescription = table.Column<string>(type: "text", nullable: false),
+                    isActive = table.Column<bool>(type: "boolean", nullable: false),
+                    TotalProductCount = table.Column<int>(type: "integer", nullable: false),
+                    SeoLinkTitle = table.Column<string>(type: "text", nullable: false),
+                    SeoLinkDescription = table.Column<string>(type: "text", nullable: false),
+                    SeoDetailTitle = table.Column<string>(type: "text", nullable: false),
+                    SeoDetailDescription = table.Column<string>(type: "text", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Brands", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
@@ -134,32 +158,6 @@ namespace OnionArch.Persistance.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Customers", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Files",
-                columns: table => new
-                {
-                    ID = table.Column<Guid>(type: "uuid", nullable: false),
-                    FileName = table.Column<string>(type: "text", nullable: false),
-                    Path = table.Column<string>(type: "text", nullable: false),
-                    Storage = table.Column<string>(type: "text", nullable: false),
-                    Discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
-                    Showcase = table.Column<bool>(type: "boolean", nullable: true),
-                    ShowImage = table.Column<bool>(type: "boolean", nullable: true),
-                    IsHeaderImage = table.Column<bool>(type: "boolean", nullable: true),
-                    ImageTitle = table.Column<string>(type: "text", nullable: true),
-                    CategoryRedirectLink = table.Column<string>(type: "text", nullable: true),
-                    CategoryRedirectLinkTitle = table.Column<string>(type: "text", nullable: true),
-                    CategoryImageOrder = table.Column<int>(type: "integer", nullable: true),
-                    Price = table.Column<decimal>(type: "numeric", nullable: true),
-                    ProductImageFile_Showcase = table.Column<bool>(type: "boolean", nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Files", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -341,109 +339,35 @@ namespace OnionArch.Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoryAttributes",
+                name: "Files",
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uuid", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    FilterId = table.Column<Guid>(type: "uuid", nullable: false),
-                    FilterType = table.Column<string>(type: "text", nullable: false),
-                    Order = table.Column<int>(type: "integer", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    Storage = table.Column<string>(type: "text", nullable: false),
+                    Discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
+                    BrandId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Showcase = table.Column<bool>(type: "boolean", nullable: true),
+                    SeoImageAltInformation = table.Column<string>(type: "text", nullable: true),
+                    ShowImage = table.Column<bool>(type: "boolean", nullable: true),
+                    IsHeaderImage = table.Column<bool>(type: "boolean", nullable: true),
+                    ImageTitle = table.Column<string>(type: "text", nullable: true),
+                    CategoryRedirectLink = table.Column<string>(type: "text", nullable: true),
+                    CategoryRedirectLinkTitle = table.Column<string>(type: "text", nullable: true),
+                    CategoryImageOrder = table.Column<int>(type: "integer", nullable: true),
+                    Price = table.Column<decimal>(type: "numeric", nullable: true),
+                    ProductImageFile_Showcase = table.Column<bool>(type: "boolean", nullable: true),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     isDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryAttributes", x => x.ID);
+                    table.PrimaryKey("PK_Files", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_CategoryAttributes_Attributes_FilterId",
-                        column: x => x.FilterId,
-                        principalTable: "Attributes",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CategoryAttributes_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Brands",
-                columns: table => new
-                {
-                    ID = table.Column<Guid>(type: "uuid", nullable: false),
-                    BrandName = table.Column<string>(type: "text", nullable: false),
-                    BrandSmallDescription = table.Column<string>(type: "text", nullable: false),
-                    BrandLongDescription = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Brands", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Brands_Files_ID",
-                        column: x => x.ID,
-                        principalTable: "Files",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CategoryCategoryImageFile",
-                columns: table => new
-                {
-                    CategoryImageFilesID = table.Column<Guid>(type: "uuid", nullable: false),
-                    CategoryInfoID = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CategoryCategoryImageFile", x => new { x.CategoryImageFilesID, x.CategoryInfoID });
-                    table.ForeignKey(
-                        name: "FK_CategoryCategoryImageFile_Categories_CategoryInfoID",
-                        column: x => x.CategoryInfoID,
-                        principalTable: "Categories",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CategoryCategoryImageFile_Files_CategoryImageFilesID",
-                        column: x => x.CategoryImageFilesID,
-                        principalTable: "Files",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    ID = table.Column<Guid>(type: "uuid", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Adress = table.Column<string>(type: "text", nullable: false),
-                    CustomerID = table.Column<Guid>(type: "uuid", nullable: false),
-                    BasketId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Orders_Baskets_BasketId",
-                        column: x => x.BasketId,
-                        principalTable: "Baskets",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerID",
-                        column: x => x.CustomerID,
-                        principalTable: "Customers",
+                        name: "FK_Files_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -487,6 +411,90 @@ namespace OnionArch.Persistance.Migrations
                         name: "FK_Products_Brands_BrandID",
                         column: x => x.BrandID,
                         principalTable: "Brands",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoryAttributes",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FilterId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FilterType = table.Column<string>(type: "text", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryAttributes", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_CategoryAttributes_Attributes_FilterId",
+                        column: x => x.FilterId,
+                        principalTable: "Attributes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryAttributes_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Adress = table.Column<string>(type: "text", nullable: false),
+                    CustomerID = table.Column<Guid>(type: "uuid", nullable: false),
+                    BasketId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Orders_Baskets_BasketId",
+                        column: x => x.BasketId,
+                        principalTable: "Baskets",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerID",
+                        column: x => x.CustomerID,
+                        principalTable: "Customers",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoryCategoryImageFile",
+                columns: table => new
+                {
+                    CategoryImageFilesID = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryInfoID = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryCategoryImageFile", x => new { x.CategoryImageFilesID, x.CategoryInfoID });
+                    table.ForeignKey(
+                        name: "FK_CategoryCategoryImageFile_Categories_CategoryInfoID",
+                        column: x => x.CategoryInfoID,
+                        principalTable: "Categories",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryCategoryImageFile_Files_CategoryImageFilesID",
+                        column: x => x.CategoryImageFilesID,
+                        principalTable: "Files",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -545,30 +553,6 @@ namespace OnionArch.Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderProduct",
-                columns: table => new
-                {
-                    OrdersID = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProductsID = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderProduct", x => new { x.OrdersID, x.ProductsID });
-                    table.ForeignKey(
-                        name: "FK_OrderProduct_Orders_OrdersID",
-                        column: x => x.OrdersID,
-                        principalTable: "Orders",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderProduct_Products_ProductsID",
-                        column: x => x.ProductsID,
-                        principalTable: "Products",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProductAttributes",
                 columns: table => new
                 {
@@ -614,6 +598,30 @@ namespace OnionArch.Persistance.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ProductProductImageFile_Products_ProductsID",
+                        column: x => x.ProductsID,
+                        principalTable: "Products",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderProduct",
+                columns: table => new
+                {
+                    OrdersID = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductsID = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderProduct", x => new { x.OrdersID, x.ProductsID });
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_Orders_OrdersID",
+                        column: x => x.OrdersID,
+                        principalTable: "Orders",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_Products_ProductsID",
                         column: x => x.ProductsID,
                         principalTable: "Products",
                         principalColumn: "ID",
@@ -706,6 +714,12 @@ namespace OnionArch.Persistance.Migrations
                 name: "IX_CategoryProduct_ProductsID",
                 table: "CategoryProduct",
                 column: "ProductsID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_BrandId",
+                table: "Files",
+                column: "BrandId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderProduct_ProductsID",
@@ -802,6 +816,9 @@ namespace OnionArch.Persistance.Migrations
                 name: "AttributeValues");
 
             migrationBuilder.DropTable(
+                name: "Files");
+
+            migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
@@ -818,9 +835,6 @@ namespace OnionArch.Persistance.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Files");
         }
     }
 }
