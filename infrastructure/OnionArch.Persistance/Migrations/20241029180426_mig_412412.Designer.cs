@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnionArch.Persistance.Contexts;
@@ -11,9 +12,11 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    partial class OnionArchDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241029180426_mig_412412")]
+    partial class mig_412412
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -423,43 +426,6 @@ namespace OnionArch.Persistance.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Brands");
-                });
-
-            modelBuilder.Entity("OnionArch.Domain.Entities.BrandAttribute", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("BrandId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("FilterId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("FilterType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("BrandId");
-
-                    b.HasIndex("FilterId");
-
-                    b.ToTable("BrandAttriburtes");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Category", b =>
@@ -1135,25 +1101,6 @@ namespace OnionArch.Persistance.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("OnionArch.Domain.Entities.BrandAttribute", b =>
-                {
-                    b.HasOne("OnionArch.Domain.Entities.Brand", "Brand")
-                        .WithMany("BrandAttributes")
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnionArch.Domain.Entities.Attribute", "Filter")
-                        .WithMany()
-                        .HasForeignKey("FilterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Brand");
-
-                    b.Navigation("Filter");
-                });
-
             modelBuilder.Entity("OnionArch.Domain.Entities.Category", b =>
                 {
                     b.HasOne("OnionArch.Domain.Entities.Category", null)
@@ -1292,8 +1239,6 @@ namespace OnionArch.Persistance.Migrations
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Brand", b =>
                 {
-                    b.Navigation("BrandAttributes");
-
                     b.Navigation("BrandLogo");
 
                     b.Navigation("Products");

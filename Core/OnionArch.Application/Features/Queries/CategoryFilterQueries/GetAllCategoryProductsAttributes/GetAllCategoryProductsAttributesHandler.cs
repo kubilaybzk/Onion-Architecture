@@ -1,22 +1,22 @@
-﻿using MediatR;
+﻿ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Abstractions.ProductCrud;
 using OnionArch.Application.Features.Queries.ProductAttributesQueries.GetAllProductAttributesWithOutFilter;
 using OnionArch.Application.Repositories.CategoryCrud;
 using OnionArch.Application.View_Models.CategoryFilter;
 
-public class GetProductAttributesByCategoryHandler : IRequestHandler<GetAllProductAttributesWithOutFilterRequest, GetAllProductAttributesWithOutFilterResponse>
+public class GetAllCategoryProductsAttributesHandler : IRequestHandler<GetAllCategoryProductsAttributesRequest, GetAllCategoryProductsAttributesResponse>
 {
     private readonly ICategoryReadRepository _categoryReadRepository;
     private readonly IProductReadRepository _productReadRepository;
 
-    public GetProductAttributesByCategoryHandler(ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository)
+    public GetAllCategoryProductsAttributesHandler(ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository)
     {
         _categoryReadRepository = categoryReadRepository;
         _productReadRepository = productReadRepository;
     }
 
-    public async Task<GetAllProductAttributesWithOutFilterResponse> Handle(GetAllProductAttributesWithOutFilterRequest request, CancellationToken cancellationToken)
+    public async Task<GetAllCategoryProductsAttributesResponse> Handle(GetAllCategoryProductsAttributesRequest request, CancellationToken cancellationToken)
     {
         try
         {
@@ -25,7 +25,7 @@ public class GetProductAttributesByCategoryHandler : IRequestHandler<GetAllProdu
 
             if (category == null)
             {
-                return new GetAllProductAttributesWithOutFilterResponse
+                return new GetAllCategoryProductsAttributesResponse
                 {
                     HassError = true,
                     Message = "Kategori bulunamadı",
@@ -69,7 +69,7 @@ public class GetProductAttributesByCategoryHandler : IRequestHandler<GetAllProdu
                 .OrderBy(a=>a.AttributeName)
                 .ToList();
 
-            return new GetAllProductAttributesWithOutFilterResponse
+            return new GetAllCategoryProductsAttributesResponse
             {
                 CategoryName = category.CategoryName,
                 MaterializedPath = category.MaterializedPath,
@@ -82,7 +82,7 @@ public class GetProductAttributesByCategoryHandler : IRequestHandler<GetAllProdu
         }
         catch (Exception ex)
         {
-            return new GetAllProductAttributesWithOutFilterResponse
+            return new GetAllCategoryProductsAttributesResponse
             {
                 HassError = true,
                 Message = "Ürün özellikleri getirilirken bir hata oluştu",

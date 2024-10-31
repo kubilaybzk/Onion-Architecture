@@ -12,19 +12,19 @@ namespace OnionArch.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryManagerController : ControllerBase
+    public class CategoryAttributeManagerController : ControllerBase
     {
         readonly IMediator _mediator;
 
-        public CategoryManagerController(IMediator mediator)
+        public CategoryAttributeManagerController(IMediator mediator)
         {
             _mediator = mediator;
         }
         
-        [HttpGet("GetAllCategoryAttributes")]
-        public async Task<IActionResult> GetAllCategoryAttributes([FromQuery] GetAllProductAttributesWithOutFilterRequest getProductAttributesByCategoryRequest)
+        [HttpGet("GetAllCategoryProductsAttributes")]
+        public async Task<IActionResult> GetAllCategoryAttributes([FromQuery] GetAllCategoryProductsAttributesRequest getAllCategoryProductsAttributesRequest)
         {
-            GetAllProductAttributesWithOutFilterResponse CategoryResponse = await _mediator.Send(getProductAttributesByCategoryRequest);
+            GetAllCategoryProductsAttributesResponse CategoryResponse = await _mediator.Send(getAllCategoryProductsAttributesRequest);
 
             switch (CategoryResponse.StatusCode)
             {
@@ -41,9 +41,9 @@ namespace OnionArch.WebApi.Controllers
         }
 
         [HttpPost("SaveCategoryAttributeFilter")]
-        public async Task<IActionResult> SaveAllCategoryAttributes([FromBody] SaveCategoryAttributeFilterRequest saveCategoryAttributeFilterRequest)
+        public async Task<IActionResult> SaveAllCategoryAttributes([FromBody] CreateCategoryAttributeFilterRequest saveCategoryAttributeFilterRequest)
         {
-            SaveCategoryAttributeFilterResponse CategoryResponse = await _mediator.Send(saveCategoryAttributeFilterRequest);
+            CreateCategoryAttributeFilterResponse CategoryResponse = await _mediator.Send(saveCategoryAttributeFilterRequest);
 
             switch (CategoryResponse.StatusCode)
             {

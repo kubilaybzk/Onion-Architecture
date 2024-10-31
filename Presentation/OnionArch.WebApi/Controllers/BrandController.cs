@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using OnionArch.Application.Features.Commands.BrandCommands.CreateBrandCommands;
 using OnionArch.Application.Features.Commands.BrandCommands.DeleteBrandCommands;
 using OnionArch.Application.Features.Commands.BrandCommands.UpdateBrandCommands;
+using OnionArch.Application.Features.Commands.BrandFilterComands.CreateBrandAttributeFilter;
 using OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCommands;
 using OnionArch.Application.Features.Commands.CategoryCommands.DeleteCategoryComands;
 using OnionArch.Application.Features.Commands.CategoryCommands.UpdateCategoryComands;
 using OnionArch.Application.Features.Commands.Product.CreateOneProductWithImage;
+using OnionArch.Application.Features.Queries.BrandFilterQueries.GetBrandFilters;
 using OnionArch.Application.Features.Queries.BrandQueries.GetAllBrandNameQueries;
 using OnionArch.Application.Features.Queries.BrandQueries.GetAllBrands;
 using OnionArch.Application.Features.Queries.BrandQueries.GetAllProductByBrandNameQueries;
@@ -152,5 +154,11 @@ namespace OnionArch.WebApi.Controllers
             }
 
         }
+
+       
+
+
+       
+
     }
 }

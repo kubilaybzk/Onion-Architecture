@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Commands.ProductFilterComands.SaveCategoryAttributeFilter
 {
-    public class SaveCategoryAttributeFilterRequest : IRequest<SaveCategoryAttributeFilterResponse>
+    public class CreateCategoryAttributeFilterRequest : IRequest<CreateCategoryAttributeFilterResponse>
     {
         public string JsonResult { get; set; }
         public string CategorySlug { get; set; }

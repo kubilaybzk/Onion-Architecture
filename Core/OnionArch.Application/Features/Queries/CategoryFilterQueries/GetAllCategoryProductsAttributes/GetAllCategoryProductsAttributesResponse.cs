@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Queries.ProductAttributesQueries.GetAllProductAttributesWithOutFilter
 {
-    public class GetAllProductAttributesWithOutFilterResponse : GlobalResponseResult
+    public class GetAllCategoryProductsAttributesResponse : GlobalResponseResult
     {
         public List<VM_Category_Filters_Result> CategoryFilters { get; set; }
         public string CategoryName { get; set; }

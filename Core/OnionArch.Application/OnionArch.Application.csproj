@@ -43,6 +43,7 @@
     <None Remove="Validators\Product_Validators\" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Features\Commands\BrandFilterComands\DeleteBrandAttributeFilter\" />
     <Folder Include="Features\Commands\CategoryCommands\AddCategoryCommands\" />
     <Folder Include="RequestParamaters\" />
     <Folder Include="Abstractions\Storage\" />

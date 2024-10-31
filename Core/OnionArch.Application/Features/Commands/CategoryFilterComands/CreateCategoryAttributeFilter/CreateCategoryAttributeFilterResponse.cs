@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Commands.ProductFilterComands.SaveCategoryAttributeFilter
 {
-    public class SaveCategoryAttributeFilterResponse : GlobalResponseResult
+    public class CreateCategoryAttributeFilterResponse : GlobalResponseResult
     {
         public Boolean isCreated { get; set; }
     }

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Commands.ProductFilterComands.SaveCategoryAttributeFilter
 {
-    public class SaveCategoryAttributeFilterHandler : IRequestHandler<SaveCategoryAttributeFilterRequest, SaveCategoryAttributeFilterResponse>
+    public class CreateCategoryAttributeFilterHandler : IRequestHandler<CreateCategoryAttributeFilterRequest, CreateCategoryAttributeFilterResponse>
     {
         private readonly ICategoryAttributeReadRepository _categoryAttributeReadRepository;
         private readonly ICategoryAttributeWriteRepository _categoryAttributeWriteRepository;
@@ -22,7 +22,7 @@ namespace OnionArch.Application.Features.Commands.ProductFilterComands.SaveCateg
         private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly ICategoryWriteRepository _categoryWriteRepository;
 
-        public SaveCategoryAttributeFilterHandler(ICategoryAttributeReadRepository categoryAttributeReadRepository, ICategoryAttributeWriteRepository categoryAttributeWriteRepository, IAttributeReadRepository attributeReadRepository, ICategoryReadRepository categoryReadRepository, ICategoryWriteRepository categoryWriteRepository)
+        public CreateCategoryAttributeFilterHandler(ICategoryAttributeReadRepository categoryAttributeReadRepository, ICategoryAttributeWriteRepository categoryAttributeWriteRepository, IAttributeReadRepository attributeReadRepository, ICategoryReadRepository categoryReadRepository, ICategoryWriteRepository categoryWriteRepository)
         {
             _categoryAttributeReadRepository = categoryAttributeReadRepository;
             _categoryAttributeWriteRepository = categoryAttributeWriteRepository;
@@ -32,7 +32,7 @@ namespace OnionArch.Application.Features.Commands.ProductFilterComands.SaveCateg
         }
 
 
-        public async Task<SaveCategoryAttributeFilterResponse> Handle(SaveCategoryAttributeFilterRequest request, CancellationToken cancellationToken)
+        public async Task<CreateCategoryAttributeFilterResponse> Handle(CreateCategoryAttributeFilterRequest request, CancellationToken cancellationToken)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace OnionArch.Application.Features.Commands.ProductFilterComands.SaveCateg
 
                 if (targetCategory == null)
                 {
-                    return new SaveCategoryAttributeFilterResponse()
+                    return new CreateCategoryAttributeFilterResponse()
                     {
                         Message = "Kategori bulunamadı",
                         StatusCode = HttpStatusCode.NotFound,
@@ -57,9 +57,9 @@ namespace OnionArch.Application.Features.Commands.ProductFilterComands.SaveCateg
                 var targetCategoryFilterResultsConvertedJson = System.Text.Json.JsonSerializer.Deserialize<List<AttributeJsonConvert>>(request.JsonResult);
                 var existingCategoryFilters = targetCategory.CategoryAttributes.ToDictionary(cf => cf.FilterId);
 
-                var categoriesToAdd = new List<CategoryAttribute>();
-                var categoriesToUpdate = new List<CategoryAttribute>();
-                var categoriesToDelete = new List<CategoryAttribute>();
+                var categoryAttributesToAdd = new List<CategoryAttribute>();
+                var categoryAttributesToUpdate = new List<CategoryAttribute>();
+                var categoryAttributesToDelete = new List<CategoryAttribute>();
 
                 foreach (var eachCategoryFilter in targetCategoryFilterResultsConvertedJson)
                 {
@@ -67,12 +67,12 @@ namespace OnionArch.Application.Features.Commands.ProductFilterComands.SaveCateg
 
                     if (!existingCategoryFilters.TryGetValue(attribute.ID, out var existingFilter))
                     {
-                        categoriesToAdd.Add(new CategoryAttribute
+                        categoryAttributesToAdd.Add(new CategoryAttribute
                         {
                             Category = targetCategory,
                             Filter = attribute,
                             FilterType = eachCategoryFilter.FilterType,
-                            Order= eachCategoryFilter.Order,
+                            Order = eachCategoryFilter.Order,
                         });
                     }
                     else
@@ -81,39 +81,39 @@ namespace OnionArch.Application.Features.Commands.ProductFilterComands.SaveCateg
                         {
                             existingFilter.FilterType = eachCategoryFilter.FilterType;
                             existingFilter.Order = eachCategoryFilter.Order;
-                            categoriesToUpdate.Add(existingFilter);
+                            categoryAttributesToUpdate.Add(existingFilter);
                         }
                         existingCategoryFilters.Remove(attribute.ID);
                     }
                 }
 
                 // Kalan mevcut filtreler silinecek
-                categoriesToDelete.AddRange(existingCategoryFilters.Values);
+                categoryAttributesToDelete.AddRange(existingCategoryFilters.Values);
 
                 // Bulk insert for new records
-                if (categoriesToAdd.Any())
+                if (categoryAttributesToAdd.Any())
                 {
-                    await _categoryAttributeWriteRepository.AddRangeAsync(categoriesToAdd);
+                    await _categoryAttributeWriteRepository.AddRangeAsync(categoryAttributesToAdd);
                 }
 
                 // Bulk update for existing records
-                if (categoriesToUpdate.Any())
+                if (categoryAttributesToUpdate.Any())
                 {
-                    foreach (var updatedList in categoriesToUpdate)
+                    foreach (var updatedList in categoryAttributesToUpdate)
                     {
                         _categoryAttributeWriteRepository.Update(updatedList);
                     }
                 }
 
                 // Bulk delete for removed records
-                if (categoriesToDelete.Any())
+                if (categoryAttributesToDelete.Any())
                 {
-                    _categoryAttributeWriteRepository.RemoveRange(categoriesToDelete);
+                    _categoryAttributeWriteRepository.RemoveRange(categoryAttributesToDelete);
                 }
 
                 await _categoryAttributeWriteRepository.SaveAsync();
 
-                return new SaveCategoryAttributeFilterResponse()
+                return new CreateCategoryAttributeFilterResponse()
                 {
                     Message = "Filtreler başarıyla kaydedildi",
                     StatusCode = HttpStatusCode.Created,
@@ -125,7 +125,7 @@ namespace OnionArch.Application.Features.Commands.ProductFilterComands.SaveCateg
             }
             catch (Exception ex)
             {
-                return new SaveCategoryAttributeFilterResponse()
+                return new CreateCategoryAttributeFilterResponse()
                 {
                     Message = "Filtreler kaydedilirken hata",
                     StatusCode = HttpStatusCode.InternalServerError,

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OnionArch.Application.Features.Queries.ProductAttributesQueries.GetAllProductAttributesWithOutFilter
 {
-    public class GetAllProductAttributesWithOutFilterRequest : IRequest<GetAllProductAttributesWithOutFilterResponse>
+    public class GetAllCategoryProductsAttributesRequest : IRequest<GetAllCategoryProductsAttributesResponse>
     {
         public string CategorySlug { get; set; }
         public GlobalPaginationRequest PaginationValues { get; set; }

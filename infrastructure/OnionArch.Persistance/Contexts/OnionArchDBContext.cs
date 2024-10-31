@@ -44,6 +44,7 @@ namespace OnionArch.Persistance.Contexts
         public DbSet<ProductAttribute> ProductAttributes { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<BrandImageFile> BrandImageFiles { get; set; }
+        public DbSet<BrandAttribute> BrandAttriburtes { get; set; }
 
 
         //Burada veri tabanında otomatik olarka yapılan işlemlerde EFCore tarafından belirli alanlara değerler atanmasını istiyoruz.

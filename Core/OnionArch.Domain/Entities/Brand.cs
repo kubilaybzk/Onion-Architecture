@@ -25,6 +25,7 @@ namespace OnionArch.Domain.Entities
         //Relation and Images
         public ICollection<Product> Products { get; set; }
         public BrandImageFile? BrandLogo { get; set; }
+        public ICollection<BrandAttribute> BrandAttributes { get; set; }
 
     }
 }
