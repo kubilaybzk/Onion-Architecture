@@ -29,6 +29,13 @@ namespace OnionArch.Application.Features.Commands.AddressCommands.CreateAddressC
             resquestparams.City = request.City;
             resquestparams.Country = request.Country;
             resquestparams.District = request.District;
+            resquestparams.RecipientName = request.RecipientName;
+            resquestparams.RecipientSurName = request.RecipientSurName;
+            resquestparams.IsDefaultAddress = request.IsDefaultAddress;
+            resquestparams.IsInstitutional = request.IsInstitutional;
+            resquestparams.TaxIdentificationNumber = request.TaxIdentificationNumber;
+            resquestparams.TaxOffice = request.TaxOffice;
+            resquestparams.CompanyName = request.CompanyName;
 
             try
             {

@@ -59,7 +59,7 @@ namespace OnionArch.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet("AddMultipleItemToBasketRequest")]
+        [HttpPost("AddMultipleItemToBasketRequest")]
         public async Task<IActionResult> AddMultipleItemToBasketRequest([FromBody] AddMultipleItemToBasketRequest addMultipleItemToBasketRequest)
         {
             AddMultipleItemToBasketResponse response = await _mediator.Send(addMultipleItemToBasketRequest);

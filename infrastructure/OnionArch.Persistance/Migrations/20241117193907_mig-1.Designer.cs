@@ -12,8 +12,8 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20241029184157_mig_2312412231")]
-    partial class mig_2312412231
+    [Migration("20241117193907_mig-1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -175,6 +175,9 @@ namespace OnionArch.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("text");
+
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("text");
@@ -186,6 +189,12 @@ namespace OnionArch.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsDefaultAddress")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("IsInstitutional")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("LongAddress")
                         .IsRequired()
                         .HasColumnType("text");
@@ -196,6 +205,20 @@ namespace OnionArch.Persistance.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RecipientName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RecipientSurName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TaxIdentificationNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TaxOffice")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdateTime")
@@ -1147,7 +1170,7 @@ namespace OnionArch.Persistance.Migrations
                         .IsRequired();
 
                     b.HasOne("OnionArch.Domain.Entities.Attribute", "Filter")
-                        .WithMany()
+                        .WithMany("BrandAttributes")
                         .HasForeignKey("FilterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1276,6 +1299,8 @@ namespace OnionArch.Persistance.Migrations
             modelBuilder.Entity("OnionArch.Domain.Entities.Attribute", b =>
                 {
                     b.Navigation("AttributeValues");
+
+                    b.Navigation("BrandAttributes");
 
                     b.Navigation("CategoryAttributes");
                 });

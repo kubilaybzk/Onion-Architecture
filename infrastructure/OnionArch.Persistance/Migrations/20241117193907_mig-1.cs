@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace OnionArch.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class newDB : Migration
+    public partial class mig1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -194,6 +194,13 @@ namespace OnionArch.Persistance.Migrations
                     LongAddress = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
+                    RecipientName = table.Column<string>(type: "text", nullable: false),
+                    RecipientSurName = table.Column<string>(type: "text", nullable: false),
+                    IsDefaultAddress = table.Column<bool>(type: "boolean", nullable: false),
+                    IsInstitutional = table.Column<bool>(type: "boolean", nullable: true),
+                    TaxIdentificationNumber = table.Column<string>(type: "text", nullable: true),
+                    TaxOffice = table.Column<string>(type: "text", nullable: true),
+                    CompanyName = table.Column<string>(type: "text", nullable: true),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     isDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -334,6 +341,36 @@ namespace OnionArch.Persistance.Migrations
                         name: "FK_AttributeValues_Attributes_AttributeId",
                         column: x => x.AttributeId,
                         principalTable: "Attributes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BrandAttriburtes",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    BrandId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FilterId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FilterType = table.Column<string>(type: "text", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BrandAttriburtes", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_BrandAttriburtes_Attributes_FilterId",
+                        column: x => x.FilterId,
+                        principalTable: "Attributes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BrandAttriburtes_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -691,6 +728,16 @@ namespace OnionArch.Persistance.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BrandAttriburtes_BrandId",
+                table: "BrandAttriburtes",
+                column: "BrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BrandAttriburtes_FilterId",
+                table: "BrandAttriburtes",
+                column: "FilterId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categories_CategoryID",
                 table: "Categories",
                 column: "CategoryID");
@@ -784,6 +831,9 @@ namespace OnionArch.Persistance.Migrations
 
             migrationBuilder.DropTable(
                 name: "BasketItems");
+
+            migrationBuilder.DropTable(
+                name: "BrandAttriburtes");
 
             migrationBuilder.DropTable(
                 name: "CategoryAttributes");

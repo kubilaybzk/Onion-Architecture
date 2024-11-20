@@ -28,7 +28,7 @@ namespace OnionArch.Application.Features.Commands.AddressCommands.UpdateAddressC
 
         public async Task<UpdateAddressCommandResponse> Handle(UpdateAddressCommandRequest request, CancellationToken cancellationToken)
         {
-            Address currentAddres= await _addressReadRepository.GetByIdAsync(request.Id);
+            Address currentAddres= await _addressReadRepository.GetByIdAsync(request.AddressID);
 
             currentAddres.PhoneNumber = request.PhoneNumber;
             currentAddres.AddressName = request.AddressName;
@@ -37,8 +37,13 @@ namespace OnionArch.Application.Features.Commands.AddressCommands.UpdateAddressC
             currentAddres.City = request.City;
             currentAddres.Country = request.Country;
             currentAddres.District = request.District;
-
-
+            currentAddres.RecipientName = request.RecipientName;
+            currentAddres.RecipientSurName = request.RecipientSurName;
+            currentAddres.IsDefaultAddress = request.IsDefaultAddress;
+            currentAddres.IsInstitutional = request.IsInstitutional;
+            currentAddres.TaxIdentificationNumber = request.TaxIdentificationNumber;
+            currentAddres.TaxOffice = request.TaxOffice;
+            currentAddres.CompanyName = request.CompanyName;
             try
             {
                 int result = await _addressWriteRepository.SaveAsync();

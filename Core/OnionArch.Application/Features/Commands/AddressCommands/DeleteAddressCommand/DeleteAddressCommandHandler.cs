@@ -21,39 +21,51 @@ namespace OnionArch.Application.Features.Commands.AddressCommands.DeleteAddressC
 
         public async Task<DeleteAddressCommandResponse> Handle(DeleteAddressCommandRequest request, CancellationToken cancellationToken)
         {
-            try
+            if (!string.IsNullOrEmpty(request.DeletedAddressId))
             {
-                bool? result = await _addressService.DeleteAddressAsync(request.DeletedAddressId);
-                if (result == true)
+                try
                 {
-                    return new()
+                    bool? result = await _addressService.DeleteAddressAsync(request.DeletedAddressId);
+                    if (result == true)
                     {
-                        Message = "Addres Silme işlemi başarılı",
-                        StatusCode = HttpStatusCode.OK,
-                        StatusCodeString=HttpStatusCode.OK.ToString(),
-                        HassError=false
-                    };
+                        return new()
+                        {
+                            Message = "Addres Silme işlemi başarılı",
+                            StatusCode = HttpStatusCode.OK,
+                            StatusCodeString = HttpStatusCode.OK.ToString(),
+                            HassError = false
+                        };
+                    }
+                    else
+                    {
+                        return new()
+                        {
+                            Message = "Addres Silme işlemi başarısız",
+                            StatusCode = HttpStatusCode.BadRequest,
+                            StatusCodeString = HttpStatusCode.BadRequest.ToString(),
+                            HassError = true
+                        };
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
                     return new()
                     {
-                        Message = "Addres Silme işlemi başarısız",
-                        StatusCode = HttpStatusCode.BadRequest,
-                        StatusCodeString = HttpStatusCode.BadRequest.ToString(),
-                        HassError=true
+                        Message = "Addres Silme işlemi başarısız sunucu taraflı bir hata",
+                        StatusCode = HttpStatusCode.InternalServerError,
+                        StatusCodeString = HttpStatusCode.InternalServerError.ToString(),
+                        HassError = true,
+                        ErrorMessage = ex.Message
                     };
                 }
             }
-            catch (Exception ex)
-            {
+            else{
                 return new()
                 {
-                    Message = "Addres Silme işlemi başarısız sunucu taraflı bir hata",
-                    StatusCode = HttpStatusCode.InternalServerError,
-                    StatusCodeString = HttpStatusCode.InternalServerError.ToString(),
-                    HassError = true,
-                    ErrorMessage = ex.Message
+                    Message = "AdressId değeri null olamaz.",
+                    StatusCode = HttpStatusCode.BadRequest,
+                    StatusCodeString = HttpStatusCode.BadRequest.ToString(),
+                    HassError = true
                 };
             }
         }

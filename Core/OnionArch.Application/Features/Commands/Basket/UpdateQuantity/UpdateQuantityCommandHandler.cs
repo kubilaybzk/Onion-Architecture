@@ -28,17 +28,23 @@ namespace OnionArch.Application.Features.Commands.Basket.UpdateQuantity
                 });
                 return new UpdateQuantityCommandResponse()
                 {
-                    ErorStatus = false,
-                    StatusCode = 200,
-                    Message = "Ekleme işlemi başarılı"
+                    ErrorMessage = null,
+                    HassError = false,
+                    isUpdated = true,
+                    Message = "Ürün başarıyla update  edildi",
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    StatusCodeString = System.Net.HttpStatusCode.OK.ToString()
                 };
             }
             catch (Exception ex) {
                 return new UpdateQuantityCommandResponse()
                 {
-                    ErorStatus = true,
-                    StatusCode = 500,
-                    Message = ex.Message
+                    ErrorMessage = ex.Message,
+                    HassError = true,
+                    isUpdated = false,
+                    Message = "Ürün başarıyla sepete ekelenemedi",
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError,
+                    StatusCodeString = System.Net.HttpStatusCode.InternalServerError.ToString()
                 };
             }
 

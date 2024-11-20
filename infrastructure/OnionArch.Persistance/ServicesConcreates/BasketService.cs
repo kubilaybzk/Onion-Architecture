@@ -94,7 +94,7 @@ namespace OnionArch.Persistance.ServicesConcreates
         }
 
 
-        public async Task AddBasketItemToBasketAsync(VM_Add_BasketItem addedBasketItem)
+        public async Task<Boolean> AddBasketItemToBasketAsync(VM_Add_BasketItem addedBasketItem)
         {
             //Öncelikle kullanıcının basket bilgilerine erişelim.
             Basket userBasket = await CurrentUserBasket();
@@ -127,22 +127,28 @@ namespace OnionArch.Persistance.ServicesConcreates
                         );
                 }
                 await _basketItemWriteRepository.SaveAsync();
-
+                return true;
+            }
+            else
+            {
+                return false;
             }
 
         }
 
-        public async Task<List<BasketItem>> GetBasketItemsAsync()
+        public async Task <List<BasketItem>> GetBasketItemsAsync()
         {
             // Kullanıcının mevcut sepetini almak için asenkron bir metodun sonucunu bekleyelim.
             Basket? currentUserBasket = await CurrentUserBasket();
 
             // Veritabanından kullanıcının sepetini ve sepet öğelerini almak için repository kullanılıyor.
             Basket? currentUsersItems = await _basketReadRepository.Table
-                .Include(b => b.BasketItems)        // Sepet içindeki öğeleri içeri al
-                .ThenInclude(b => b.Product)       
-                .ThenInclude(b=>b.ProductImageFiles)
-                // Sepet öğeleri içindeki ürünleri içeri al
+                .Include(b => b.BasketItems)
+                .ThenInclude(b => b.Product)
+                .ThenInclude(p => p.ProductImageFiles)
+                .Include(b => b.BasketItems)
+                .ThenInclude(b => b.Product)
+                .ThenInclude(p => p.Brand)
                 .FirstOrDefaultAsync(b => b.ID == currentUserBasket.ID);
 
             // Eğer kullanıcının sepeti null değilse, sepet içindeki öğeleri liste olarak döndürelim.
@@ -163,34 +169,51 @@ namespace OnionArch.Persistance.ServicesConcreates
 
         }
 
-        public async Task RemoveBasketItemAsync(string id)
+        public async Task<Boolean> RemoveBasketItemAsync(string id)
         {
             //Burada kullanıcının basket bilgilerine ihtiyacımız yok basket içi.
-            BasketItem? checkBasketHasThisItem = await _basketItemReadRepository.GetByIdAsync(id);
-            if (checkBasketHasThisItem != null)
+            try
             {
-                _basketItemWriteRepository.Remove(checkBasketHasThisItem);
-                await _basketItemWriteRepository.SaveAsync();
+                BasketItem? checkBasketHasThisItem = await _basketItemReadRepository.GetByIdAsync(id);
+                if (checkBasketHasThisItem != null)
+                {
+                    _basketItemWriteRepository.Remove(checkBasketHasThisItem);
+                    await _basketItemWriteRepository.SaveAsync();
+                   
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
             }
 
 
         }
 
-        public async Task UpdateBasketItemAsync(VM_Update_BasketItem updateBasketItem)
+        public async Task<Boolean> UpdateBasketItemAsync(VM_Update_BasketItem updateBasketItem)
         {
 
-            BasketItem currentBasket = await _basketItemReadRepository.GetByIdAsync(updateBasketItem.BasketItemId);
-
-            if (currentBasket != null)
+            try
             {
-                currentBasket.Quantity = updateBasketItem.Quantity;
-                await _basketItemWriteRepository.SaveAsync();
+                BasketItem currentBasket = await _basketItemReadRepository.GetByIdAsync(updateBasketItem.BasketItemId);
 
+                if (currentBasket != null)
+                {
+                    currentBasket.Quantity = updateBasketItem.Quantity;
+                    await _basketItemWriteRepository.SaveAsync();
+
+                }
+                return true;
+            }
+            catch(Exception e)
+            {
+                return false;
             }
 
         }
 
-        public async Task<bool> AddMultipleBasketItemsToBasketAsync(List<VM_Add_BasketItem> addedBasketItems)
+        public async Task<Boolean> AddMultipleBasketItemsToBasketAsync(List<VM_Add_BasketItem> addedBasketItems)
         {
             Basket userBasket = await CurrentUserBasket();
 

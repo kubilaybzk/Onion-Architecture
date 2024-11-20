@@ -9,14 +9,14 @@ using OnionArch.Application.View_Models.BasketItem;
 
 namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
 {
-    public class GetBasketItemsQueryResponse
+    public class GetBasketItemsQueryResponse: GlobalResponseResult
     {
 
         public List<VM_Result_BasketList> BasketItems { get; set; }
-        public float TotalProductPrice { get; set; }
-        public float TotalDiscount { get; set; }
+        public float TotalBasketOriginalPrice { get; set; }
+        public float TotalBasketDiscount { get; set; }
         public float CargoPrice { get; set; }
-        public float TotalPrice { get; set; }
+        public float TotolBasketLastPrice { get; set; }
 
 
 

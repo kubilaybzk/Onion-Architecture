@@ -16,5 +16,7 @@ namespace OnionArch.Application.View_Models.Addresses
         public string Neighbourhood { get; set; }
         public string LongAddress { get; set; }
         public string PhoneNumber { get; set; }
+        public string RecipientName { get; set; }
+        public string RecipientSurName { get; set; }
     }
 }

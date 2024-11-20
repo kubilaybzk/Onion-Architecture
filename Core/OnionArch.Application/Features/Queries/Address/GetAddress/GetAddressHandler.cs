@@ -25,7 +25,7 @@ namespace OnionArch.Application.Features.Queries.Address.GetAddress
             try
             {
                 var userAddresses = await _addressService.GetUserAddressesAsync();
-                if (userAddresses.Count > 0)
+                if (userAddresses !=null && userAddresses.Count > 0 )
                 {
                     return new GetAddressResonse()
                     {

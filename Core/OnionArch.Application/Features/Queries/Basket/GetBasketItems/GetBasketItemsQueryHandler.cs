@@ -27,55 +27,69 @@ namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
             //Todo
 
             // Toplam fiyat hesaplaması
-           
+
 
             var result = basketItems
                 .Select(ba => new VM_Result_BasketList
                 {
                     BasketItemId = ba.ID.ToString(),
                     Quantity = ba.Quantity,
-                    Products = new VM_Result_BasketProductItem()
-                    {
-                         ProductSlug=ba.Product.MaterializedProductPathBySlug,
-                         ProductName=ba.Product.Name,
-                         ProductQuantity=ba.Quantity,
-                         ProductLastPrice = ba.Product.LastPrice,
-                         ProductId=ba.Product.ID.ToString(),
-                         ProductCurrency=ba.Product.Currency,
-                         ProductImg = ba.Product.ProductImageFiles.Where(p => p.Showcase == true).Select(p => p.Path).ToList()[0].ToString(),
-                         ProductOriginalPrice=ba.Product.UnitPrice,
-                         ProductAddedTime=ba.CreateTime
-                    }
+                    ProductSlug = ba.Product.MaterializedProductPathBySlug,
+                    ProductName = ba.Product.Name,
+                    ProductLastPrice = ba.Product.LastPrice,
+                    ProductId = ba.Product.ID.ToString(),
+                    ProductCurrency = ba.Product.Currency,
+                    ProductImg = ba.Product.ProductImageFiles.Where(p => p.Showcase == true).Select(p => p.Path).ToList()[0].ToString(),
+                    ProductOriginalPrice = ba.Product.UnitPrice,
+                    ProductAddedTime = ba.CreateTime,
+                    DiscountPrice=ba.Product.DiscountPrice,
+                    DiscountRate=ba.Product.DiscountRate,
+                    Price=ba.Product.UnitPrice,
+                    BrandName=ba.Product.Brand.BrandName,
+                    BrandSlug=ba.Product.Brand.BrandSlug,
+
                 }).ToList();
 
-            var totalProductPrice = result.Sum(ba => ba.Products.ProductLastPrice * ba.Quantity);
-
+            var totalProductPrice       = result.Sum(ba => (float)(ba.ProductLastPrice * ba.Quantity));
+            float totalDiscountProducts = result.Sum(ba => (float)(ba.ProductOriginalPrice * ba.Quantity));
             float totalDiscount;
             float totalCargoPrice;
             float totalPrice;
 
-            // Toplam indirim hesaplaması (%10)
             if (totalProductPrice > 0)
             {
-                 totalDiscount =/* totalProductPrice * 0.10f;*/ 100;
-                 totalCargoPrice = totalProductPrice > 1000 ? 0 : 20.00f;
-                 totalPrice =/* totalProductPrice - totalDiscount*/ 100 + totalCargoPrice;
+                // Toplam indirim (%10)
+                totalDiscount = totalDiscountProducts - totalProductPrice;
+
+                // Kargo ücreti hesaplama (1000 TL üzeri ücretsiz)
+                totalCargoPrice = totalProductPrice > 1000 ? 0 : 20.00f;
+
+                // Toplam fiyat (Ürünler - İndirim + Kargo)
+                totalPrice = totalProductPrice - totalDiscount + totalCargoPrice;
             }
             else
             {
-                 totalDiscount =0;
-                 totalCargoPrice = 0;
-
-                 totalPrice =0;
+                totalDiscount = 0;
+                totalCargoPrice = 0;
+                totalPrice = 0;
             }
+
+
 
             return new GetBasketItemsQueryResponse()
             {
                 BasketItems = result,
-                TotalProductPrice = /*totalProductPrice*/ 100,
-                TotalDiscount = totalDiscount,
-                CargoPrice= totalCargoPrice,
-                TotalPrice= totalPrice,
+                TotalBasketDiscount= totalDiscount,
+                TotolBasketLastPrice= totalPrice,
+                TotalBasketOriginalPrice= totalProductPrice,
+                CargoPrice = totalCargoPrice,
+                
+                ErrorMessage = null,
+                HassError = false,
+                Message = "Başarıyla getirildi",
+                StatusCode = System.Net.HttpStatusCode.OK,
+                StatusCodeString = System.Net.HttpStatusCode.OK.ToString()
+
             };
         }
     }

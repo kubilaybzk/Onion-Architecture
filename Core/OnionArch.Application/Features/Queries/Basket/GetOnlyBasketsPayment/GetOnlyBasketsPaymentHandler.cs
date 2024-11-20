@@ -38,7 +38,7 @@ namespace OnionArch.Application.Features.Queries.Basket.GetOnlyBasketsPayment
                     
                 }).ToList();
 
-            float totalProductPrice = result.Sum(ba => ba.Price * ba.Quantity);
+            float totalProductPrice = (float)result.Sum(ba => ba.Price * ba.Quantity);
             float totalDiscount;
             float totalCargoPrice;
             float totalPrice;

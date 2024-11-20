@@ -9,6 +9,6 @@ namespace OnionArch.Application.Features.Commands.AddressCommands.DeleteAddressC
 {
     public class DeleteAddressCommandRequest:IRequest<DeleteAddressCommandResponse>
     {
-        public string DeletedAddressId { get; set; }
+        public string? DeletedAddressId { get; set; }
     }
 }

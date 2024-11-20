@@ -17,13 +17,13 @@ namespace OnionArch.Application.Abstractions.BasketServices
     public interface IBasketService
     {
         public Task<List<BasketItem>> GetBasketItemsAsync();
-        public Task AddBasketItemToBasketAsync(VM_Add_BasketItem addBasketItem);
+        public Task<Boolean> AddBasketItemToBasketAsync(VM_Add_BasketItem addBasketItem);
 
-        public Task UpdateBasketItemAsync(VM_Update_BasketItem updateBasketItem);
+        public Task<Boolean> UpdateBasketItemAsync(VM_Update_BasketItem updateBasketItem);
 
-        public Task RemoveBasketItemAsync(string id);
+        public Task<Boolean> RemoveBasketItemAsync(string id);
 
-        public Task<bool> AddMultipleBasketItemsToBasketAsync(List<VM_Add_BasketItem> addedBasketItems);
+        public Task<Boolean> AddMultipleBasketItemsToBasketAsync(List<VM_Add_BasketItem> addedBasketItems);
 
 
     }

@@ -23,7 +23,7 @@ namespace OnionArch.WebApi.Controllers
         }
         
         [HttpPost("CreateAddress")]
-        public async Task<IActionResult> CreateAddress([FromBody] CreateAddressCommandRequest request)
+        public async Task<IActionResult> CreateAddress([FromForm] CreateAddressCommandRequest request)
         {
            var result = await _mediator.Send(request);
             return Ok(result);

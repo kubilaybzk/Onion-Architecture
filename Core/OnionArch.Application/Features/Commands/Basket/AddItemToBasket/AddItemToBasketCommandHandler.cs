@@ -17,15 +17,50 @@ namespace OnionArch.Application.Features.Commands.Basket.AddItemToBasket
             _basketService = basketService;
         }
 
-        async Task<AddItemToBasketCommandResponse> IRequestHandler<AddItemToBasketCommandRequest, AddItemToBasketCommandResponse>.Handle(AddItemToBasketCommandRequest request, CancellationToken cancellationToken)
+        public async Task<AddItemToBasketCommandResponse> Handle(AddItemToBasketCommandRequest request, CancellationToken cancellationToken)
         {
-            await _basketService.AddBasketItemToBasketAsync(new()
+            try
             {
-                ProductId = request.ProductId,
-                Quantity = request.Quantity
-            });
+                Boolean result = await _basketService.AddBasketItemToBasketAsync(new()
+                {
+                    ProductId = request.BasketItemId,
+                    Quantity = request.Quantity
+                });
 
-            return new();
+                if (result)
+                {
+                    return new AddItemToBasketCommandResponse()
+                    {
+                        ErrorMessage = null,
+                        HassError = false,
+                        IsAdded = true,
+                        Message = "Ürün başarıyla sepete eklendi",
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        StatusCodeString = System.Net.HttpStatusCode.OK.ToString()
+                    };
+                }
+                return new AddItemToBasketCommandResponse()
+                {
+                    ErrorMessage = "Ürün eklenemedi",
+                    HassError = true,
+                    IsAdded = false,
+                    Message = "Ürün başarıyla sepete ekelenemedi",
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError,
+                };
+
+            }
+            catch (Exception e)
+            {
+                return new AddItemToBasketCommandResponse()
+                {
+                    ErrorMessage = e.Message,
+                    HassError = true,
+                    IsAdded = false,
+                    Message = "Ürün başarıyla sepete ekelenemedi",
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError,
+                    StatusCodeString = System.Net.HttpStatusCode.InternalServerError.ToString()
+                };
+            }
         }
     }
 }

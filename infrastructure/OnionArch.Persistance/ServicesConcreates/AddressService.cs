@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Abstractions.AddressServices;
@@ -58,6 +59,7 @@ namespace OnionArch.Persistance.ServicesConcreates
         public async Task<bool> CreateAddressAsync(VM_Create_Address address)
         {
             AppUser currentUser = await CurrentUser();
+            var totalAdresSize = currentUser.Addresses.Count;
             Address newaddress = new Address();
             newaddress.AddressName = address.AddressName;
             newaddress.Country = address.Country;
@@ -68,6 +70,13 @@ namespace OnionArch.Persistance.ServicesConcreates
             newaddress.PhoneNumber = address.PhoneNumber;
             newaddress.User = currentUser;
             newaddress.UserId = currentUser.Id;
+            newaddress.RecipientName = address.RecipientName;
+            newaddress.RecipientSurName = address.RecipientSurName;
+            newaddress.IsDefaultAddress = totalAdresSize>0 ? address.IsDefaultAddress :true;
+            newaddress.IsInstitutional = address.IsInstitutional;
+            newaddress.TaxIdentificationNumber = address.TaxIdentificationNumber;
+            newaddress.TaxOffice = address.TaxOffice;
+            newaddress.CompanyName = address.CompanyName;
             var result = await _addressWriteRepository.AddAsync(newaddress);
             await _addressWriteRepository.SaveAsync();
             return result;
@@ -102,7 +111,14 @@ namespace OnionArch.Persistance.ServicesConcreates
                 PhoneNumber = a.PhoneNumber,
                 CreateTime = a.CreateTime,
                 UpdateTime = a.UpdateTime,
-                ID = a.ID
+                ID = a.ID,
+                CompanyName = a.CompanyName,
+                IsInstitutional = a.IsInstitutional,
+                IsDefaultAddress = a.IsDefaultAddress,
+                RecipientName = a.RecipientName,
+                RecipientSurName = a.RecipientSurName,
+                TaxIdentificationNumber = a.TaxIdentificationNumber,
+                TaxOffice= a.TaxOffice,
             }).ToList();
 
 

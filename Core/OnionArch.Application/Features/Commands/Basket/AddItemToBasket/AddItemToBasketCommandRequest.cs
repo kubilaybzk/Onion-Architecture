@@ -9,7 +9,7 @@ namespace OnionArch.Application.Features.Commands.Basket.AddItemToBasket
 {
     public class AddItemToBasketCommandRequest : IRequest<AddItemToBasketCommandResponse>
     {
-        public string ProductId { get; set; }
+        public string BasketItemId { get; set; }
         public int Quantity { get; set; }
     }
 }
