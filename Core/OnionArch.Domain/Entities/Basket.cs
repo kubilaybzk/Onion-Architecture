@@ -19,6 +19,8 @@ namespace OnionArch.Domain.Entities
 
         public Order Order { get; set; }
 
-
+        public Guid? DiscountCouponId { get; set; }
+        public DiscountCoupon? DiscountCoupon { get; set; }
+        public decimal? DiscountedAmount { get; set; }
     }
 }

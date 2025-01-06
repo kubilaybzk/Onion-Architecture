@@ -143,6 +143,7 @@ namespace OnionArch.Persistance.ServicesConcreates
 
             // Veritabanından kullanıcının sepetini ve sepet öğelerini almak için repository kullanılıyor.
             Basket? currentUsersItems = await _basketReadRepository.Table
+                .Include(p=>p.DiscountCoupon)
                 .Include(b => b.BasketItems)
                 .ThenInclude(b => b.Product)
                 .ThenInclude(p => p.ProductImageFiles)

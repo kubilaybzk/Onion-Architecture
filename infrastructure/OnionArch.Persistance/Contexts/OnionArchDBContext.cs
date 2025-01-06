@@ -45,6 +45,7 @@ namespace OnionArch.Persistance.Contexts
         public DbSet<Brand> Brands { get; set; }
         public DbSet<BrandImageFile> BrandImageFiles { get; set; }
         public DbSet<BrandAttribute> BrandAttriburtes { get; set; }
+        public DbSet<DiscountCoupon> DiscountCoupons { get; set; }
 
 
         //Burada veri tabanında otomatik olarka yapılan işlemlerde EFCore tarafından belirli alanlara değerler atanmasını istiyoruz.
@@ -97,7 +98,15 @@ namespace OnionArch.Persistance.Contexts
                 .WithOne(pa => pa.Product)
                 .HasForeignKey(pa => pa.ProductId);
 
+            builder.Entity<DiscountCoupon>()
+                .HasIndex(d => d.Code)
+                .IsUnique();
 
+            builder.Entity<Basket>()
+                .HasOne(b => b.DiscountCoupon)
+                .WithMany(d => d.UsedInBaskets)
+                .HasForeignKey(b => b.DiscountCouponId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             base.OnModelCreating(builder); // Biz IdentityDbContext kullandığımız için bunu eklemek zorundayız.
 

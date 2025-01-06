@@ -1,4 +1,5 @@
 ﻿using OnionArch.Application.GlobalResponse;
+using OnionArch.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace OnionArch.Application.View_Models.BasketItem
         public string ProductSlug { get; set; }
         public decimal DiscountRate { get; set; } // İndirim oranı
         public decimal DiscountPrice { get; set; } // İndirimli fiyatı
+
 
         //public VM_Result_BasketProductItem Products { get; set; }
     }

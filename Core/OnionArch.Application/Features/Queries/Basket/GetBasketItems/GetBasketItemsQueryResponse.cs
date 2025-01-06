@@ -18,7 +18,10 @@ namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
         public float CargoPrice { get; set; }
         public float TotolBasketLastPrice { get; set; }
 
-
+        public Guid? DiscountCouponId { get; set; }
+        public decimal DiscountCouponValue { get; set; }
+        public decimal? DiscountedCuponAmount { get; set; }
+        public bool? IsCuponIsPercentage { get; set; }
 
     }
 }

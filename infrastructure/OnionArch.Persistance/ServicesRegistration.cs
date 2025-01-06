@@ -48,6 +48,9 @@ using OnionArch.Persistance.Repositorys.OrderCrud;
 using OnionArch.Persistance.Repositorys.ProductImageFileCrud;
 using OnionArch.Persistance.Repositorys.UserServices;
 using OnionArch.Persistance.ServicesConcreates;
+using OnionArch.Application.Repositories.DiscountCouponCrud;
+using OnionArch.Persistance.Repositories.DiscountCouponCrud;
+using OnionArch.Application.Abstractions.DiscountServices;
 
 namespace OnionArch.Persistance
 {
@@ -140,6 +143,10 @@ namespace OnionArch.Persistance
 
             services.AddScoped<IBrandAttributeReadRepository, BrandAttributeReadRepository>();
             services.AddScoped<IBrandAttributeWriteRepository, BrandAttributeWriteRepository>();
+
+            services.AddScoped<IDiscountCouponReadRepository, DiscountCouponReadRepository>();
+            services.AddScoped<IDiscountCouponWriteRepository, DiscountCouponWriteRepository>();
+            services.AddScoped<IDiscountCouponService, DiscountCouponService>();
 
         }
 	}
