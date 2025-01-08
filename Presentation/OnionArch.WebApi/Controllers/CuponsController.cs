@@ -25,7 +25,7 @@ namespace OnionArch.WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("apply/{code}")]
+        [HttpPost("ApplyCoupon/{code}")]
         public async Task<IActionResult> ApplyCoupon([FromRoute] string code)
         {
             var request = new ApplyCouponToBasketCommandRequest { CouponCode = code };
@@ -45,10 +45,10 @@ namespace OnionArch.WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpDelete("remove/{basketId}")]
-        public async Task<IActionResult> RemoveCoupon([FromRoute] string basketId)
+        [HttpDelete("RemoveCoupon")]
+        public async Task<IActionResult> RemoveCoupon()
         {
-            var request = new RemoveCouponFromBasketCommandRequest { BasketId = basketId };
+            var request = new RemoveCouponFromBasketCommandRequest { };
             var response = await _mediator.Send(request);
 
             switch (response.StatusCode)
@@ -65,7 +65,7 @@ namespace OnionArch.WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("CreateCoupon")]
         public async Task<IActionResult> Create([FromForm] CreateDiscountCouponCommandRequest request)
         {
             var response = await _mediator.Send(request);
@@ -82,10 +82,10 @@ namespace OnionArch.WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCoupon([FromRoute] Guid id, [FromBody] UpdateDiscountCouponCommandRequest request)
+        [HttpPut("UpdateCoupon")]
+        public async Task<IActionResult> UpdateCoupon([FromForm] UpdateDiscountCouponCommandRequest request)
         {
-            request.Id = id;
+             
             var response = await _mediator.Send(request);
 
             switch (response.StatusCode)
@@ -102,7 +102,7 @@ namespace OnionArch.WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteCoupon/{id}")]
         public async Task<IActionResult> DeleteCoupon([FromRoute] Guid id)
         {
             var request = new DeleteDiscountCouponCommandRequest { Id = id };
@@ -121,7 +121,7 @@ namespace OnionArch.WebApi.Controllers
             }
         }
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("GetAllCouponList")]
         public async Task<IActionResult> GetAll([FromQuery] GetAllDiscountCouponsQueryRequest request)
         {
 

@@ -24,7 +24,8 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.ApplyCouponToBa
                     {
                         HassError = true,
                         ErrorMessage = "Kupon uygulanamadı",
-                        StatusCode = System.Net.HttpStatusCode.BadRequest
+                        StatusCode = System.Net.HttpStatusCode.BadRequest,
+                        isCreated = true
                     };
                 }
 
@@ -35,7 +36,8 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.ApplyCouponToBa
                     AppliedCuponCode=request.CouponCode,
                     StatusCode = System.Net.HttpStatusCode.OK,
                     ErrorMessage=null,
-                    StatusCodeString= System.Net.HttpStatusCode.OK.ToString()
+                    StatusCodeString= System.Net.HttpStatusCode.OK.ToString(),
+                    isCreated = false
 
                 };
             }
@@ -45,7 +47,8 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.ApplyCouponToBa
                 {
                     HassError = true,
                     ErrorMessage = ex.Message,
-                    StatusCode = System.Net.HttpStatusCode.InternalServerError
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError ,
+                    isCreated = false
                 };
             }
         }

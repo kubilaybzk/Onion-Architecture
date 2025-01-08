@@ -5,5 +5,6 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.DeleteDiscountC
     public class DeleteDiscountCouponCommandResponse : GlobalResponseResult
     {
         public Guid DeletedCouponId { get; set; }
+        public bool isDeleted { get; set; }
     }
 } 

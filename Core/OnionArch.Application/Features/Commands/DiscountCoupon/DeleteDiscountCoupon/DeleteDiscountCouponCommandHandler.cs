@@ -26,7 +26,8 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.DeleteDiscountC
                 {
                     HassError = true,
                     ErrorMessage = "Kupon bulunamadı",
-                    StatusCode = System.Net.HttpStatusCode.NotFound
+                    StatusCode = System.Net.HttpStatusCode.NotFound,
+                    isDeleted = false
                 };
             }
 
@@ -38,7 +39,8 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.DeleteDiscountC
                 HassError = false,
                 Message = "Kupon başarıyla silindi",
                 StatusCode = System.Net.HttpStatusCode.OK,
-                DeletedCouponId = coupon.ID
+                DeletedCouponId = coupon.ID,
+                isDeleted = true
             };
         }
     }

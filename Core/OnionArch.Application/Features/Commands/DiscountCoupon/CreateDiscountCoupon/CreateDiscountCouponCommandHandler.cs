@@ -29,7 +29,8 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.CreateDiscountC
                 {
                     HassError = true,
                     ErrorMessage = "Bu kupon kodu zaten kullanımda",
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    isCreated = false
                 };
             }
 
@@ -58,7 +59,8 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.CreateDiscountC
                 Message = "Kupon başarıyla oluşturuldu",
                 StatusCode = System.Net.HttpStatusCode.Created,
                 CouponId = coupon.ID,
-                Code = coupon.Code
+                Code = coupon.Code,
+                isCreated = true
             };
         }
     }

@@ -9,6 +9,7 @@ using OnionArch.Application.Repositories.BasketItemCrud;
 using OnionArch.Application.View_Models.BasketItem;
 using OnionArch.Domain.Entities;
 using OnionArch.Domain.Entities.Identity;
+using OnionArch.Persistance.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +28,9 @@ namespace OnionArch.Persistance.ServicesConcreates
         readonly IBasketItemReadRepository _basketItemReadRepository;
         readonly IBasketItemWriteRepository _basketItemWriteRepository;
         readonly IBasketReadRepository _basketReadRepository;
+        private readonly OnionArchDBContext _context;
 
-        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IOrderReadRepository orderReadRepository, IBasketWriteRepository basketWriteRepository, IBasketItemReadRepository basketItemReadRepository, IBasketItemWriteRepository basketItemWriteRepository, IBasketReadRepository basketReadRepository = null)
+        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IOrderReadRepository orderReadRepository, IBasketWriteRepository basketWriteRepository, IBasketItemReadRepository basketItemReadRepository, IBasketItemWriteRepository basketItemWriteRepository, IBasketReadRepository basketReadRepository = null, OnionArchDBContext context = null)
         {
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
@@ -37,6 +39,7 @@ namespace OnionArch.Persistance.ServicesConcreates
             _basketItemReadRepository = basketItemReadRepository;
             _basketItemWriteRepository = basketItemWriteRepository;
             _basketReadRepository = basketReadRepository;
+            _context = context;
         }
 
 
@@ -44,130 +47,85 @@ namespace OnionArch.Persistance.ServicesConcreates
         // Şu anki kullanıcıyı bulan ve ilgili sepeti döndüren metot.
         public async Task<Basket> CurrentUserBasket()
         {
-            // Şu anki HttpContext'ten kullanıcı adını al
             var username = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
+            if (string.IsNullOrEmpty(username))
+                throw new Exception("Kullanıcı bulunamadı");
 
-            // Kullanıcı adının boş olup olmadığını kontrol et
-            if (!string.IsNullOrEmpty(username))
+            // Tek sorguda kullanıcı ve sepetbilgilerini alalım
+            var userWithBasket = await _userManager.Users
+                .Include(u => u.Baskets.Where(b => b.Order == null))
+                .FirstOrDefaultAsync(u => u.UserName == username);
+
+            if (userWithBasket == null)
+                throw new Exception("Kullanıcı bulunamadı");
+
+            // Aktif sepeti bulalım veya yenioluşturalım
+            var activeBasket = userWithBasket.Baskets.FirstOrDefault() ?? new Basket();
+
+            if (activeBasket.ID == Guid.Empty)
             {
-                // Kullanıcıyı al ve sepetlerini içeren bir sorgu yap
-                AppUser? user = await _userManager.Users
-                    .Include(u => u.Baskets)
-                    .FirstOrDefaultAsync(u => u.UserName == username);
-
-                // Sepetleri ve ilgili siparişleri birleştiren sorgu (left join)
-                var _basket = from basket in user.Baskets
-                              join order in _orderReadRepository.Table
-                              on basket.ID equals order.ID into BasketOrders
-                              from order in BasketOrders.DefaultIfEmpty()
-                              select new
-                              {
-                                  Basket = basket,
-                                  Order = order
-                              };
-
-                // Hedef sepet değişkenini başlat
-                Basket? targetBasket = null;
-
-                // Siparişi olmayan sepetler var mı diye kontrol et
-                if (_basket.Any(b => b.Order is null))
-                {
-                    // İlk siparişi olmayan sepeti hedef sepet olarak ayarla
-                    targetBasket = _basket.FirstOrDefault(b => b.Order is null)?.Basket;
-                }
-                else
-                {
-                    // Eğer tüm sepetlere sipariş verilmişse, yeni bir sepet oluştur ve kullanıcının sepetlerine ekle
-                    targetBasket = new Basket();
-                    user.Baskets.Add(targetBasket);
-                }
-
-                // Değişiklikleri sepet deposuna kaydet
+                userWithBasket.Baskets.Add(activeBasket);
                 await _basketWriteRepository.SaveAsync();
-
-                // Hedef sepeti döndür
-                return targetBasket;
             }
 
-            // Kullanıcı adı boşsa veya nullsa, bir istisna fırlat
-            throw new Exception("Kullanıcı bulunamadı.");
+            return activeBasket;
         }
 
-
-        public async Task<Boolean> AddBasketItemToBasketAsync(VM_Add_BasketItem addedBasketItem)
+        public async Task<bool> AddBasketItemToBasketAsync(VM_Add_BasketItem addedBasketItem)
         {
-            //Öncelikle kullanıcının basket bilgilerine erişelim.
-            Basket userBasket = await CurrentUserBasket();
-
-            if (userBasket != null)
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                //Eklenen eleman için öncelikle söyle bir sorgu oluşturalım.
-                //Gelen baseket itemi bizim sepetimizde olan herhangi bir basket item ile aynı değere mi sahip ? 
-                //Eğer bu koşul sağlanıyor ise ,sepete bu ürün var demek oluyor bu.
+                var userBasket = await CurrentUserBasket();
+                if (userBasket == null)
+                    return false;
 
-                BasketItem CheckHasSameProduct = await _basketItemReadRepository.GetSingleAsync(
+                var existingItem = await _basketItemReadRepository.GetSingleAsync(
                     bi => bi.BasketId == userBasket.ID && bi.ProductId == Guid.Parse(addedBasketItem.ProductId));
 
-                //Bu şu anlama geliyor artık sepette daha önce eklenmiş böyle bir ürün bulunmakta.
-                //Bunun değerini değiştirelim.
-                if (CheckHasSameProduct != null)
+                if (existingItem != null)
                 {
-                    CheckHasSameProduct.Quantity = CheckHasSameProduct.Quantity + addedBasketItem.Quantity;
+                    existingItem.Quantity += addedBasketItem.Quantity;
                 }
                 else
                 {
-                    //Sepete gelen ürün ile ilgili daha önce hiçbir kayıt oluşturulmamış ise ürünü doğrudan biz ekleyelim.
-                    await _basketItemWriteRepository.AddAsync(
-                        new BasketItem()
-                        {
-                            BasketId = userBasket.ID,
-                            ProductId = Guid.Parse(addedBasketItem.ProductId),
-                            Quantity = addedBasketItem.Quantity,
-                        }
-                        );
+                    await _basketItemWriteRepository.AddAsync(new BasketItem
+                    {
+                        BasketId = userBasket.ID,
+                        ProductId = Guid.Parse(addedBasketItem.ProductId),
+                        Quantity = addedBasketItem.Quantity,
+                    });
                 }
+
                 await _basketItemWriteRepository.SaveAsync();
+                await transaction.CommitAsync();
                 return true;
             }
-            else
+            catch
             {
-                return false;
+                await transaction.RollbackAsync();
+                throw;
             }
-
         }
 
-        public async Task <List<BasketItem>> GetBasketItemsAsync()
+        public async Task<List<BasketItem>> GetBasketItemsAsync()
         {
-            // Kullanıcının mevcut sepetini almak için asenkron bir metodun sonucunu bekleyelim.
-            Basket? currentUserBasket = await CurrentUserBasket();
+            // Tek bir sorgu ile tüm verileri çekelim
+            var currentUserBasket = await CurrentUserBasket();
 
-            // Veritabanından kullanıcının sepetini ve sepet öğelerini almak için repository kullanılıyor.
-            Basket? currentUsersItems = await _basketReadRepository.Table
-                .Include(p=>p.DiscountCoupon)
+            // Eager loading ile tek sorguda ilişkiliverileri çekelim
+            var basketWithItems = await _basketReadRepository.Table
+                .AsSplitQuery() // Büyük sorgularda performansı artırır
                 .Include(b => b.BasketItems)
-                .ThenInclude(b => b.Product)
-                .ThenInclude(p => p.ProductImageFiles)
+                    .ThenInclude(bi => bi.Product)
+                        .ThenInclude(p => p.ProductImageFiles.Where(pif => pif.Showcase))
                 .Include(b => b.BasketItems)
-                .ThenInclude(b => b.Product)
-                .ThenInclude(p => p.Brand)
+                    .ThenInclude(bi => bi.Product)
+                        .ThenInclude(p => p.Brand)
+                .Include(b => b.DiscountCoupon)
                 .FirstOrDefaultAsync(b => b.ID == currentUserBasket.ID);
 
-            // Eğer kullanıcının sepeti null değilse, sepet içindeki öğeleri liste olarak döndürelim.
-
-            var result = currentUsersItems?.BasketItems;
-            if (result != null)
-            {
-                foreach (var basketItem in result)
-                {
-                    // Eğer bir ürün varsa ve ProductImageFiles null değilse, bu ürünün resim dosyalarını doldur
-                    if (basketItem.Product != null && basketItem.Product.ProductImageFiles != null)
-                    {
-                        basketItem.Product.ProductImageFiles = basketItem.Product.ProductImageFiles.ToList();
-                    }
-                }
-            }
-            return result.ToList();
-
+            return basketWithItems?.BasketItems?.ToList() ?? new List<BasketItem>();
         }
 
         public async Task<Boolean> RemoveBasketItemAsync(string id)
@@ -180,7 +138,7 @@ namespace OnionArch.Persistance.ServicesConcreates
                 {
                     _basketItemWriteRepository.Remove(checkBasketHasThisItem);
                     await _basketItemWriteRepository.SaveAsync();
-                   
+
                 }
                 return true;
             }
@@ -207,7 +165,7 @@ namespace OnionArch.Persistance.ServicesConcreates
                 }
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return false;
             }

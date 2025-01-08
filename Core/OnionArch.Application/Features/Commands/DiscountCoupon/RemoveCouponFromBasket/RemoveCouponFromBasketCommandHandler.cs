@@ -24,7 +24,9 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.RemoveCouponFro
                     {
                         HassError = true,
                         ErrorMessage = "Sepette aktif kupon bulunmamaktadır",
-                        StatusCode = System.Net.HttpStatusCode.BadRequest
+                        StatusCode = System.Net.HttpStatusCode.BadRequest,
+                        isDeleted = false
+
                     };
                 }
 
@@ -32,7 +34,8 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.RemoveCouponFro
                 {
                     HassError = false,
                     Message = "Kupon başarıyla kaldırıldı",
-                    StatusCode = System.Net.HttpStatusCode.OK
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    isDeleted = true
                 };
             }
             catch (Exception ex)
@@ -41,7 +44,8 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.RemoveCouponFro
                 {
                     HassError = true,
                     ErrorMessage = ex.Message,
-                    StatusCode = System.Net.HttpStatusCode.InternalServerError
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError,
+                    isDeleted = false
                 };
             }
         }

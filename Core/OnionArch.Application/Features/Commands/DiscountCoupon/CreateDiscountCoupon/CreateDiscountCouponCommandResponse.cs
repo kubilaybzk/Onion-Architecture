@@ -6,5 +6,6 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.CreateDiscountC
     {
         public Guid CouponId { get; set; }
         public string Code { get; set; }
+        public bool isCreated { get; set; }
     }
 } 

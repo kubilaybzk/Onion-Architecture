@@ -4,8 +4,6 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.UpdateDiscountC
 {
     public class UpdateDiscountCouponCommandResponse : GlobalResponseResult
     {
-        public Guid CouponId { get; set; }
-        public string Code { get; set; }
-        public bool IsActive { get; set; }
+        public bool isUpdated { get; set; }
     }
 } 

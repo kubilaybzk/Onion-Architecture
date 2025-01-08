@@ -6,6 +6,7 @@ using OnionArch.Domain.Entities;
 using OnionArch.Domain.Entities.Identity;
 using OnionArch.Persistance.Contexts;
 using Microsoft.AspNetCore.Http;
+using OnionArch.Application.Abstractions.BasketServices;
 
 namespace OnionArch.Persistance.ServicesConcreates
 {
@@ -16,19 +17,22 @@ namespace OnionArch.Persistance.ServicesConcreates
         private readonly UserManager<AppUser> _userManager;
         private readonly OnionArchDBContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IBasketService _basketService;
 
         public DiscountCouponService(
             IDiscountCouponReadRepository discountCouponReadRepository,
             IDiscountCouponWriteRepository discountCouponWriteRepository,
             UserManager<AppUser> userManager,
             OnionArchDBContext context,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IBasketService basketService)
         {
             _discountCouponReadRepository = discountCouponReadRepository;
             _discountCouponWriteRepository = discountCouponWriteRepository;
             _userManager = userManager;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _basketService = basketService;
         }
 
         public async Task<bool> ApplyCouponToBasketAsync(string code)
@@ -37,24 +41,17 @@ namespace OnionArch.Persistance.ServicesConcreates
             if (string.IsNullOrEmpty(username))
                 throw new Exception("Kullanıcı bulunamadı");
 
-            var user = await _userManager.Users
-                .Include(u => u.Baskets)
-                .FirstOrDefaultAsync(u => u.UserName == username);
-            if (user == null)
-                throw new Exception("Kullanıcı bulunamadı");
-
-            var basket = await _context.Baskets
-                .Include(b => b.BasketItems)
-                .ThenInclude(bi => bi.Product)
-                .FirstOrDefaultAsync(b => b.UserId == user.Id && b.Order == null);
+            var basket = await _basketService.CurrentUserBasket();
             if (basket == null)
                 throw new Exception("Aktif sepet bulunamadı");
 
-            var coupon = await ValidateAndGetCouponAsync(code, user.Id);
+            var coupon = await ValidateAndGetCouponAsync(code, basket.UserId);
             if (coupon == null)
                 return false;
 
-            decimal cartTotal = basket.BasketItems.Sum(bi => bi.Product.LastPrice * bi.Quantity);
+            var basketItems = await _basketService.GetBasketItemsAsync();
+            decimal cartTotal = basketItems.Sum(bi => bi.Product.LastPrice * bi.Quantity);
+            
             if (cartTotal < coupon.MinimumCartAmount)
                 throw new Exception($"Minimum sepet tutarı {coupon.MinimumCartAmount:C2} olmalıdır");
 
@@ -95,23 +92,52 @@ namespace OnionArch.Persistance.ServicesConcreates
             return true;
         }
 
-        public async Task<bool> RemoveCouponFromBasketAsync()
+        public async Task<bool> DecrementCouponUsageAsync(Guid couponId)
         {
-            var user = await _userManager.GetUserAsync(System.Security.Claims.ClaimsPrincipal.Current);
-            if (user == null)
-                throw new Exception("Kullanıcı bulunamadı");
-
-            var basket = await _context.Baskets
-                .FirstOrDefaultAsync(b => b.UserId == user.Id && b.Order == null);
-
-            if (basket == null || !basket.DiscountCouponId.HasValue)
+            var coupon = await _discountCouponReadRepository.GetByIdAsync(couponId.ToString());
+            if (coupon == null)
                 return false;
 
-            basket.DiscountCouponId = null;
-            basket.DiscountedAmount = null;
-            await _context.SaveChangesAsync();
+            if (!coupon.IsActive || coupon.UsedCount > 0)
+            {
+                coupon.UsedCount--;
+                _discountCouponWriteRepository.Update(coupon);
+                await _discountCouponWriteRepository.SaveAsync();
+            }
 
             return true;
+        }
+
+        public async Task<bool> RemoveCouponFromBasketAsync()
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var username = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
+                if (string.IsNullOrEmpty(username))
+                    throw new Exception("Kullanıcı bulunamadı");
+
+                var basket = await _basketService.CurrentUserBasket();
+                if (basket == null)
+                    throw new Exception("Aktif sepet bulunamadı");
+
+                if (basket == null || !basket.DiscountCouponId.HasValue)
+                    return false;
+
+                await DecrementCouponUsageAsync(basket.DiscountCouponId.Value);
+
+                basket.DiscountCouponId = null;
+                basket.DiscountedAmount = null;
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<DiscountCoupon> ValidateAndGetCouponAsync(string code, string userId)

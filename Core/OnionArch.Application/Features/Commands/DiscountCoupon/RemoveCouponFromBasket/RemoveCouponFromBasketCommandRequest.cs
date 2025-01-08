@@ -4,6 +4,6 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.RemoveCouponFro
 {
     public class RemoveCouponFromBasketCommandRequest : IRequest<RemoveCouponFromBasketCommandResponse>
     {
-        public string BasketId { get; set; }
+        
     }
 } 

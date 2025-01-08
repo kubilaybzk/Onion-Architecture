@@ -5,5 +5,6 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.RemoveCouponFro
     public class RemoveCouponFromBasketCommandResponse : GlobalResponseResult
     {
         public decimal? RemovedDiscountAmount { get; set; }
+        public bool isDeleted { get; set; }
     }
 } 

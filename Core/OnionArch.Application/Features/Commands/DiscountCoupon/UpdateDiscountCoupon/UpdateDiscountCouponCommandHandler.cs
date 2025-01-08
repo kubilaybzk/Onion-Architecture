@@ -26,16 +26,24 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.UpdateDiscountC
                 {
                     HassError = true,
                     ErrorMessage = "Kupon bulunamadı",
-                    StatusCode = System.Net.HttpStatusCode.NotFound
+                    StatusCode = System.Net.HttpStatusCode.NotFound,
+                    isUpdated = false
                 };
             }
 
+            coupon.Code = request.Code;
             coupon.Description = request.Description;
             coupon.DiscountAmount = request.DiscountAmount;
             coupon.MinimumCartAmount = request.MinimumCartAmount;
+            coupon.IsPercentage = request.IsPercentage;
+            coupon.ValidFrom = request.ValidFrom;
             coupon.ValidUntil = request.ValidUntil;
+            coupon.IsPersonal = request.IsPersonal;
+            coupon.UserId = request.UserId;
             coupon.MaxUsageCount = request.MaxUsageCount;
             coupon.IsActive = request.IsActive;
+            
+
 
             _discountCouponWriteRepository.Update(coupon);
             await _discountCouponWriteRepository.SaveAsync();
@@ -45,9 +53,7 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.UpdateDiscountC
                 HassError = false,
                 Message = "Kupon başarıyla güncellendi",
                 StatusCode = System.Net.HttpStatusCode.OK,
-                CouponId = coupon.ID,
-                Code = coupon.Code,
-                IsActive = coupon.IsActive
+                isUpdated = true
             };
         }
     }
