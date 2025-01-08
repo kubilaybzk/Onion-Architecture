@@ -6,5 +6,7 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.ApplyCouponToBa
     {
         public decimal DiscountedAmount { get; set; }
         public decimal FinalPrice { get; set; }
+
+        public string AppliedCuponCode { get; set; }
     }
 } 

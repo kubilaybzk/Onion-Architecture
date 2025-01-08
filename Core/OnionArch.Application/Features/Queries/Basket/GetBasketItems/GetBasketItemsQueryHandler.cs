@@ -90,7 +90,8 @@ namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
                 HassError = false,
                 Message = "Başarıyla getirildi",
                 StatusCode = System.Net.HttpStatusCode.OK,
-                StatusCodeString = System.Net.HttpStatusCode.OK.ToString()
+                StatusCodeString = System.Net.HttpStatusCode.OK.ToString(),
+                DiscountCouponName = basketItems.Select(p => p.Basket.DiscountCoupon?.Code).FirstOrDefault()
 
             };
         }

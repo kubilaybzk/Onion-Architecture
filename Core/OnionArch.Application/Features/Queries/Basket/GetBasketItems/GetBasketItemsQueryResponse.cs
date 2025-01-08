@@ -9,7 +9,7 @@ using OnionArch.Application.View_Models.BasketItem;
 
 namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
 {
-    public class GetBasketItemsQueryResponse: GlobalResponseResult
+    public class GetBasketItemsQueryResponse : GlobalResponseResult
     {
 
         public List<VM_Result_BasketList> BasketItems { get; set; }
@@ -22,6 +22,7 @@ namespace OnionArch.Application.Features.Queries.Basket.GetBasketItems
         public decimal DiscountCouponValue { get; set; }
         public decimal? DiscountedCuponAmount { get; set; }
         public bool? IsCuponIsPercentage { get; set; }
+        public string? DiscountCouponName { get; set; }
 
     }
 }

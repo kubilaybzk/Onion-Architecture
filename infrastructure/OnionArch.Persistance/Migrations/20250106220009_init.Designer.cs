@@ -12,8 +12,8 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20241117193907_mig-1")]
-    partial class mig1
+    [Migration("20250106220009_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -343,6 +343,12 @@ namespace OnionArch.Persistance.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("DiscountCouponId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal?>("DiscountedAmount")
+                        .HasColumnType("numeric");
+
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -354,6 +360,8 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("boolean");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("DiscountCouponId");
 
                     b.HasIndex("UserId");
 
@@ -614,6 +622,69 @@ namespace OnionArch.Persistance.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.DiscountCoupon", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPercentage")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPersonal")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("MaxUsageCount")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("MinimumCartAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UsedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ValidFrom")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DiscountCoupons");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.File", b =>
@@ -1133,11 +1204,18 @@ namespace OnionArch.Persistance.Migrations
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Basket", b =>
                 {
+                    b.HasOne("OnionArch.Domain.Entities.DiscountCoupon", "DiscountCoupon")
+                        .WithMany("UsedInBaskets")
+                        .HasForeignKey("DiscountCouponId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("OnionArch.Domain.Entities.Identity.AppUser", "User")
                         .WithMany("Baskets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("DiscountCoupon");
 
                     b.Navigation("User");
                 });
@@ -1204,6 +1282,15 @@ namespace OnionArch.Persistance.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Filter");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.DiscountCoupon", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Order", b =>
@@ -1337,6 +1424,11 @@ namespace OnionArch.Persistance.Migrations
             modelBuilder.Entity("OnionArch.Domain.Entities.Customer", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.DiscountCoupon", b =>
+                {
+                    b.Navigation("UsedInBaskets");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Identity.AppUser", b =>

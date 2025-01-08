@@ -32,7 +32,11 @@ namespace OnionArch.Application.Features.Commands.DiscountCoupon.ApplyCouponToBa
                 {
                     HassError = false,
                     Message = "Kupon başarıyla uygulandı",
-                    StatusCode = System.Net.HttpStatusCode.OK
+                    AppliedCuponCode=request.CouponCode,
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    ErrorMessage=null,
+                    StatusCodeString= System.Net.HttpStatusCode.OK.ToString()
+
                 };
             }
             catch (Exception ex)

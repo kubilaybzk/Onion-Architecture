@@ -66,7 +66,7 @@ namespace OnionArch.WebApi.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateDiscountCouponCommandRequest request)
+        public async Task<IActionResult> Create([FromForm] CreateDiscountCouponCommandRequest request)
         {
             var response = await _mediator.Send(request);
 

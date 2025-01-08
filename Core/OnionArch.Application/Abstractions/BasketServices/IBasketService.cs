@@ -16,6 +16,7 @@ namespace OnionArch.Application.Abstractions.BasketServices
     */
     public interface IBasketService
     {
+        public Task<Basket> CurrentUserBasket();
         public Task<List<BasketItem>> GetBasketItemsAsync();
         public Task<Boolean> AddBasketItemToBasketAsync(VM_Add_BasketItem addBasketItem);
 

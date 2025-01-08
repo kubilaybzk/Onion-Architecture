@@ -42,7 +42,7 @@ namespace OnionArch.Persistance.ServicesConcreates
 
 
         // Şu anki kullanıcıyı bulan ve ilgili sepeti döndüren metot.
-        private async Task<Basket> CurrentUserBasket()
+        public async Task<Basket> CurrentUserBasket()
         {
             // Şu anki HttpContext'ten kullanıcı adını al
             var username = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
