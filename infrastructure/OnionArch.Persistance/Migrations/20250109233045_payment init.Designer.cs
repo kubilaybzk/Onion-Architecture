@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnionArch.Persistance.Contexts;
@@ -11,9 +12,11 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    partial class OnionArchDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250109233045_payment init")]
+    partial class paymentinit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -957,7 +960,7 @@ namespace OnionArch.Persistance.Migrations
                     b.Property<bool>("IsThreeD")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid>("OrderID")
                         .HasColumnType("uuid");
 
                     b.Property<string>("PaymentProvider")
@@ -987,7 +990,7 @@ namespace OnionArch.Persistance.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderID");
 
                     b.HasIndex("UserId");
 
@@ -1464,7 +1467,7 @@ namespace OnionArch.Persistance.Migrations
                 {
                     b.HasOne("OnionArch.Domain.Entities.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

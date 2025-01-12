@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace OnionArch.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class paymentinit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -655,10 +655,16 @@ namespace OnionArch.Persistance.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uuid", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Adress = table.Column<string>(type: "text", nullable: false),
-                    CustomerID = table.Column<Guid>(type: "uuid", nullable: false),
-                    BasketId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderNo = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    DiscountedAmount = table.Column<decimal>(type: "numeric", nullable: true),
+                    DiscountCouponId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ShippingAddress = table.Column<string>(type: "text", nullable: false),
+                    BillingAddress = table.Column<string>(type: "text", nullable: false),
+                    CustomerID = table.Column<Guid>(type: "uuid", nullable: true),
+                    ProductID = table.Column<Guid>(type: "uuid", nullable: true),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     isDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -667,8 +673,14 @@ namespace OnionArch.Persistance.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Orders_Baskets_BasketId",
-                        column: x => x.BasketId,
+                        name: "FK_Orders_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Baskets_ID",
+                        column: x => x.ID,
                         principalTable: "Baskets",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -676,30 +688,85 @@ namespace OnionArch.Persistance.Migrations
                         name: "FK_Orders_Customers_CustomerID",
                         column: x => x.CustomerID,
                         principalTable: "Customers",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_Orders_DiscountCoupons_DiscountCouponId",
+                        column: x => x.DiscountCouponId,
+                        principalTable: "DiscountCoupons",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_Orders_Products_ProductID",
+                        column: x => x.ProductID,
+                        principalTable: "Products",
+                        principalColumn: "ID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderProduct",
+                name: "PaymentTransactions",
                 columns: table => new
                 {
-                    OrdersID = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProductsID = table.Column<Guid>(type: "uuid", nullable: false)
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderID = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    PaymentProvider = table.Column<string>(type: "text", nullable: false),
+                    TransactionId = table.Column<string>(type: "text", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Currency = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    IsThreeD = table.Column<bool>(type: "boolean", nullable: false),
+                    CardNumber = table.Column<string>(type: "text", nullable: false),
+                    CardHolder = table.Column<string>(type: "text", nullable: false),
+                    ErrorCode = table.Column<string>(type: "text", nullable: false),
+                    ErrorMessage = table.Column<string>(type: "text", nullable: false),
+                    ProviderResponse = table.Column<string>(type: "text", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderProduct", x => new { x.OrdersID, x.ProductsID });
+                    table.PrimaryKey("PK_PaymentTransactions", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_OrderProduct_Orders_OrdersID",
-                        column: x => x.OrdersID,
-                        principalTable: "Orders",
-                        principalColumn: "ID",
+                        name: "FK_PaymentTransactions_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderProduct_Products_ProductsID",
-                        column: x => x.ProductsID,
-                        principalTable: "Products",
+                        name: "FK_PaymentTransactions_Orders_OrderID",
+                        column: x => x.OrderID,
+                        principalTable: "Orders",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -824,20 +891,44 @@ namespace OnionArch.Persistance.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderProduct_ProductsID",
-                table: "OrderProduct",
-                column: "ProductsID");
+                name: "IX_OrderItems_OrderId",
+                table: "OrderItems",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_BasketId",
-                table: "Orders",
-                column: "BasketId",
-                unique: true);
+                name: "IX_OrderItems_ProductId",
+                table: "OrderItems",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerID",
                 table: "Orders",
                 column: "CustomerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_DiscountCouponId",
+                table: "Orders",
+                column: "DiscountCouponId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ProductID",
+                table: "Orders",
+                column: "ProductID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId",
+                table: "Orders",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentTransactions_OrderID",
+                table: "PaymentTransactions",
+                column: "OrderID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentTransactions_UserId",
+                table: "PaymentTransactions",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductAttributes_AttributeValueId",
@@ -900,7 +991,10 @@ namespace OnionArch.Persistance.Migrations
                 name: "CategoryProduct");
 
             migrationBuilder.DropTable(
-                name: "OrderProduct");
+                name: "OrderItems");
+
+            migrationBuilder.DropTable(
+                name: "PaymentTransactions");
 
             migrationBuilder.DropTable(
                 name: "ProductAttributes");
@@ -924,22 +1018,22 @@ namespace OnionArch.Persistance.Migrations
                 name: "Files");
 
             migrationBuilder.DropTable(
-                name: "Products");
-
-            migrationBuilder.DropTable(
                 name: "Baskets");
 
             migrationBuilder.DropTable(
                 name: "Customers");
 
             migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
                 name: "Attributes");
 
             migrationBuilder.DropTable(
-                name: "Brands");
+                name: "DiscountCoupons");
 
             migrationBuilder.DropTable(
-                name: "DiscountCoupons");
+                name: "Brands");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

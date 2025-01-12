@@ -57,7 +57,6 @@
     <Folder Include="CustomExceptions\" />
     <Folder Include="Features\Commands\AppUser\LoginUser\" />
     <Folder Include="Abstractions\Token\" />
-    <Folder Include="DTOs\" />
     <Folder Include="Features\Commands\AppUser\LoginUser\GoogleLogin\" />
     <Folder Include="DTOs\Facebook\" />
     <Folder Include="Features\Commands\AppUser\LoginUser\FacebookLogin\" />

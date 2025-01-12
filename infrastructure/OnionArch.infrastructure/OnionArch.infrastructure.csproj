@@ -25,6 +25,7 @@
     <Folder Include="Services\Token\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Iyzipay" Version="2.1.66" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
   </ItemGroup>
 </Project>

@@ -46,7 +46,8 @@ namespace OnionArch.Persistance.Contexts
         public DbSet<BrandImageFile> BrandImageFiles { get; set; }
         public DbSet<BrandAttribute> BrandAttriburtes { get; set; }
         public DbSet<DiscountCoupon> DiscountCoupons { get; set; }
-
+        public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         //Burada veri tabanında otomatik olarka yapılan işlemlerde EFCore tarafından belirli alanlara değerler atanmasını istiyoruz.
         //Base entity içinde bulunana update ve createTime alanlarının
@@ -62,7 +63,7 @@ namespace OnionArch.Persistance.Contexts
             builder.Entity<Basket>()
                 .HasOne(b => b.Order)
                 .WithOne(b => b.Basket)
-                .HasForeignKey<Order>(b => b.BasketId);
+                .HasForeignKey<Order>(b => b.ID);
 
             builder.Entity<Category>()
                 .HasMany(c => c.Products)
@@ -107,6 +108,11 @@ namespace OnionArch.Persistance.Contexts
                 .WithMany(d => d.UsedInBaskets)
                 .HasForeignKey(b => b.DiscountCouponId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<PaymentTransaction>()
+               .HasOne(pt => pt.Order)
+               .WithMany()  // Order'dan PaymentTransaction'a navigation property yoksa
+               .HasForeignKey(pt => pt.OrderId);  // Foreign key'i OrderID olarak belirt
 
             base.OnModelCreating(builder); // Biz IdentityDbContext kullandığımız için bunu eklemek zorundayız.
 

@@ -51,6 +51,10 @@ using OnionArch.Persistance.ServicesConcreates;
 using OnionArch.Application.Repositories.DiscountCouponCrud;
 using OnionArch.Persistance.Repositories.DiscountCouponCrud;
 using OnionArch.Application.Abstractions.DiscountServices;
+using OnionArch.Persistance.Repositorys.PaymentTransactionCrud;
+using OnionArch.Application.Repositories.PaymentTransactionCrud;
+using OnionArch.Application.Abstractions.OrderServices;
+using OnionArch.Application.Abstractions.PaymentServices;
 
 namespace OnionArch.Persistance
 {
@@ -148,6 +152,10 @@ namespace OnionArch.Persistance
             services.AddScoped<IDiscountCouponWriteRepository, DiscountCouponWriteRepository>();
             services.AddScoped<IDiscountCouponService, DiscountCouponService>();
 
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentTransactionWriteRepository, PaymentTransactionWriteRepository>();
+            services.AddScoped<IPaymentTransactionReadRepository, PaymentTransactionReadRepository>();
+             services.AddScoped<IPaymentService, PaymentService>();
         }
 	}
 }
