@@ -44,9 +44,9 @@ namespace OnionArch.Application.Features.Queries.PaymentQueries
 
                 var paymentHistory = transactions.Select(t => new PaymentHistoryDTO
                 {
-                    TransactionId = t.TransactionId,
+                    TransactionId = t.PaymentId,
                     Date = t.CreateTime,
-                    Amount = t.Amount,
+                    Amount = t.Price,
                     Status = t.Status.ToString(),
                     PaymentProvider = t.PaymentProvider,
                     OrderNo = t.Order?.OrderNo,

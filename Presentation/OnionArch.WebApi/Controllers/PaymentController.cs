@@ -45,14 +45,37 @@ namespace OnionArch.WebApi.Controllers
                     return StatusCode((int)response.StatusCode, response);
             }
 
-            
+
         }
 
         [HttpPost]
         [Route("complete-3d")]
-        public async Task<IActionResult> Complete3DPayment([FromBody] Complete3DRequest request)
+        public async Task<IActionResult> Complete3DPayment([FromForm] Complete3DRequest request)
         {
-            var response = await _mediator.Send(request);
+            // İyzico'dan gelen form verilerini al
+            var status = Request.Form["status"].ToString();
+            var paymentId = Request.Form["conversationId"].ToString();
+            var conversationData = Request.Form["conversationData"].ToString();
+
+            // 3D durumunu kontrol et
+            if (status != "success")
+            {
+                return BadRequest(new Complete3DResponse
+                {
+                    PaymentSuccess = false,
+                    Message = "3D doğrulama başarısız",
+                    ErrorMessage = "Banka doğrulaması başarısız oldu",
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    HassError = true
+                });
+            }
+
+            // 3D sonrası ödemeyi tamamla
+            var response = await _mediator.Send(new Complete3DRequest
+            {
+                PaymentId = paymentId,
+                ThreeDResponse = conversationData
+            });
 
             switch (response.StatusCode)
             {
@@ -60,13 +83,9 @@ namespace OnionArch.WebApi.Controllers
                     return Ok(response);
                 case HttpStatusCode.BadRequest:
                     return BadRequest(response);
-                case HttpStatusCode.NotFound:
-                    return NotFound(response);
                 default:
                     return StatusCode((int)response.StatusCode, response);
             }
-
-            
         }
 
         [HttpGet]
@@ -88,7 +107,7 @@ namespace OnionArch.WebApi.Controllers
                     return StatusCode((int)response.StatusCode, response);
             }
 
-             
+
         }
 
         // İptal/İade endpointleri eklenecek

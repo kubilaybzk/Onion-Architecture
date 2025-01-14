@@ -120,16 +120,23 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                     {
                         return new PaymentResponse
                         {
-                            Success = true,
-                            RedirectUrl = threeDPayment.HtmlContent,
-                            TransactionId = threeDPayment.ConversationId,
-                            ProviderResponse = JsonSerializer.Serialize(threeDPayment)
+                            Status = Status.SUCCESS.ToString(),
+                            ProviderResponse = JsonSerializer.Serialize(threeDPayment),
+                            ThreeDSHtmlContent=threeDPayment.HtmlContent,
+                            ConversationId=threeDPayment.ConversationId,
+                            ErrorCode = threeDPayment.ErrorCode,  
+                            ErrorMessage = threeDPayment.ErrorMessage,
+                            ErrorGroup = threeDPayment.ErrorGroup,
+                            Locale =threeDPayment.Locale,
+                            PaymentId = threeDPayment.PaymentId,
+                            SystemTime = threeDPayment.SystemTime,
+                            
                         };
                     }
 
                     return new PaymentResponse
                     {
-                        Success = false,
+                        Status = Status.FAILURE.ToString(),
                         ErrorCode = threeDPayment.ErrorCode,
                         ErrorMessage = threeDPayment.ErrorMessage
                     };
@@ -142,15 +149,72 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                     {
                         return new PaymentResponse
                         {
-                            Success = true,
-                            TransactionId = payment.PaymentId,
-                            ProviderResponse = JsonSerializer.Serialize(payment)
+                            Status = payment.Status,        //Yapılan isteğin sonucunu bildirir. İşlem başarılı ise success, hatalı ise failure döner.
+
+                            ErrorCode = payment.ErrorCode,   //İşlem hatalıysa, bu hataya dair belirtilen koddur.
+
+                            ErrorMessage = payment.ErrorMessage, //işlem hatalıysa, bu hataya dair belirtilen mesajdır
+
+                            ErrorGroup = payment.ErrorGroup, //işlem hatalıysa, bu hataya dair belirtilen gruptur.
+
+                            Locale = payment.Locale, //İstekte belirtilen locale değeri geri dönülür, varsayılan değeri tr’dir.
+
+                            SystemTime = payment.SystemTime, //Dönen sonucun o anki unix timestamp değeridir.
+
+                            ConversationId = payment.ConversationId, //sipariş numarasıdır.
+
+                            PaymentId = payment.PaymentId, //Ödemeye ait id, üye işyeri tarafından mutlaka saklanmalıdır. 
+
+                            Price = decimal.Parse(payment.Price), //Ödeme sepet tutarı.
+
+                            PaidPrice = decimal.Parse(payment.PaidPrice), //İndirim vade farkı vs. hesaplanmış POS’tan geçen, tahsil edilen, nihai tutar.
+
+                            Currency = payment.Currency, //Ödeme alındığı para birimi,
+
+                            Installment = (int)payment.Installment, //Taksit bilgisi.
+
+                            PaymentStatus = payment.PaymentStatus, // SUCCESS, FAILURE, INIT_THREEDS, CALLBACK_THREEDS, BKM_POS_SELECTED, CALLBACK_PECCO
+
+                            BasketId = payment.BasketId, //Sepetin id değeri
+
+                            BinNumber = payment.BinNumber,    //Kartın bin numarası,
+
+                            CardAssociation = payment.CardAssociation, //Eğer ödeme yapılan kart yerel bir kart ise, kartın ait olduğu kuruluş. 
+
+                            CardFamily = payment.CardFamily, //yerel bir kart ise, kartın ait olduğu aile. Geçerli değerler: Bonus, Axess, World, Maximum, Paraf, CardFinans, Advantage
+
+                            CardType = payment.CardType, //Geçerli değerler: CREDIT_CARD, DEBIT_CARD, PREPAID_CARD
+
+                            FraudStatus = (int)payment.FraudStatus, /*
+                            Ödeme işleminin fraud filtrelerine göre durumu. Eğer ödemenin fraud risk skoru düşük ise
+                            ödemeye anında onay verilir, bu durumda 1 değeri döner. Eğer fraud risk 
+                            skoru yüksek ise ödeme işlemi reddedilir ve -1 döner. Eğer ödeme işlemi daha sonradan
+                            incelenip karar verilecekse 0 döner. Geçerli değerler: 0, -1 ve 1. Üye işyeri sadece 1 olan 
+                            işlemlerde ürünü kargoya vermelidir, 0 olan işlemler için bilgilendirme beklemelidir. */
+
+                            IyziCommissionFee = decimal.Parse(payment.IyziCommissionFee), //Ödemeye ait iyzico işlem ücreti.
+
+                            IyziCommissionRateAmount = decimal.Parse(payment.IyziCommissionRateAmount), //Ödemeye ait iyzico işlem komisyon tutarı.
+
+                            MerchantCommissionRateAmount = decimal.Parse(payment.IyziCommissionRateAmount), //Üye işyerinin uyguladığı vade/komisyon tutarı.
+
+                            ProviderResponse= JsonSerializer.Serialize(payment)
+
+
+
+
+
+
+
+
+
+
                         };
                     }
 
                     return new PaymentResponse
                     {
-                        Success = false,
+                        Status = Status.FAILURE.ToString(),
                         ErrorCode = payment.ErrorCode,
                         ErrorMessage = payment.ErrorMessage
                     };
@@ -160,9 +224,9 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
             {
                 return new PaymentResponse
                 {
-                    Success = false,
+                    Status = Status.FAILURE.ToString(),
                     ErrorMessage = ex.Message,
-                    ErrorCode = "IYZICO_ERROR"
+                    ErrorCode = "IYZICO_BACKENDSERVER_ERROR"
                 };
             }
         }
@@ -196,24 +260,24 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                 {
                     return new PaymentResponse
                     {
-                        Success = true,
-                        TransactionId = payment.PaymentId,
+                        Status = Status.SUCCESS.ToString(),
+
                         ProviderResponse = JsonSerializer.Serialize(payment)
                     };
                 }
 
                 return new PaymentResponse
                 {
-                    Success = false,
+                    Status = Status.FAILURE.ToString(),
                     ErrorCode = payment.ErrorCode,
-                    ErrorMessage = payment.ErrorMessage
+                    ErrorMessage = payment.ErrorMessage ?? "3D doğrulama başarısız"
                 };
             }
             catch (Exception ex)
             {
                 return new PaymentResponse
                 {
-                    Success = false,
+                    Status = Status.FAILURE.ToString(),
                     ErrorMessage = ex.Message,
                     ErrorCode = "IYZICO_3D_ERROR"
                 };
@@ -247,14 +311,14 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                 {
                     return new PaymentResponse
                     {
-                        Success = true,
-                        TransactionId = cancel.PaymentId
+                        Status = Status.SUCCESS.ToString(),
+
                     };
                 }
 
                 return new PaymentResponse
                 {
-                    Success = false,
+                    Status = Status.FAILURE.ToString(),
                     ErrorCode = cancel.ErrorCode,
                     ErrorMessage = cancel.ErrorMessage
                 };
@@ -263,7 +327,7 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
             {
                 return new PaymentResponse
                 {
-                    Success = false,
+                    Status = Status.FAILURE.ToString(),
                     ErrorMessage = ex.Message,
                     ErrorCode = "IYZICO_CANCEL_ERROR"
                 };
@@ -299,14 +363,14 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                 {
                     return new PaymentResponse
                     {
-                        Success = true,
-                        TransactionId = refund.PaymentId
+                        Status = Status.SUCCESS.ToString(),
+
                     };
                 }
 
                 return new PaymentResponse
                 {
-                    Success = false,
+                    Status = Status.FAILURE.ToString(),
                     ErrorCode = refund.ErrorCode,
                     ErrorMessage = refund.ErrorMessage
                 };
@@ -315,7 +379,7 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
             {
                 return new PaymentResponse
                 {
-                    Success = false,
+                    Status = Status.FAILURE.ToString(),
                     ErrorMessage = ex.Message,
                     ErrorCode = "IYZICO_REFUND_ERROR"
                 };

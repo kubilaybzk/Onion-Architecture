@@ -69,17 +69,27 @@ namespace OnionArch.Persistance.ServicesConcreates
                 {
                     OrderId = Guid.Parse(orderId),
                     UserId = order.UserId,
-                    Amount = request.Amount,
-                    Currency = request.Currency,
+                    User = order.User,
+                    Order = order,
                     Status = PaymentStatus.Created,
+                    ProviderResponse = "INIT_",
                     IsThreeD = request.Use3D,
                     CardNumber = MaskCreditCard(request.CardNumber),
                     CardHolder = request.CardHolderName,
+                    ErrorCode = "INIT_",
+                    ErrorMessage = "INIT_",
+                    ConversationId = $"INIT_{Guid.NewGuid():N}",
                     PaymentProvider = providerName,
-                    TransactionId = $"INIT_{Guid.NewGuid():N}", // Geçici bir TransactionId
-                    ErrorCode = "INIT_",    // Başlangıç değeri
-                    ErrorMessage = "INIT_", // Başlangıç değeri
-                    ProviderResponse = "INIT_"
+                    SystemTime = DateTime.UtcNow,
+                    PaymentId = "INIT_",
+                    Price = 0,
+                    PaidPrice = 0,
+                    Currency = request.Currency,
+                    Installment = 0,
+                    PaymentStatus = "PENDING",
+                    FraudStatus = 0,  // 0 = kontrol edilecek
+                    ProviderCommissionFee = 0,
+                    ProviderCommissionRateAmount = 0
                 };
 
                 await _paymentTransactionWriteRepository.AddAsync(paymentTransaction);
@@ -88,16 +98,30 @@ namespace OnionArch.Persistance.ServicesConcreates
                 // Ödemeyi yap
                 var response = await provider.ProcessPaymentAsync(request);
 
+              
                 // Sonucu güncelle
-                paymentTransaction.TransactionId = response.TransactionId;
-                paymentTransaction.Status = response.Success ? PaymentStatus.Success : PaymentStatus.Failed;
+                paymentTransaction.PaymentId = response.PaymentId ?? paymentTransaction.PaymentId; // Null ise mevcut değeri koru
+                paymentTransaction.Status = response.Status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
                 paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
                 paymentTransaction.ErrorMessage = response.ErrorMessage ?? "No Error Message";
-                paymentTransaction.ProviderResponse = response.ProviderResponse;
+                paymentTransaction.ProviderResponse = response.ProviderResponse ?? "No Provider Response";
+                paymentTransaction.SystemTime = DateTimeOffset.FromUnixTimeMilliseconds(response.SystemTime).ToUniversalTime();
+
+                // Null olabilen decimal değerler için 0 kullan
+                paymentTransaction.Price = response.Price > 0 ? response.Price : paymentTransaction.Price;
+                paymentTransaction.PaidPrice = response.PaidPrice > 0 ? response.PaidPrice : 0;
+                paymentTransaction.Currency = !string.IsNullOrEmpty(response.Currency) ? response.Currency : paymentTransaction.Currency;
+                paymentTransaction.Installment = response.Installment > 0 ? response.Installment : 1;
+                paymentTransaction.PaymentStatus = !string.IsNullOrEmpty(response.PaymentStatus) ? response.PaymentStatus : response.Status;
+                paymentTransaction.FraudStatus = response.FraudStatus !=null ? response.FraudStatus : 0;
+
+                // Commission değerleri için null check
+                paymentTransaction.ProviderCommissionFee = response.IyziCommissionFee > 0 ? response.IyziCommissionFee : 0;
+                paymentTransaction.ProviderCommissionRateAmount = response.IyziCommissionRateAmount > 0 ? response.IyziCommissionRateAmount : 0;
 
                 await _paymentTransactionWriteRepository.SaveAsync();
 
-                if (response.Success)
+                if (response.Status== "success")
                 {
                     order.Status = OrderStatus.Processing;
                     await _context.SaveChangesAsync();
@@ -207,11 +231,11 @@ namespace OnionArch.Persistance.ServicesConcreates
             if (paymentTransaction == null)
                 throw new Exception("Ödeme işlemi bulunamadı");
 
-            paymentTransaction.TransactionId = response.TransactionId;
-            paymentTransaction.Status = response.Success ? PaymentStatus.Success : PaymentStatus.Failed;
-            paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
-            paymentTransaction.ErrorMessage = response.ErrorMessage ?? "No Error Message";
-            paymentTransaction.ProviderResponse = response.ProviderResponse;
+            //paymentTransaction.TransactionId = response.TransactionId;
+            //paymentTransaction.Status = response.Success ? PaymentStatus.Success : PaymentStatus.Failed;
+            //paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
+            //paymentTransaction.ErrorMessage = response.ErrorMessage ?? "No Error Message";
+            //paymentTransaction.ProviderResponse = response.ProviderResponse;
 
             await _paymentTransactionWriteRepository.SaveAsync();
         }

@@ -34,18 +34,14 @@ namespace OnionArch.infrastructure.PaymentProviders.Sipay
 
                 return new PaymentResponse
                 {
-                    Success = true,
-                    TransactionId = "sipay-transaction-id",
-                    ProviderResponse = "response-json"
+                    
                 };
             }
             catch (Exception ex)
             {
                 return new PaymentResponse
                 {
-                    Success = false,
-                    ErrorMessage = ex.Message,
-                    ErrorCode = "SIPAY_ERROR"
+                     
                 };
             }
         }
@@ -57,17 +53,14 @@ namespace OnionArch.infrastructure.PaymentProviders.Sipay
                 // Sipay 3D işlem tamamlama
                 return new PaymentResponse
                 {
-                    Success = true,
-                    TransactionId = "sipay-3d-transaction-id"
+                   
                 };
             }
             catch (Exception ex)
             {
                 return new PaymentResponse
                 {
-                    Success = false,
-                    ErrorMessage = ex.Message,
-                    ErrorCode = "SIPAY_3D_ERROR"
+                     
                 };
             }
         }
