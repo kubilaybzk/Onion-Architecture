@@ -2,6 +2,7 @@
 using OnionArch.Application.Abstractions.OrderServices;
 using OnionArch.Application.Abstractions.PaymentServices;
 using OnionArch.Application.DTOs.Payment;
+using OnionArch.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,45 +40,46 @@ namespace OnionArch.Application.Features.Commands.Payment.CreatePayment
                     Cvc = request.Cvc,
                     Use3D = request.Use3D,
                     Amount = order.TotalAmount,
-                    Currency = "TRY" // Configden alınabilir
+                    Currency = "TRY"
                 };
 
                 var transaction = await _paymentService.CreatePaymentTransactionAsync(request.OrderId, paymentRequest);
-
-                var processedTransaction = await _paymentService.ProcessPaymentAsync(transaction.ID.ToString());
-
-
-                if (processedTransaction.PaymentStatus == "success")
-                {
-                    return new CreatePaymentResponse
+                
+                // 3D ödeme için
+               
+                    if (transaction.Status == PaymentStatus.Failed)
                     {
-                        TransactionId = processedTransaction.ID.ToString(),
-                        RedirectUrl = processedTransaction.ProviderResponse, // 3D URL'i response içinden alınmalı
-                        RequiresRedirect = request.Use3D,
-                        Message = "Ödeme işlemi başarılı",
-                        StatusCode = System.Net.HttpStatusCode.OK,
-                        HassError = false,
-                        isCreated = true,
-                        OrderId = processedTransaction.OrderId.ToString()
-
-                    };
-                }
-                else
-                {
-                    return new CreatePaymentResponse
-                    {
-                        TransactionId = processedTransaction.ID.ToString(),
-                        RedirectUrl = processedTransaction.ProviderResponse, // 3D URL'i response içinden alınmalı
-                        RequiresRedirect = request.Use3D,
-                        Message = "Ödeme işlemi başarısız",
-                        ErrorMessage=processedTransaction.ErrorMessage,
-                        StatusCode = System.Net.HttpStatusCode.OK,
-                        HassError = false,
-                        isCreated = false,
-                        OrderId = processedTransaction.OrderId.ToString()
-
-                    };
-                }
+                        return new CreatePaymentResponse
+                        {
+                            TransactionId = transaction.ID.ToString(),
+                            HtmlContent = transaction.ProviderResponse, // 3D için HTML içeriği
+                            RequiresRedirect = false,
+                            Message = "Ödeme işlemi başlatılamadı",
+                            ErrorMessage=transaction.ErrorMessage,
+                            StatusCode = System.Net.HttpStatusCode.BadRequest,
+                            HassError = true,
+                            isCreated = false,
+                            OrderId = transaction.OrderId.ToString()
+                        };
+                    }
+                        
+                        var response = new CreatePaymentResponse
+                        {
+                            TransactionId = transaction.ID.ToString(),
+                            RequiresRedirect = true,
+                            Message = "Ödeme işlemi  başlatıldı",
+                            StatusCode = System.Net.HttpStatusCode.OK,
+                            HassError = false,
+                            isCreated = true,
+                            OrderId = transaction.OrderId.ToString()
+                        };
+                        if (transaction.IsThreeD)
+                        {
+                    response.HtmlContent = transaction.ProviderResponse; // 3D için HTML içeriği
+                        }
+                return response;
+                 
+               
             }
             catch (Exception ex)
             {
@@ -88,7 +90,6 @@ namespace OnionArch.Application.Features.Commands.Payment.CreatePayment
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
                     HassError = true,
                     isCreated = false
-
                 };
             }
         }

@@ -34,36 +34,19 @@ namespace OnionArch.infrastructure.PaymentProviders.Sipay
 
                 return new PaymentResponse
                 {
-                    
+
                 };
             }
             catch (Exception ex)
             {
                 return new PaymentResponse
                 {
-                     
+
                 };
             }
         }
 
-        public async Task<PaymentResponse> ProcessThreeDPaymentAsync(string paymentId, string threeDResponse)
-        {
-            try
-            {
-                // Sipay 3D işlem tamamlama
-                return new PaymentResponse
-                {
-                   
-                };
-            }
-            catch (Exception ex)
-            {
-                return new PaymentResponse
-                {
-                     
-                };
-            }
-        }
+
 
         public async Task<PaymentResponse> CancelPaymentAsync(string transactionId)
         {
@@ -76,5 +59,25 @@ namespace OnionArch.infrastructure.PaymentProviders.Sipay
             // İade işlemi implementasyonu
             throw new NotImplementedException();
         }
+
+        public async Task<PaymentResponse> ProcessThreeDPaymentAsync(string paymentId, string conversationId, string threeDResponse)
+        {
+            try
+            {
+                // Sipay 3D işlem tamamlama
+                return new PaymentResponse
+                {
+
+                };
+            }
+            catch (Exception ex)
+            {
+                return new PaymentResponse
+                {
+
+                };
+            }
+        }
     }
+
 }

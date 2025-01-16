@@ -236,9 +236,7 @@ namespace OnionArch.Application.DTOs.Payment
             /// <summary>
             /// 3D doğrulama işlemi için HTML içeriği.
             /// </summary>
-            public string ThreeDSHtmlContent { get; set; }
-
-
+            
             public string ProviderResponse { get; set; }
 
 

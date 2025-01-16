@@ -65,6 +65,7 @@ namespace OnionArch.Persistance.ServicesConcreates
                 var providerName = _configuration["Payment:Provider"];
                 var provider = _paymentFactory.CreateProvider(providerName);
 
+                //Başlangıç olarak bir payment değeri set ediyoruz ki ilerleyen süreçte dbden okuyabilelim.
                 var paymentTransaction = new PaymentTransaction
                 {
                     OrderId = Guid.Parse(orderId),
@@ -72,7 +73,6 @@ namespace OnionArch.Persistance.ServicesConcreates
                     User = order.User,
                     Order = order,
                     Status = PaymentStatus.Created,
-                    ProviderResponse = "INIT_",
                     IsThreeD = request.Use3D,
                     CardNumber = MaskCreditCard(request.CardNumber),
                     CardHolder = request.CardHolderName,
@@ -93,38 +93,54 @@ namespace OnionArch.Persistance.ServicesConcreates
                 };
 
                 await _paymentTransactionWriteRepository.AddAsync(paymentTransaction);
-                await _paymentTransactionWriteRepository.SaveAsync();
 
-                // Ödemeyi yap
+                // Ödeme işlemini başlat
                 var response = await provider.ProcessPaymentAsync(request);
 
-              
-                // Sonucu güncelle
-                paymentTransaction.PaymentId = response.PaymentId ?? paymentTransaction.PaymentId; // Null ise mevcut değeri koru
-                paymentTransaction.Status = response.Status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
-                paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
-                paymentTransaction.ErrorMessage = response.ErrorMessage ?? "No Error Message";
-                paymentTransaction.ProviderResponse = response.ProviderResponse ?? "No Provider Response";
-                paymentTransaction.SystemTime = DateTimeOffset.FromUnixTimeMilliseconds(response.SystemTime).ToUniversalTime();
 
-                // Null olabilen decimal değerler için 0 kullan
-                paymentTransaction.Price = response.Price > 0 ? response.Price : paymentTransaction.Price;
-                paymentTransaction.PaidPrice = response.PaidPrice > 0 ? response.PaidPrice : 0;
-                paymentTransaction.Currency = !string.IsNullOrEmpty(response.Currency) ? response.Currency : paymentTransaction.Currency;
-                paymentTransaction.Installment = response.Installment > 0 ? response.Installment : 1;
-                paymentTransaction.PaymentStatus = !string.IsNullOrEmpty(response.PaymentStatus) ? response.PaymentStatus : response.Status;
-                paymentTransaction.FraudStatus = response.FraudStatus !=null ? response.FraudStatus : 0;
 
-                // Commission değerleri için null check
-                paymentTransaction.ProviderCommissionFee = response.IyziCommissionFee > 0 ? response.IyziCommissionFee : 0;
-                paymentTransaction.ProviderCommissionRateAmount = response.IyziCommissionRateAmount > 0 ? response.IyziCommissionRateAmount : 0;
+                // 3D için HTML içeriğini kaydet
+                if (request.Use3D && !string.IsNullOrEmpty(response.ProviderResponse))
+                {
+                    paymentTransaction.PaymentId = response.PaymentId;
+                    paymentTransaction.ConversationId = response.ConversationId;
+                    paymentTransaction.ProviderResponse = response.ProviderResponse;
+                    paymentTransaction.Status = PaymentStatus.Processing;
+                }
+                else
+                {
+                    // Normal ödeme sonuçlarını güncelle
+                    paymentTransaction.Status = response.Status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
+                    paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
+                    paymentTransaction.ErrorMessage = response.ErrorMessage ?? "No Error Message";
+                    paymentTransaction.ProviderResponse = response.ProviderResponse ?? "No Provider Response";
+                    paymentTransaction.SystemTime = DateTimeOffset.FromUnixTimeMilliseconds(response.SystemTime).ToUniversalTime();
+
+                    // Null olabilen decimal değerler için 0 kullan
+                    paymentTransaction.Price = response.Price > 0 ? response.Price : paymentTransaction.Price;
+                    paymentTransaction.PaidPrice = response.PaidPrice > 0 ? response.PaidPrice : 0;
+                    paymentTransaction.Currency = !string.IsNullOrEmpty(response.Currency) ? response.Currency : paymentTransaction.Currency;
+                    paymentTransaction.Installment = response.Installment > 0 ? response.Installment : 1;
+                    paymentTransaction.PaymentStatus = !string.IsNullOrEmpty(response.PaymentStatus) ? response.PaymentStatus : response.Status;
+                    paymentTransaction.FraudStatus = response.FraudStatus != null ? response.FraudStatus : 0;
+
+                    // Commission değerleri için null check
+                    paymentTransaction.ProviderCommissionFee = response.IyziCommissionFee > 0 ? response.IyziCommissionFee : 0;
+                    paymentTransaction.ProviderCommissionRateAmount = response.IyziCommissionRateAmount > 0 ? response.IyziCommissionRateAmount : 0;
+                    paymentTransaction.ProviderResponse = response.ProviderResponse;
+                }
 
                 await _paymentTransactionWriteRepository.SaveAsync();
 
-                if (response.Status== "success")
+                if (response.Status == "success")
                 {
                     order.Status = OrderStatus.Processing;
                     await _context.SaveChangesAsync();
+                }
+                else
+                {
+                   order.Status = OrderStatus.Processing;
+                   await _context.SaveChangesAsync();
                 }
 
                 await transaction.CommitAsync();
@@ -159,14 +175,14 @@ namespace OnionArch.Persistance.ServicesConcreates
             3D ödemelerini tamamlar
             Banka ekranından dönen kullanıcıyı işler
         */
-        public async Task<PaymentTransaction> CompleteThreeDPaymentAsync(string paymentId, string threeDResponse)
+        public async Task<PaymentTransaction> CompleteThreeDPaymentAsync(string paymentId, string ConversationData)
         {
-            var paymentTransaction = await _paymentTransactionReadRepository.GetByIdAsync(paymentId);
+            var paymentTransaction = await _paymentTransactionReadRepository.Table.Where(p=>p.PaymentId==paymentId).FirstOrDefaultAsync();
             if (paymentTransaction == null)
                 throw new Exception("Ödeme işlemi bulunamadı");
 
             var provider = _paymentFactory.CreateProvider(paymentTransaction.PaymentProvider);
-            var response = await provider.ProcessThreeDPaymentAsync(paymentId, threeDResponse);
+            var response = await provider.ProcessThreeDPaymentAsync(paymentTransaction.PaymentId,paymentTransaction.ConversationId, ConversationData);
 
             await UpdateTransactionWithResponse(paymentId, response);
 
@@ -225,17 +241,31 @@ namespace OnionArch.Persistance.ServicesConcreates
         /*
              Provider'dan gelen yanıtla ödeme kaydını günceller
         */
-        private async Task UpdateTransactionWithResponse(string transactionId, PaymentResponse response)
+        private async Task UpdateTransactionWithResponse(string paymentId, PaymentResponse response)
         {
-            var paymentTransaction = await _paymentTransactionReadRepository.GetByIdAsync(transactionId);
+            var paymentTransaction = await _paymentTransactionReadRepository.Table.Where(p => p.PaymentId == paymentId).FirstOrDefaultAsync();
             if (paymentTransaction == null)
                 throw new Exception("Ödeme işlemi bulunamadı");
 
-            //paymentTransaction.TransactionId = response.TransactionId;
-            //paymentTransaction.Status = response.Success ? PaymentStatus.Success : PaymentStatus.Failed;
-            //paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
-            //paymentTransaction.ErrorMessage = response.ErrorMessage ?? "No Error Message";
-            //paymentTransaction.ProviderResponse = response.ProviderResponse;
+            // Normal ödeme sonuçlarını güncelle
+            paymentTransaction.Status = response.Status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
+            paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
+            paymentTransaction.ErrorMessage = response.ErrorMessage ?? "No Error Message";
+            paymentTransaction.ProviderResponse = response.ProviderResponse ?? "No Provider Response";
+            paymentTransaction.SystemTime = DateTimeOffset.FromUnixTimeMilliseconds(response.SystemTime).ToUniversalTime();
+
+            // Null olabilen decimal değerler için 0 kullan
+            paymentTransaction.Price = response.Price > 0 ? response.Price : paymentTransaction.Price;
+            paymentTransaction.PaidPrice = response.PaidPrice > 0 ? response.PaidPrice : 0;
+            paymentTransaction.Currency = !string.IsNullOrEmpty(response.Currency) ? response.Currency : paymentTransaction.Currency;
+            paymentTransaction.Installment = response.Installment > 0 ? response.Installment : 1;
+            paymentTransaction.PaymentStatus = !string.IsNullOrEmpty(response.PaymentStatus) ? response.PaymentStatus : response.Status;
+            paymentTransaction.FraudStatus = response.FraudStatus != null ? response.FraudStatus : 0;
+
+            // Commission değerleri için null check
+            paymentTransaction.ProviderCommissionFee = response.IyziCommissionFee > 0 ? response.IyziCommissionFee : 0;
+            paymentTransaction.ProviderCommissionRateAmount = response.IyziCommissionRateAmount > 0 ? response.IyziCommissionRateAmount : 0;
+            paymentTransaction.ProviderResponse = response.ProviderResponse;
 
             await _paymentTransactionWriteRepository.SaveAsync();
         }

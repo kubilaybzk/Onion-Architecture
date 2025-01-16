@@ -46,7 +46,7 @@ namespace OnionArch.Application.Features.Queries.PaymentQueries
                 {
                     TransactionId = t.PaymentId,
                     Date = t.CreateTime,
-                    Amount = t.Price,
+                    Amount = t.Price ?? '0',
                     Status = t.Status.ToString(),
                     PaymentProvider = t.PaymentProvider,
                     OrderNo = t.Order?.OrderNo,

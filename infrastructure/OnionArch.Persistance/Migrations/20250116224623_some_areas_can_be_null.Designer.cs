@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnionArch.Persistance.Contexts;
@@ -11,9 +12,11 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    partial class OnionArchDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250116224623_some_areas_can_be_null")]
+    partial class some_areas_can_be_null
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -987,6 +990,7 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<string>("ProviderResponse")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Status")

@@ -29,6 +29,7 @@ namespace OnionArch.WebApi.Controllers
 
         [HttpPost]
         [Route("create")]
+        [AllowAnonymous]
         public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequest request)
         {
             var response = await _mediator.Send(request);
@@ -48,43 +49,85 @@ namespace OnionArch.WebApi.Controllers
 
         }
 
+         
+        [AllowAnonymous]
         [HttpPost]
         [Route("complete-3d")]
-        public async Task<IActionResult> Complete3DPayment([FromForm] Complete3DRequest request)
+        public async Task<IActionResult> Complete3DPayment()
         {
-            // İyzico'dan gelen form verilerini al
-            var status = Request.Form["status"].ToString();
-            var paymentId = Request.Form["conversationId"].ToString();
-            var conversationData = Request.Form["conversationData"].ToString();
-
-            // 3D durumunu kontrol et
-            if (status != "success")
+            try
             {
+                // Tüm form verilerini loglayalım (debug için)
+                foreach (var key in Request.Form.Keys)
+                {
+                   Console.WriteLine(($"{key}: {Request.Form[key]}"));
+                }
+
+                // Form verilerini alalım
+                var status = Request.Form["status"].ToString();
+                var paymentId = Request.Form["paymentId"].ToString();
+                var conversationId = Request.Form["conversationId"].ToString();
+                var conversationData = Request.Form["conversationData"].ToString();
+                var mdStatus = Request.Form["mdStatus"].ToString();
+                var signature = Request.Form["signature"].ToString();
+
+                // Başarı kontrolü
+                if (mdStatus != "1" || status != "success")
+                {
+                    return BadRequest(new Complete3DResponse
+                    {
+                        PaymentSuccess = false,
+                        Message = "3D doğrulama başarısız",
+                        ErrorMessage = "Banka doğrulaması başarısız oldu",
+                        StatusCode = System.Net.HttpStatusCode.BadRequest,
+                        HassError = true
+                    });
+                }
+
+                // Ödemeyi tamamla
+                var response = await _mediator.Send(new Complete3DRequest
+                {
+                    PaymentId = paymentId,
+                    ConversationId= conversationId,
+                    ConversationData=conversationData,
+                    Status = status,
+                    Signature = signature
+                });
+
+                if (response.PaymentSuccess)
+                {
+                    return Ok(new Complete3DResponse
+                    {
+                        PaymentSuccess = true,
+                        TransactionId = response.TransactionId,
+                        Message = "Ödeme başarıyla tamamlandı",
+                        StatusCode = HttpStatusCode.OK,
+                        HassError = false
+                    });
+                }
+                else
+                {
+                    return BadRequest(new Complete3DResponse
+                    {
+                        PaymentSuccess = false,
+                        Message = "Ödeme işlemi başarısız",
+                        ErrorMessage = response.ErrorMessage,
+                        StatusCode = HttpStatusCode.BadRequest,
+                        HassError = true
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                
                 return BadRequest(new Complete3DResponse
                 {
                     PaymentSuccess = false,
-                    Message = "3D doğrulama başarısız",
-                    ErrorMessage = "Banka doğrulaması başarısız oldu",
-                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Message = "3D doğrulama işlemi başarısız",
+                    ErrorMessage = ex.Message,
+                    StatusCode = HttpStatusCode.BadRequest,
                     HassError = true
                 });
-            }
-
-            // 3D sonrası ödemeyi tamamla
-            var response = await _mediator.Send(new Complete3DRequest
-            {
-                PaymentId = paymentId,
-                ThreeDResponse = conversationData
-            });
-
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return Ok(response);
-                case HttpStatusCode.BadRequest:
-                    return BadRequest(response);
-                default:
-                    return StatusCode((int)response.StatusCode, response);
             }
         }
 

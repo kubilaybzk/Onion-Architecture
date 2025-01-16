@@ -22,9 +22,9 @@ namespace OnionArch.Application.Features.Commands.Payment.Complete3DPayment
         {
             try
             {
-                var transaction = await _paymentService.CompleteThreeDPaymentAsync(request.PaymentId, request.ThreeDResponse);
-
-                return new Complete3DResponse
+                var transaction = await _paymentService.CompleteThreeDPaymentAsync(request.PaymentId, request.ConversationData);
+               
+                var response = new Complete3DResponse
                 {
                     PaymentSuccess = transaction.Status == PaymentStatus.Success,
                     TransactionId = transaction.ID.ToString(),
@@ -32,8 +32,14 @@ namespace OnionArch.Application.Features.Commands.Payment.Complete3DPayment
                     StatusCode = transaction.Status == PaymentStatus.Success ?
                         System.Net.HttpStatusCode.OK :
                         System.Net.HttpStatusCode.BadRequest,
-                    HassError = false
+                    HassError = false,
+                    
                 };
+                if (transaction.Status == PaymentStatus.Failed)
+                {
+                    response.ErrorMessage = transaction.ErrorMessage;
+                }
+                return response;
             }
             catch (Exception ex)
             {

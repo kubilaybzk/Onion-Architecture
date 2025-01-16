@@ -10,6 +10,11 @@ namespace OnionArch.Application.Features.Commands.Payment.Complete3DPayment
     public class Complete3DRequest : IRequest<Complete3DResponse>
     {
         public string PaymentId { get; set; }
-        public string ThreeDResponse { get; set; }
+        public string ConversationData { get; set; }
+        public string Status { get; set; }
+        public string ConversationId { get; set; }
+        public string MdStatus { get; set; }
+        public string Signature { get; set; }
+
     }
 }
