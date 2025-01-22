@@ -40,7 +40,7 @@ namespace OnionArch.Persistance.ServicesConcreates
             // Kullanıcı adının boş olup olmadığını kontrol et
             if (!string.IsNullOrEmpty(username))
             {
-                // Kullanıcıyı al ve sepetlerini içeren bir sorgu yap
+                 
                 AppUser? user = await _userManager.Users
                     .Include(u => u.Addresses)
                     .FirstOrDefaultAsync(u => u.UserName == username);
@@ -77,6 +77,7 @@ namespace OnionArch.Persistance.ServicesConcreates
             newaddress.TaxIdentificationNumber = address.TaxIdentificationNumber;
             newaddress.TaxOffice = address.TaxOffice;
             newaddress.CompanyName = address.CompanyName;
+            newaddress.ZipCode = address.ZipCode;
             var result = await _addressWriteRepository.AddAsync(newaddress);
             await _addressWriteRepository.SaveAsync();
             return result;
@@ -119,6 +120,7 @@ namespace OnionArch.Persistance.ServicesConcreates
                 RecipientSurName = a.RecipientSurName,
                 TaxIdentificationNumber = a.TaxIdentificationNumber,
                 TaxOffice= a.TaxOffice,
+                ZipCode = a.ZipCode,
             }).ToList();
 
 
@@ -144,6 +146,7 @@ namespace OnionArch.Persistance.ServicesConcreates
                 UpdatedAddres.Neighbourhood = address.Neighbourhood;
                 UpdatedAddres.LongAddress = address.LongAddress;
                 UpdatedAddres.PhoneNumber = address.PhoneNumber;
+                UpdatedAddres.ZipCode = address.ZipCode;
                 await _addressWriteRepository.SaveAsync();
                 return true;
             }

@@ -17,6 +17,7 @@ namespace OnionArch.Application.Features.Commands.AddressCommands.UpdateAddressC
         public string Neighbourhood { get; set; }
         public string LongAddress { get; set; }
         public string PhoneNumber { get; set; }
+        public string ZipCode { get; set; }
         public string RecipientName { get; set; }
         public string RecipientSurName { get; set; }
         public bool IsDefaultAddress { get; set; } = false;

@@ -12,6 +12,7 @@ namespace SignalR
 
         public const string ProductAddedMessage = "receiveProductAddedMessage";
         public const string OrderAddedMessage = "receiveOrderAddedMessage";
+        public const string OrderRemovedMessage = "receiveOrderRemovedMessage";
 
     }
 }

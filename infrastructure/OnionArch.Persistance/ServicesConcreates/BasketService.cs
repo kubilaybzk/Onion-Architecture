@@ -51,16 +51,20 @@ namespace OnionArch.Persistance.ServicesConcreates
             if (string.IsNullOrEmpty(username))
                 throw new Exception("Kullanıcı bulunamadı");
 
-            // Tek sorguda kullanıcı ve sepetbilgilerini alalım
+            // Aktif sepeti ve siparişleri birlikte sorgula
             var userWithBasket = await _userManager.Users
-                .Include(u => u.Baskets.Where(b => b.Order == null))
+                .Include(u => u.Baskets)
+                    .ThenInclude(b => b.Order)
                 .FirstOrDefaultAsync(u => u.UserName == username);
 
             if (userWithBasket == null)
                 throw new Exception("Kullanıcı bulunamadı");
 
-            // Aktif sepeti bulalım veya yenioluşturalım
-            var activeBasket = userWithBasket.Baskets.FirstOrDefault() ?? new Basket();
+            // Aktif sepet kontrolü - siparişe dönüşmemiş VE ödeme yapılmamış sepet
+            var activeBasket = userWithBasket.Baskets
+                .FirstOrDefault(b => b.Order == null ||
+                                   (b.Order != null && b.Order.isOrdered==false && b.Order.paidStatus==false))
+                ?? new Basket();
 
             if (activeBasket.ID == Guid.Empty)
             {
@@ -212,5 +216,26 @@ namespace OnionArch.Persistance.ServicesConcreates
             }
         }
 
+        public async Task<bool> ClearBasketAsync(Guid basketId)
+        {
+           
+            try
+            {
+                var basketItems = await _basketItemReadRepository
+                    .GetWhere(bi => bi.BasketId == basketId)
+                    .ToListAsync();
+
+                _basketItemWriteRepository.RemoveRange(basketItems);
+                await _basketItemWriteRepository.SaveAsync();
+
+               
+                return true;
+            }
+            catch
+            {
+               
+                throw;
+            }
+        }
     }
 }

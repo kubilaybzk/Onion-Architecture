@@ -7,6 +7,9 @@ using OnionArch.Application.DTOs.Payment;
 using OnionArch.infrastructure.PaymentProviders.Common;
 using System.Text.Json;
 using System.Globalization;
+using OnionArch.Application.View_Models.BasketItem;
+using Microsoft.AspNetCore.Http;
+using OnionArch.Domain.Entities;
 
 namespace OnionArch.infrastructure.PaymentProviders.Iyzico
 {
@@ -16,6 +19,7 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
         private readonly string _apiKey;
         private readonly string _secretKey;
         private readonly string _baseUrl;
+        
 
         public string ProviderName => "iyzico";
 
@@ -43,12 +47,73 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                     BaseUrl = _baseUrl
                 };
 
+
+                var TotalBasketItemPrice = request.OrderInformation.Basket.BasketItems
+                .Select(ba => new VM_Result_BasketList()
+                {
+                    ProductId=ba.ProductId.ToString(),
+                    ProductName=ba.Product.Name,
+                    Quantity = ba.Quantity,
+                    ProductLastPrice = ba.Product.LastPrice,
+                    ProductCurrency = ba.Product.Currency,
+                    ProductOriginalPrice = ba.Product.UnitPrice,
+                    Price = ba.Product.UnitPrice,
+                    CategoryNames = ba.Product.Categorys.Select(p=>p.CategoryName).ToList()
+                }).ToList();
+
+                var totalDiscountedProducts = TotalBasketItemPrice.Sum(ba => (float)(ba.ProductLastPrice * ba.Quantity)); //Ürün fiyatı * toplam adet
+                float totalOriginalPrice = TotalBasketItemPrice.Sum(ba => (float)(ba.ProductOriginalPrice * ba.Quantity));
+                float totalDiscount;
+                float totalCargoPrice;
+                float totalPrice;
+                float totalPriceWithOutCargo;
+                if (totalDiscountedProducts > 0)
+                {
+                    // Toplam indirim (%10)
+                    totalDiscount = totalOriginalPrice - totalDiscountedProducts; //Ürünlere yapılan toplam indirim
+
+                    // Kargo ücreti hesaplama (1000 TL üzeri ücretsiz)
+                    totalCargoPrice = totalDiscountedProducts > 1000 ? 0 : 20.00f;
+
+                    // Toplam fiyat (Ürünler - İndirim + Kargo)
+                    totalPrice = totalOriginalPrice - totalDiscount + totalCargoPrice; //Tüm sepetin toplam fiyatı indirimli
+                    totalPriceWithOutCargo = totalOriginalPrice - totalDiscount;
+                }
+                else
+                {
+                    totalDiscount = 0;
+                    totalCargoPrice = 0;
+                    totalPrice = 0;
+                    totalPriceWithOutCargo = 0;
+                }
+
+
+                var shippingAddress = request.OrderInformation.User.Addresses
+                     .FirstOrDefault(a => a.ID.ToString() == request.OrderInformation.ShippingAddress);
+
+                var billingAddress = request.OrderInformation.User.Addresses
+                    .FirstOrDefault(a => a.ID.ToString() == request.OrderInformation.BillingAddress);
+
+
+                var basketItems = TotalBasketItemPrice.Select(item => new Iyzipay.Model.BasketItem
+                {
+                    Id = item.ProductId,  // Ürün ID'si
+                    Name = item.ProductName ?? "Ürün", // Ürün adı
+                    Category1 = item.CategoryNames?.FirstOrDefault() ?? "Genel", // İlk kategori adı
+                    ItemType = BasketItemType.PHYSICAL.ToString(),
+                    Price = (item.ProductLastPrice*item.Quantity).ToString("0.##", CultureInfo.InvariantCulture), // Son fiyat
+                }).ToList();
+
+                
+
                 var iyzipayRequest = new CreatePaymentRequest
                 {
                     Locale = Locale.TR.ToString(),
                     ConversationId = request.OrderId,
-                    Price = "1"/* request.Amount.ToString(CultureInfo.InvariantCulture)*/,
-                    PaidPrice = "1" /* request.Amount.ToString(CultureInfo.InvariantCulture),*/,
+                    Price = totalPriceWithOutCargo.ToString(CultureInfo.InvariantCulture), // 2 decimal basamak
+                    PaidPrice = request.OrderInformation.Basket.DiscountedAmount.HasValue
+                        ? request.OrderInformation.Basket.DiscountedAmount.Value.ToString(CultureInfo.InvariantCulture)
+                        : totalPrice.ToString(CultureInfo.InvariantCulture),
                     Currency = Currency.TRY.ToString(),
                     Installment = 1,
                     BasketId = request.OrderId,
@@ -67,48 +132,37 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
 
                     Buyer = new Buyer
                     {
-                        Id = "BY789", // Test için sabit değer
-                        Name = "John",
-                        Surname = "Doe",
-                        Email = "email@email.com",
-                        IdentityNumber = "74300864791",
-                        RegistrationAddress = "Test Address",
-                        City = "Istanbul",
-                        Country = "Turkey",
-                        ZipCode = "34732",
-                        Ip = "127.0.0.1"
+                        Id = request.OrderInformation.UserId, // Test için sabit değer
+                        Name = request.OrderInformation.User.NameSurname.ToString().Trim().Split(' ')[0],
+                        Surname = request.OrderInformation.User.NameSurname.ToString().Trim().Split(' ')[1],
+                        Email = request.OrderInformation.User.Email,
+                        IdentityNumber = "000000000000000",
+                        RegistrationAddress = shippingAddress.LongAddress,
+                        City = shippingAddress.City,
+                        Country = shippingAddress.Country,
+                        ZipCode = shippingAddress.ZipCode,
+                        Ip = "111.111.11"
                     },
 
-                    ShippingAddress = new Address
+                    ShippingAddress = new Iyzipay.Model.Address
                     {
-                        ContactName = "John Doe",
-                        City = "Istanbul",
-                        Country = "Turkey",
-                        Description = "Test Address",
-                        ZipCode = "34732"
+                        ContactName = shippingAddress.RecipientName+shippingAddress.RecipientSurName,
+                        City = shippingAddress.City,
+                        Country = shippingAddress.Country,
+                        Description = shippingAddress.LongAddress,
+                        ZipCode = shippingAddress.ZipCode
                     },
 
-                    BillingAddress = new Address
+                    BillingAddress = new Iyzipay.Model.Address
                     {
-                        ContactName = "John Doe",
-                        City = "Istanbul",
-                        Country = "Turkey",
-                        Description = "Test Address",
-                        ZipCode = "34732"
+                        ContactName = billingAddress.RecipientName + billingAddress.RecipientSurName,
+                        City = billingAddress.City,
+                        Country = billingAddress.Country,
+                        Description = billingAddress.LongAddress,
+                        ZipCode = billingAddress.ZipCode
                     },
 
-                    BasketItems = new List<BasketItem>
-                   {
-                       new BasketItem
-                       {
-                           Id = "BI101",
-                           Name = "Test Product",
-                           Category1 = "Test Category",
-                           ItemType = BasketItemType.PHYSICAL.ToString(),
-                           Price = "1"
-
-                       }
-                   }
+                    BasketItems  = basketItems,
                 };
 
                 if (request.Use3D)

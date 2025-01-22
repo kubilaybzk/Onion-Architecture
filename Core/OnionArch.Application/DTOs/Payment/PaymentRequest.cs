@@ -15,10 +15,10 @@ namespace OnionArch.Application.DTOs.Payment
         public string ExpirationYear { get; set; }
         public string Cvc { get; set; }
         public bool Use3D { get; set; }
-        public decimal Amount { get; set; }
         public string Currency { get; set; }
         public string OrderId { get; set; }
         public string BasketId { get; set; }
         public string ReturnUrl { get; set; }
+        public Order OrderInformation  { get; set; }
     }
 }

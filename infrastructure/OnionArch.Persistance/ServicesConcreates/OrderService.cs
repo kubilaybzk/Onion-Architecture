@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Abstractions.BasketServices;
+using OnionArch.Application.Abstractions.HubServices;
 using OnionArch.Application.Abstractions.OrderCrud;
 using OnionArch.Application.Abstractions.OrderServices;
 using OnionArch.Domain.Entities;
@@ -19,6 +20,7 @@ namespace OnionArch.Persistance.ServicesConcreates
         private readonly OnionArchDBContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+      
 
         public OrderService(
             IOrderReadRepository orderReadRepository,
@@ -26,7 +28,8 @@ namespace OnionArch.Persistance.ServicesConcreates
             IBasketService basketService,
             OnionArchDBContext context,
             UserManager<AppUser> userManager,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor
+            )
         {
             _orderReadRepository = orderReadRepository;
             _orderWriteRepository = orderWriteRepository;
@@ -34,6 +37,7 @@ namespace OnionArch.Persistance.ServicesConcreates
             _context = context;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+           
         }
 
         public async Task<Order> CreateOrderFromBasketAsync(string username, string shippingAddress, string billingAddress)
@@ -50,7 +54,23 @@ namespace OnionArch.Persistance.ServicesConcreates
                 var user = await _userManager.FindByNameAsync(username);
                 if (user == null)
                     throw new Exception("Kullanıcı bulunamadı");
-                // Yeni sipariş oluştur
+
+                // Aktif Sipariş varmı kontrol et
+                var userAlreadyCreatedOrder = await _orderReadRepository.Table
+                 .Include(o => o.OrderItems)
+                 .Include(o => o.Basket)
+                 .Where(p => p.Basket.ID == basket.ID &&
+                      p.isOrdered == false &&
+                      p.paidStatus == false &&
+                      p.CreateTime >= DateTime.UtcNow.AddHours(-1)) // Son 1 saat içinde oluşturulmuş
+                 .SingleOrDefaultAsync();
+
+               if (userAlreadyCreatedOrder != null)
+               {
+                   await transaction.CommitAsync();
+                   return userAlreadyCreatedOrder;
+               }
+                 // Yeni sipariş oluştur
                 var order = new Order
                 {
                     OrderNo = Guid.NewGuid().ToString("N")[..10].ToUpper(),
@@ -67,7 +87,10 @@ namespace OnionArch.Persistance.ServicesConcreates
                         Quantity = bi.Quantity,
                         UnitPrice = bi.Product.LastPrice,
                         TotalPrice = bi.Product.LastPrice * bi.Quantity
-                    }).ToList()
+                    }).ToList(),
+                    isOrdered = false,
+                    paidStatus=false,
+                    BasketID=basket.ID.ToString()
                 };
 
                 order.TotalAmount = order.OrderItems.Sum(oi => oi.TotalPrice);
@@ -75,7 +98,7 @@ namespace OnionArch.Persistance.ServicesConcreates
                 await _orderWriteRepository.AddAsync(order);
                 await _orderWriteRepository.SaveAsync();
                 await transaction.CommitAsync();
-
+               
                 return order;
             }
             catch
@@ -90,6 +113,7 @@ namespace OnionArch.Persistance.ServicesConcreates
             return await _orderReadRepository.Table
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
+                    .ThenInclude(oi=>oi.ProductImageFiles)
                 .Include(o => o.User)
                 .Include(o => o.DiscountCoupon)
                 .FirstOrDefaultAsync(o => o.ID == Guid.Parse(id));

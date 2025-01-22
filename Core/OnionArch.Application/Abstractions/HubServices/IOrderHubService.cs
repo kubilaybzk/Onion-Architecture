@@ -10,5 +10,6 @@ namespace OnionArch.Application.Abstractions.HubServices
     {
         //Sipariş oluştuğu anda çalışacak olan SignalR Hub'ının interface
         Task OrderAddedMessageAsync(string message);
+        Task OrderRemovedMessageAsync(string message);
     }
 }

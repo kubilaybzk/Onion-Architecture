@@ -44,6 +44,7 @@ namespace OnionArch.Application.Features.Commands.AddressCommands.UpdateAddressC
             currentAddres.TaxIdentificationNumber = request.TaxIdentificationNumber;
             currentAddres.TaxOffice = request.TaxOffice;
             currentAddres.CompanyName = request.CompanyName;
+            currentAddres.ZipCode = request.ZipCode;
             try
             {
                 int result = await _addressWriteRepository.SaveAsync();

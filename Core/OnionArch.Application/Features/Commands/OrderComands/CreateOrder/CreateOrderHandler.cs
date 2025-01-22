@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using OnionArch.Application.Abstractions.HubServices;
 using OnionArch.Application.Abstractions.OrderServices;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,13 @@ namespace OnionArch.Application.Features.Commands.OrderComands.CreateOrder
     {
         private readonly IOrderService _orderService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+      
 
-        public CreateOrderHandler(IOrderService orderService, IHttpContextAccessor httpContextAccessor)
+        public CreateOrderHandler(IOrderService orderService, IHttpContextAccessor httpContextAccessor, IOrderHubService orderHubService)
         {
             _orderService = orderService;
             _httpContextAccessor = httpContextAccessor;
+          
         }
 
         public async Task<CreateOrderResponse> Handle(CreateOrderRequest request, CancellationToken cancellationToken)
@@ -33,7 +36,7 @@ namespace OnionArch.Application.Features.Commands.OrderComands.CreateOrder
                     request.ShippingAddress,
                     request.BillingAddress
                 );
-
+              
                 return new CreateOrderResponse
                 {
                     OrderId = order.ID.ToString(),

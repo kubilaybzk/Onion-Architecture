@@ -17,5 +17,10 @@ namespace SignalR.HubServices
 
         public async Task OrderAddedMessageAsync(string message)
         =>_hubContext.Clients.All.SendAsync(ReceiveFunctionNames.OrderAddedMessage, message);
+
+         
+
+        public async Task OrderRemovedMessageAsync(string message)
+        => _hubContext.Clients.All.SendAsync(ReceiveFunctionNames.OrderRemovedMessage, message);
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnionArch.Persistance.Contexts;
@@ -11,9 +12,11 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    partial class OnionArchDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250119191831_addresses")]
+    partial class addresses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -831,10 +834,6 @@ namespace OnionArch.Persistance.Migrations
                     b.Property<Guid>("ID")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("BasketID")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("BillingAddress")
                         .IsRequired()
                         .HasColumnType("text");
@@ -876,12 +875,6 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("isDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool?>("isOrdered")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool?>("paidStatus")
                         .HasColumnType("boolean");
 
                     b.HasKey("ID");

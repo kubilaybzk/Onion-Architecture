@@ -19,6 +19,9 @@ namespace OnionArch.Domain.Entities
         public string BillingAddress { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
         public Basket Basket { get; set; }
+        public bool? paidStatus { get; set; }
+        public bool? isOrdered { get; set; }
+        public string BasketID { get; set; }
     }
 }
 

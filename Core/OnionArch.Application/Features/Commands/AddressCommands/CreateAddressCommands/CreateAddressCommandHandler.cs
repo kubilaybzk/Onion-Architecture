@@ -36,6 +36,7 @@ namespace OnionArch.Application.Features.Commands.AddressCommands.CreateAddressC
             resquestparams.TaxIdentificationNumber = request.TaxIdentificationNumber;
             resquestparams.TaxOffice = request.TaxOffice;
             resquestparams.CompanyName = request.CompanyName;
+            resquestparams.ZipCode = request.ZipCode;
 
             try
             {

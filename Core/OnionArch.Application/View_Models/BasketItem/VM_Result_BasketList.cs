@@ -25,6 +25,7 @@ namespace OnionArch.Application.View_Models.BasketItem
         public string ProductSlug { get; set; }
         public decimal DiscountRate { get; set; } // İndirim oranı
         public decimal DiscountPrice { get; set; } // İndirimli fiyatı
+        public List<string>? CategoryNames{ get; set; }
 
 
         //public VM_Result_BasketProductItem Products { get; set; }

@@ -26,9 +26,6 @@ namespace OnionArch.Application.Features.Commands.Payment.CreatePayment
         {
             try
             {
-                var order = await _orderService.GetOrderByIdAsync(request.OrderId);
-                if (order == null)
-                    throw new Exception("Sipariş bulunamadı");
 
                 var paymentRequest = new PaymentRequest
                 {
@@ -39,8 +36,7 @@ namespace OnionArch.Application.Features.Commands.Payment.CreatePayment
                     ExpirationYear = request.ExpireYear,
                     Cvc = request.Cvc,
                     Use3D = request.Use3D,
-                    Amount = order.TotalAmount,
-                    Currency = "TRY"
+                    Currency = "TRY",
                 };
 
                 var transaction = await _paymentService.CreatePaymentTransactionAsync(request.OrderId, paymentRequest);
@@ -75,7 +71,7 @@ namespace OnionArch.Application.Features.Commands.Payment.CreatePayment
                         };
                         if (transaction.IsThreeD)
                         {
-                    response.HtmlContent = transaction.ProviderResponse; // 3D için HTML içeriği
+                            response.HtmlContent = transaction.ProviderResponse; // 3D için HTML içeriği
                         }
                 return response;
                  

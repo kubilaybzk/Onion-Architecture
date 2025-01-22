@@ -17,6 +17,8 @@ namespace OnionArch.Domain.Entities
         public string Neighbourhood { get; set; }
         public string LongAddress { get; set; }
         public string PhoneNumber { get; set; }
+
+        public string ZipCode { get; set; }
         public AppUser  User { get; set; }
         public string UserId {  get; set; }
         public string RecipientName { get; set; }
