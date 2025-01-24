@@ -1,0 +1,18 @@
+﻿using OnionArch.Application.Repositories.AddressCrud;
+using OnionArch.Domain.Entities;
+using OnionArch.Persistance.Contexts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OnionArch.Persistance.Repositories.AddressCrud
+{
+    public class AddressWriteRepository : WriteRepository<Address>, IAddressWriteRepository
+    {
+        public AddressWriteRepository(OnionArchDBContext context) : base(context)
+        {
+        }
+    }
+}

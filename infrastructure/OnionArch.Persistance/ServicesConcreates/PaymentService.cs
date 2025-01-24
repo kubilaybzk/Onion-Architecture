@@ -133,6 +133,7 @@ namespace OnionArch.Persistance.ServicesConcreates
                 {
                     // Normal ödeme sonuçlarını güncelle
                     paymentTransaction.Status = response.Status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
+                    paymentTransaction.Order.Status = response.Status == "success" ? OrderStatus.Completed : OrderStatus.Failed;
                     paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
                     paymentTransaction.ErrorMessage = response.ErrorMessage ?? "No Error Message";
                     paymentTransaction.ProviderResponse = response.ProviderResponse ?? "No Provider Response";
@@ -151,6 +152,15 @@ namespace OnionArch.Persistance.ServicesConcreates
                     paymentTransaction.ProviderCommissionFee = response.IyziCommissionFee > 0 ? response.IyziCommissionFee.ToString().ToTurkishLira() : 0;
                     paymentTransaction.ProviderCommissionRateAmount = response.IyziCommissionRateAmount > 0 ? response.IyziCommissionRateAmount.ToString().ToTurkishLira() : 0;
                     paymentTransaction.ProviderResponse = response.ProviderResponse;
+
+
+
+                    //Yeni Eklenen Alanlar 
+                    paymentTransaction.Order.DiscountCoupon = paymentTransaction.Order.Basket.DiscountCoupon ?? null;
+                    paymentTransaction.Order.DiscountCouponId = paymentTransaction.Order.Basket.DiscountCouponId ?? null;
+                    paymentTransaction.Order.DiscountedAmount = paymentTransaction.Order.Basket.DiscountedAmount ?? null;
+                    paymentTransaction.Order.Basket.isDeleted = true;
+                   
                 }
 
                 await _paymentTransactionWriteRepository.SaveAsync();
@@ -214,7 +224,7 @@ namespace OnionArch.Persistance.ServicesConcreates
             var provider = _paymentFactory.CreateProvider(paymentTransaction.PaymentProvider);
             var response = await provider.ProcessThreeDPaymentAsync(paymentTransaction.PaymentId, paymentTransaction.ConversationId, ConversationData);
 
-            await UpdateTransactionWithResponse(paymentId, response);
+            await UpdateTransactionWithResponse(paymentTransaction, response);
             if (response.Status == "success")
             {
                 await _basketService.ClearBasketAsync(paymentTransaction.Order.Basket.ID);
@@ -275,9 +285,9 @@ namespace OnionArch.Persistance.ServicesConcreates
         /*
              Provider'dan gelen yanıtla ödeme kaydını günceller
         */
-        private async Task UpdateTransactionWithResponse(string paymentId, PaymentResponse response)
+        private async Task UpdateTransactionWithResponse(PaymentTransaction paymentTransaction, PaymentResponse response)
         {
-            var paymentTransaction = await _paymentTransactionReadRepository.Table.Include(p=>p.Order).Where(p => p.PaymentId == paymentId).FirstOrDefaultAsync();
+             
             if (paymentTransaction == null)
                 throw new Exception("Ödeme işlemi bulunamadı");
 
@@ -289,6 +299,7 @@ namespace OnionArch.Persistance.ServicesConcreates
 
             // Normal ödeme sonuçlarını güncelle
             paymentTransaction.Status = response.Status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
+            paymentTransaction.Order.Status = response.Status == "success" ? OrderStatus.Completed : OrderStatus.Failed;
             paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
             paymentTransaction.ErrorMessage = response.ErrorMessage ?? "No Error Message";
             paymentTransaction.ProviderResponse = response.ProviderResponse ?? "No Provider Response";
@@ -306,6 +317,14 @@ namespace OnionArch.Persistance.ServicesConcreates
             paymentTransaction.ProviderCommissionFee = response.IyziCommissionFee > 0 ? response.IyziCommissionFee : 0;
             paymentTransaction.ProviderCommissionRateAmount = response.IyziCommissionRateAmount > 0 ? response.IyziCommissionRateAmount : 0;
             paymentTransaction.ProviderResponse = response.ProviderResponse;
+
+
+
+            //Yeni Eklenen Alanlar 
+            paymentTransaction.Order.DiscountCoupon = paymentTransaction.Order.Basket.DiscountCoupon ?? null;
+            paymentTransaction.Order.DiscountCouponId = paymentTransaction.Order.Basket.DiscountCouponId ?? null;
+            paymentTransaction.Order.DiscountedAmount = paymentTransaction.Order.Basket.DiscountedAmount ?? null;
+            paymentTransaction.Order.Basket.isDeleted = true;
 
             await _paymentTransactionWriteRepository.SaveAsync();
         }

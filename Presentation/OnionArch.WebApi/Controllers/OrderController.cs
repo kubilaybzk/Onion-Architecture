@@ -12,6 +12,7 @@ using OnionArch.Application.Features.Commands.Payment.Complete3DPayment;
 using OnionArch.Application.Features.Commands.Payment.CreatePayment;
 using OnionArch.Application.Features.Queries.DiscountCoupon.GetAllDiscountCoupons;
 using OnionArch.Application.Features.Queries.OrderQueries.GetOrderById;
+using OnionArch.Application.Features.Queries.OrderQueries.GetOrderByOrderCode;
 using OnionArch.Application.Features.Queries.OrderQueries.GetUserOrders;
 using OnionArch.Application.Features.Queries.PaymentQueries;
 using OnionArch.Domain.Enums;
@@ -55,6 +56,26 @@ namespace OnionArch.WebApi.Controllers
         public async Task<IActionResult> GetOrderById([FromRoute] string id)
         {
             var request = new GetOrderByIdRequest { OrderId = id };
+            var response = await _mediator.Send(request);
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(response);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(response);
+                case HttpStatusCode.NotFound:
+                    return NotFound(response);
+                default:
+                    return StatusCode((int)response.StatusCode, response);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetOrderByOrderCode/{id}")]
+        public async Task<IActionResult> GetOrderByOrderCode([FromRoute] string id)
+        {
+            var request = new GetOrderByOrderCodeRequest { OrderCode = id };
             var response = await _mediator.Send(request);
 
             switch (response.StatusCode)

@@ -116,7 +116,8 @@ namespace OnionArch.Persistance.ServicesConcreates
                     .ThenInclude(oi=>oi.ProductImageFiles)
                 .Include(o => o.User)
                 .Include(o => o.DiscountCoupon)
-                .FirstOrDefaultAsync(o => o.ID == Guid.Parse(id));
+                .FirstOrDefaultAsync(o => o.ID == Guid.Parse(id)) ?? throw new Exception("Order not found");
+
         }
 
         public async Task<List<Order>> GetUserOrdersAsync(string userId)
@@ -150,6 +151,20 @@ namespace OnionArch.Persistance.ServicesConcreates
             _orderWriteRepository.Update(order);
             await _orderWriteRepository.SaveAsync();
             return true;
+        }
+
+        public async Task<Order> GetOrderByOrderCode(string orderCode)
+        {
+         
+            return await _orderReadRepository.Table
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                    .ThenInclude(oi => oi.ProductImageFiles)
+                .Include(o => o.User)
+                .Include(o => o.DiscountCoupon)
+                .FirstOrDefaultAsync(o => o.OrderNo == orderCode) ?? throw new Exception("Order not found");
+
+
         }
     }
 }

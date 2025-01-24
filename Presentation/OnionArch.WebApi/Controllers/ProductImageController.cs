@@ -11,7 +11,7 @@ using OnionArch.Application.Features.Queries.ProductImageFile;
 using OnionArch.Application.Repositories.CategoryImageFileCrud;
 using OnionArch.Application.View_Models.Category;
 using OnionArch.Domain.Entities;
-using OnionArch.Persistance.Repositorys.ProductImageFileCrud;
+using OnionArch.Persistance.Repositories.ProductImageFileCrud;
 using System;
 using System.IO;
 

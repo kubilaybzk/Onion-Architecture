@@ -14,5 +14,6 @@ namespace OnionArch.Application.Features.Commands.Payment.CreatePayment
         public bool RequiresRedirect { get; set; }
         public string OrderId { get; set; }
         public bool isCreated { get; set; }
+        public string OrderCode { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 using OnionArch.Application.Repositories.DiscountCouponCrud;
 using OnionArch.Domain.Entities;
 using OnionArch.Persistance.Contexts;
-using OnionArch.Persistance.Repositorys;
+using OnionArch.Persistance.Repositories;
 
 namespace OnionArch.Persistance.Repositories.DiscountCouponCrud
 {
@@ -11,4 +11,4 @@ namespace OnionArch.Persistance.Repositories.DiscountCouponCrud
         {
         }
     }
-} 
+}

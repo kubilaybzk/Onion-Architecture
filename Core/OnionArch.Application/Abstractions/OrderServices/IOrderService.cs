@@ -15,5 +15,7 @@ namespace OnionArch.Application.Abstractions.OrderServices
         Task<List<Order>> GetUserOrdersAsync(string userId);
         Task<bool> UpdateOrderStatusAsync(string orderId, OrderStatus status);
         Task<decimal> CalculateOrderTotalAsync(string orderId);
+
+        Task<Order>GetOrderByOrderCode(string orderCode);   
     }
 }

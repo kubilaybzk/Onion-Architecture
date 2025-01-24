@@ -58,7 +58,7 @@ namespace OnionArch.Application.Features.Commands.Payment.CreatePayment
                             OrderId = transaction.OrderId.ToString()
                         };
                     }
-                        
+
                         var response = new CreatePaymentResponse
                         {
                             TransactionId = transaction.ID.ToString(),
@@ -67,7 +67,8 @@ namespace OnionArch.Application.Features.Commands.Payment.CreatePayment
                             StatusCode = System.Net.HttpStatusCode.OK,
                             HassError = false,
                             isCreated = true,
-                            OrderId = transaction.OrderId.ToString()
+                            OrderId = transaction.OrderId.ToString(),
+                            OrderCode = transaction.Order.OrderNo
                         };
                         if (transaction.IsThreeD)
                         {

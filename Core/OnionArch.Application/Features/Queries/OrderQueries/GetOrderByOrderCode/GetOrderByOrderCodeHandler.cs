@@ -7,22 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnionArch.Application.Features.Queries.OrderQueries.GetOrderById
+namespace OnionArch.Application.Features.Queries.OrderQueries.GetOrderByOrderCode
 {
-    public class GetOrderByIdCodeHandler : IRequestHandler<GetOrderByIdRequest, GetOrderByIdResponse>
+    public class GetOrderByOrderCodeHandler : IRequestHandler<GetOrderByOrderCodeRequest, GetOrderByOrderCodeResponse>
     {
         private readonly IOrderService _orderService;
 
-        public GetOrderByIdCodeHandler(IOrderService orderService)
+        public GetOrderByOrderCodeHandler(IOrderService orderService)
         {
             _orderService = orderService;
         }
 
-        public async Task<GetOrderByIdResponse> Handle(GetOrderByIdRequest request, CancellationToken cancellationToken)
+        public async Task<GetOrderByOrderCodeResponse> Handle(GetOrderByOrderCodeRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var order = await _orderService.GetOrderByIdAsync(request.OrderId);
+                var order = await _orderService.GetOrderByOrderCode(request.OrderCode);
                 if (order == null)
                     throw new Exception("Sipariş bulunamadı");
 
@@ -43,7 +43,7 @@ namespace OnionArch.Application.Features.Queries.OrderQueries.GetOrderById
                     }).ToList()
                 };
 
-                return new GetOrderByIdResponse
+                return new GetOrderByOrderCodeResponse
                 {
                     Order = orderDTO,
                     StatusCode = System.Net.HttpStatusCode.OK
@@ -51,7 +51,7 @@ namespace OnionArch.Application.Features.Queries.OrderQueries.GetOrderById
             }
             catch (Exception ex)
             {
-                return new GetOrderByIdResponse
+                return new GetOrderByOrderCodeResponse
                 {
                     Message = "Sipariş getirilirken bir hata oluştu",
                     ErrorMessage = ex.Message,
