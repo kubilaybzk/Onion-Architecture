@@ -19,6 +19,7 @@ namespace OnionArch.Application.DTOs.Payment
         public string OrderId { get; set; }
         public string BasketId { get; set; }
         public string ReturnUrl { get; set; }
+        public int? Installment { get; set; }
         public Order OrderInformation  { get; set; }
     }
 }

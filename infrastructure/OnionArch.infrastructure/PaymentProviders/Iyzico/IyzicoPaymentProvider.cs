@@ -101,7 +101,7 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                     Name = item.ProductName ?? "Ürün", // Ürün adı
                     Category1 = item.CategoryNames?.FirstOrDefault() ?? "Genel", // İlk kategori adı
                     ItemType = BasketItemType.PHYSICAL.ToString(),
-                    Price = (item.ProductLastPrice*item.Quantity).ToString("0.##", CultureInfo.InvariantCulture), // Son fiyat
+                    Price = (item.ProductLastPrice*item.Quantity).ToString(CultureInfo.InvariantCulture), // Son fiyat
                 }).ToList();
 
                 
@@ -201,8 +201,8 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                         SystemTime = payment.SystemTime, //Dönen sonucun o anki unix timestamp değeridir.
                         ConversationId = payment.ConversationId, //sipariş numarasıdır.
                         PaymentId = payment.PaymentId, //Ödemeye ait id, üye işyeri tarafından mutlaka saklanmalıdır. 
-                        Price = decimal.Parse(payment.Price), //Ödeme sepet tutarı.
-                        PaidPrice = decimal.Parse(payment.PaidPrice), //İndirim vade farkı vs. hesaplanmış POS’tan geçen, tahsil edilen, nihai tutar.
+                        Price = payment.Price, //Ödeme sepet tutarı.
+                        PaidPrice = payment.PaidPrice, //İndirim vade farkı vs. hesaplanmış POS’tan geçen, tahsil edilen, nihai tutar.
                         Currency = payment.Currency, //Ödeme alındığı para birimi,
                         Installment = (int)payment.Installment, //Taksit bilgisi.
                         PaymentStatus = payment.PaymentStatus, // SUCCESS, FAILURE, INIT_THREEDS, CALLBACK_THREEDS, BKM_POS_SELECTED, CALLBACK_PECCO
@@ -218,9 +218,9 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                             incelenip karar verilecekse 0 döner. Geçerli değerler: 0, -1 ve 1. Üye işyeri sadece 1 olan 
                             işlemlerde ürünü kargoya vermelidir, 0 olan işlemler için bilgilendirme beklemelidir. */
 
-                        IyziCommissionFee = decimal.Parse(payment.IyziCommissionFee), //Ödemeye ait iyzico işlem ücreti.
-                        IyziCommissionRateAmount = decimal.Parse(payment.IyziCommissionRateAmount), //Ödemeye ait iyzico işlem komisyon tutarı.
-                        MerchantCommissionRateAmount = decimal.Parse(payment.IyziCommissionRateAmount), //Üye işyerinin uyguladığı vade/komisyon tutarı.
+                        IyziCommissionFee = payment.IyziCommissionFee, //Ödemeye ait iyzico işlem ücreti.
+                        IyziCommissionRateAmount = payment.IyziCommissionRateAmount, //Ödemeye ait iyzico işlem komisyon tutarı.
+                        MerchantCommissionRateAmount = payment.IyziCommissionRateAmount, //Üye işyerinin uyguladığı vade/komisyon tutarı.
                         ProviderResponse = JsonSerializer.Serialize(payment)
                     };
                 }
@@ -281,9 +281,9 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
 
                         PaymentId = payment.PaymentId, //Ödemeye ait id, üye işyeri tarafından mutlaka saklanmalıdır. 
 
-                        Price = decimal.Parse(payment.Price), //Ödeme sepet tutarı.
+                        Price = payment.Price, //Ödeme sepet tutarı.
 
-                        PaidPrice = decimal.Parse(payment.PaidPrice), //İndirim vade farkı vs. hesaplanmış POS’tan geçen, tahsil edilen, nihai tutar.
+                        PaidPrice = payment.PaidPrice, //İndirim vade farkı vs. hesaplanmış POS’tan geçen, tahsil edilen, nihai tutar.
 
                         Currency = payment.Currency, //Ödeme alındığı para birimi,
 
@@ -308,11 +308,11 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                             incelenip karar verilecekse 0 döner. Geçerli değerler: 0, -1 ve 1. Üye işyeri sadece 1 olan 
                             işlemlerde ürünü kargoya vermelidir, 0 olan işlemler için bilgilendirme beklemelidir. */
 
-                        IyziCommissionFee = decimal.Parse(payment.IyziCommissionFee), //Ödemeye ait iyzico işlem ücreti.
+                        IyziCommissionFee = payment.IyziCommissionFee, //Ödemeye ait iyzico işlem ücreti.
 
-                        IyziCommissionRateAmount = decimal.Parse(payment.IyziCommissionRateAmount), //Ödemeye ait iyzico işlem komisyon tutarı.
+                        IyziCommissionRateAmount = payment.IyziCommissionRateAmount, //Ödemeye ait iyzico işlem komisyon tutarı.
 
-                        MerchantCommissionRateAmount = decimal.Parse(payment.IyziCommissionRateAmount), //Üye işyerinin uyguladığı vade/komisyon tutarı.
+                        MerchantCommissionRateAmount =payment.IyziCommissionRateAmount, //Üye işyerinin uyguladığı vade/komisyon tutarı.
 
                         ProviderResponse = JsonSerializer.Serialize(payment)
                     };

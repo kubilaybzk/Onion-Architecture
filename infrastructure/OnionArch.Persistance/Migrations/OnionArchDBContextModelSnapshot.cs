@@ -980,7 +980,7 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<decimal?>("PaidPrice")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PaymentId")
                         .HasColumnType("text");
@@ -992,13 +992,13 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("text");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("ProviderCommissionFee")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("ProviderCommissionRateAmount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProviderResponse")
                         .HasColumnType("text");

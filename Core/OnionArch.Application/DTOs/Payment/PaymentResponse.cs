@@ -53,12 +53,12 @@ namespace OnionArch.Application.DTOs.Payment
             /// <summary>
             /// Ödeme tutarı. Sepet tutarı.
             /// </summary>
-            public decimal Price { get; set; }
+            public string Price { get; set; }
 
             /// <summary>
             /// Nihai tahsilat tutarı, indirim ve diğer farklar hesaplanmış haliyle.
             /// </summary>
-            public decimal PaidPrice { get; set; }
+            public string PaidPrice { get; set; }
 
             /// <summary>
             /// Ödemenin alındığı para birimi.
@@ -108,22 +108,22 @@ namespace OnionArch.Application.DTOs.Payment
             /// <summary>
             /// İyzico işlem ücreti.
             /// </summary>
-            public decimal IyziCommissionFee { get; set; }
+            public string IyziCommissionFee { get; set; }
 
             /// <summary>
             /// İyzico işlem komisyon tutarı.
             /// </summary>
-            public decimal IyziCommissionRateAmount { get; set; }
+            public string IyziCommissionRateAmount { get; set; }
 
             /// <summary>
             /// Üye işyerinin uyguladığı vade/komisyon oranı.
             /// </summary>
-            public decimal MerchantCommissionRate { get; set; }
+            public string MerchantCommissionRate { get; set; }
 
             /// <summary>
             /// Üye işyerinin uyguladığı vade/komisyon tutarı.
             /// </summary>
-            public decimal MerchantCommissionRateAmount { get; set; }
+            public string MerchantCommissionRateAmount { get; set; }
 
             // ItemTransactions Parametreleri
             /// <summary>

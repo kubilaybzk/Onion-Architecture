@@ -9,8 +9,8 @@ using OnionArch.Domain.Enums;
 using OnionArch.Persistance.Contexts;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +18,8 @@ using OnionArch.Application.Abstractions.OrderCrud;
 using OnionArch.Application.Abstractions.BasketServices;
 using OnionArch.Persistance.Operations;
 using OnionArch.Application.Abstractions.HubServices;
+using Newtonsoft.Json;
+
 namespace OnionArch.Persistance.ServicesConcreates
 {
     public class PaymentService : IPaymentService
@@ -32,6 +34,7 @@ namespace OnionArch.Persistance.ServicesConcreates
         private readonly IOrderReadRepository _orderReadRepository;
         private readonly IBasketService _basketService;
         private readonly IOrderHubService _orderHubService;
+
         public PaymentService(
             IPaymentTransactionReadRepository paymentTransactionReadRepository,
             IPaymentTransactionWriteRepository paymentTransactionWriteRepository,
@@ -40,7 +43,9 @@ namespace OnionArch.Persistance.ServicesConcreates
             UserManager<AppUser> userManager,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration,
-            IOrderReadRepository orderReadRepository, IBasketService basketService, IOrderHubService orderHubService)
+            IOrderReadRepository orderReadRepository,
+            IBasketService basketService,
+            IOrderHubService orderHubService)
         {
             _paymentTransactionReadRepository = paymentTransactionReadRepository;
             _paymentTransactionWriteRepository = paymentTransactionWriteRepository;
@@ -54,11 +59,6 @@ namespace OnionArch.Persistance.ServicesConcreates
             _orderHubService = orderHubService;
         }
 
-        /*
-            Ödeme kaydını veritabanında oluşturur
-            Seçili provider'a (iyzico/sipay) ödeme isteği gönderir
-            Sonucu veritabanına kaydeder
-        */
         public async Task<PaymentTransaction> CreatePaymentTransactionAsync(string orderId, PaymentRequest request)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -68,8 +68,8 @@ namespace OnionArch.Persistance.ServicesConcreates
                     .AsSplitQuery()
                     .Include(o => o.User)
                         .ThenInclude(user => user.Addresses)
-                     .Include(o=>o.Basket)
-                     .ThenInclude(basket=>basket.BasketItems)
+                    .Include(o => o.Basket)
+                        .ThenInclude(basket => basket.BasketItems)
                     .Include(o => o.OrderItems)
                         .ThenInclude(oi => oi.Product)
                             .ThenInclude(p => p.Categorys)
@@ -77,17 +77,12 @@ namespace OnionArch.Persistance.ServicesConcreates
 
                 if (order == null)
                     throw new Exception("Sipariş bulunamadı");
- 
+
                 request.OrderInformation = order;
- 
-
-
-
 
                 var providerName = _configuration["Payment:Provider"];
                 var provider = _paymentFactory.CreateProvider(providerName);
 
-                //Başlangıç olarak bir payment değeri set ediyoruz ki ilerleyen süreçte dbden okuyabilelim.
                 var paymentTransaction = new PaymentTransaction
                 {
                     OrderId = Guid.Parse(orderId),
@@ -109,19 +104,14 @@ namespace OnionArch.Persistance.ServicesConcreates
                     Currency = request.Currency,
                     Installment = 0,
                     PaymentStatus = "PENDING",
-                    FraudStatus = 0,  // 0 = kontrol edilecek
+                    FraudStatus = 0,
                     ProviderCommissionFee = 0,
                     ProviderCommissionRateAmount = 0
                 };
 
                 await _paymentTransactionWriteRepository.AddAsync(paymentTransaction);
-
-                // Ödeme işlemini başlat
                 var response = await provider.ProcessPaymentAsync(request);
 
-
-
-                // 3D için HTML içeriğini kaydet
                 if (request.Use3D && !string.IsNullOrEmpty(response.ProviderResponse))
                 {
                     paymentTransaction.PaymentId = response.PaymentId;
@@ -131,7 +121,11 @@ namespace OnionArch.Persistance.ServicesConcreates
                 }
                 else
                 {
-                    // Normal ödeme sonuçlarını güncelle
+                    paymentTransaction.Price = ParseDecimal(response.Price);
+                    paymentTransaction.PaidPrice = ParseDecimal(response.PaidPrice);
+                    paymentTransaction.ProviderCommissionFee = ParseDecimal(response.IyziCommissionFee);
+                    paymentTransaction.ProviderCommissionRateAmount = ParseDecimal(response.IyziCommissionRateAmount);
+
                     paymentTransaction.Status = response.Status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
                     paymentTransaction.Order.Status = response.Status == "success" ? OrderStatus.Completed : OrderStatus.Failed;
                     paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
@@ -140,27 +134,15 @@ namespace OnionArch.Persistance.ServicesConcreates
                     paymentTransaction.SystemTime = DateTimeOffset.FromUnixTimeMilliseconds(response.SystemTime).ToUniversalTime();
                     paymentTransaction.PaymentId = response.PaymentId;
                     paymentTransaction.ConversationId = response.ConversationId;
-                    // Null olabilen decimal değerler için 0 kullan
-                    paymentTransaction.Price = response.Price > 0 ? response.Price.ToString().ToTurkishLira() : paymentTransaction.Price;
-                    paymentTransaction.PaidPrice = response.PaidPrice > 0 ? response.PaidPrice.ToString().ToTurkishLira() : 0;
-                    paymentTransaction.Currency = !string.IsNullOrEmpty(response.Currency) ? response.Currency : paymentTransaction.Currency;
+                    paymentTransaction.Currency = response.Currency ?? paymentTransaction.Currency;
                     paymentTransaction.Installment = response.Installment > 0 ? response.Installment : 1;
-                    paymentTransaction.PaymentStatus = !string.IsNullOrEmpty(response.PaymentStatus) ? response.PaymentStatus : response.Status;
-                    paymentTransaction.FraudStatus = response.FraudStatus != null ? response.FraudStatus : 0;
+                    paymentTransaction.PaymentStatus = response.PaymentStatus ?? response.Status;
+                    paymentTransaction.FraudStatus = response.FraudStatus;
 
-                    // Commission değerleri için null check
-                    paymentTransaction.ProviderCommissionFee = response.IyziCommissionFee > 0 ? response.IyziCommissionFee.ToString().ToTurkishLira() : 0;
-                    paymentTransaction.ProviderCommissionRateAmount = response.IyziCommissionRateAmount > 0 ? response.IyziCommissionRateAmount.ToString().ToTurkishLira() : 0;
-                    paymentTransaction.ProviderResponse = response.ProviderResponse;
-
-
-
-                    //Yeni Eklenen Alanlar 
-                    paymentTransaction.Order.DiscountCoupon = paymentTransaction.Order.Basket.DiscountCoupon ?? null;
-                    paymentTransaction.Order.DiscountCouponId = paymentTransaction.Order.Basket.DiscountCouponId ?? null;
-                    paymentTransaction.Order.DiscountedAmount = paymentTransaction.Order.Basket.DiscountedAmount ?? null;
+                    paymentTransaction.Order.DiscountCoupon = paymentTransaction.Order.Basket.DiscountCoupon;
+                    paymentTransaction.Order.DiscountCouponId = paymentTransaction.Order.Basket.DiscountCouponId;
+                    paymentTransaction.Order.DiscountedAmount = paymentTransaction.Order.Basket.DiscountedAmount;
                     paymentTransaction.Order.Basket.isDeleted = true;
-                   
                 }
 
                 await _paymentTransactionWriteRepository.SaveAsync();
@@ -170,17 +152,16 @@ namespace OnionArch.Persistance.ServicesConcreates
                     order.isOrdered = true;
                     order.paidStatus = true;
                     order.Status = OrderStatus.Processing;
-                    await _paymentTransactionWriteRepository.SaveAsync();
+
                     if (!request.Use3D)
                     {
                         await _basketService.ClearBasketAsync(order.Basket.ID);
-                        await _orderHubService.OrderAddedMessageAsync($"Yeni bir sipariş geldi Tutar: {paymentTransaction.PaidPrice.ToString().ToTurkishLira()} ₺");
+                        await _orderHubService.OrderAddedMessageAsync(
+                            string.Format(CultureInfo.GetCultureInfo("tr-TR"),
+                            "Yeni sipariş: {0:N2} ₺",
+                            paymentTransaction.PaidPrice)
+                        );
                     }
-                }
-                else
-                {
-                    order.Status = OrderStatus.Processing;
-                    await _paymentTransactionWriteRepository.SaveAsync();
                 }
 
                 await transaction.CommitAsync();
@@ -193,11 +174,6 @@ namespace OnionArch.Persistance.ServicesConcreates
             }
         }
 
-        /*
-            Var olan ödeme kaydını sorgular
-            Yeni ödeme işlemi başlatmaz
-            Sadece durum kontrolü yapar
-        */
         public async Task<PaymentTransaction> ProcessPaymentAsync(string transactionId)
         {
             var paymentTransaction = await _paymentTransactionReadRepository.GetByIdAsync(transactionId);
@@ -211,13 +187,13 @@ namespace OnionArch.Persistance.ServicesConcreates
             return paymentTransaction;
         }
 
-        /*
-            3D ödemelerini tamamlar
-            Banka ekranından dönen kullanıcıyı işler
-        */
         public async Task<PaymentTransaction> CompleteThreeDPaymentAsync(string paymentId, string ConversationData)
         {
-            var paymentTransaction = await _paymentTransactionReadRepository.Table.Include(pt=>pt.Order).ThenInclude(ord=>ord.Basket).Where(p => p.PaymentId == paymentId).FirstOrDefaultAsync();
+            var paymentTransaction = await _paymentTransactionReadRepository.Table
+                .Include(pt => pt.Order)
+                .ThenInclude(ord => ord.Basket)
+                .FirstOrDefaultAsync(p => p.PaymentId == paymentId);
+
             if (paymentTransaction == null)
                 throw new Exception("Ödeme işlemi bulunamadı");
 
@@ -225,17 +201,20 @@ namespace OnionArch.Persistance.ServicesConcreates
             var response = await provider.ProcessThreeDPaymentAsync(paymentTransaction.PaymentId, paymentTransaction.ConversationId, ConversationData);
 
             await UpdateTransactionWithResponse(paymentTransaction, response);
+
             if (response.Status == "success")
             {
                 await _basketService.ClearBasketAsync(paymentTransaction.Order.Basket.ID);
-                await _orderHubService.OrderAddedMessageAsync($"Yeni bir sipariş geldi Tutar: {paymentTransaction.PaidPrice.ToString().ToTurkishLira()} ₺");
+                await _orderHubService.OrderAddedMessageAsync(
+                    string.Format(CultureInfo.GetCultureInfo("tr-TR"),
+                    "Yeni sipariş: {0:N2} ₺",
+                    paymentTransaction.PaidPrice)
+                );
             }
+
             return paymentTransaction;
         }
 
-        /*
-           Belirli bir ödeme kaydının detaylarını getirir
-        */
         public async Task<PaymentTransaction> GetTransactionByIdAsync(string transactionId)
         {
             return await _paymentTransactionReadRepository.Table
@@ -244,9 +223,6 @@ namespace OnionArch.Persistance.ServicesConcreates
                 .FirstOrDefaultAsync(pt => pt.ID == Guid.Parse(transactionId));
         }
 
-        /*
-          Bir siparişe ait tüm ödemeleri listeler
-        */
         public async Task<List<PaymentTransaction>> GetOrderTransactionsAsync(string orderId)
         {
             return await _paymentTransactionReadRepository.Table
@@ -255,9 +231,6 @@ namespace OnionArch.Persistance.ServicesConcreates
                 .ToListAsync();
         }
 
-        /*
-           Bir kullanıcının tüm ödeme geçmişini getirir
-        */
         public async Task<List<PaymentTransaction>> GetUserTransactionsAsync(string userId)
         {
             return await _paymentTransactionReadRepository.Table
@@ -267,9 +240,6 @@ namespace OnionArch.Persistance.ServicesConcreates
                 .ToListAsync();
         }
 
-        /*
-           Ödeme durumunu günceller
-        */
         public async Task UpdateTransactionStatusAsync(string transactionId, PaymentStatus status, string errorMessage = null)
         {
             var paymentTransaction = await _paymentTransactionReadRepository.GetByIdAsync(transactionId);
@@ -282,61 +252,61 @@ namespace OnionArch.Persistance.ServicesConcreates
             await _paymentTransactionWriteRepository.SaveAsync();
         }
 
-        /*
-             Provider'dan gelen yanıtla ödeme kaydını günceller
-        */
         private async Task UpdateTransactionWithResponse(PaymentTransaction paymentTransaction, PaymentResponse response)
         {
-             
             if (paymentTransaction == null)
                 throw new Exception("Ödeme işlemi bulunamadı");
 
-            if (response.Status == "failure")
-            {
-                paymentTransaction.Order.paidStatus = false;
-                paymentTransaction.Order.isOrdered = false;
-            }
+            paymentTransaction.Price = ParseDecimal(response.Price);
+            paymentTransaction.PaidPrice = ParseDecimal(response.PaidPrice);
+            paymentTransaction.ProviderCommissionFee = ParseDecimal(response.IyziCommissionFee);
+            paymentTransaction.ProviderCommissionRateAmount = ParseDecimal(response.IyziCommissionRateAmount);
 
-            // Normal ödeme sonuçlarını güncelle
             paymentTransaction.Status = response.Status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
             paymentTransaction.Order.Status = response.Status == "success" ? OrderStatus.Completed : OrderStatus.Failed;
             paymentTransaction.ErrorCode = response.ErrorCode ?? "No Error Code";
             paymentTransaction.ErrorMessage = response.ErrorMessage ?? "No Error Message";
             paymentTransaction.ProviderResponse = response.ProviderResponse ?? "No Provider Response";
             paymentTransaction.SystemTime = DateTimeOffset.FromUnixTimeMilliseconds(response.SystemTime).ToUniversalTime();
-
-            // Null olabilen decimal değerler için 0 kullan
-            paymentTransaction.Price = response.Price > 0 ? response.Price : paymentTransaction.Price;
-            paymentTransaction.PaidPrice = response.PaidPrice > 0 ? response.PaidPrice : 0;
-            paymentTransaction.Currency = !string.IsNullOrEmpty(response.Currency) ? response.Currency : paymentTransaction.Currency;
+            paymentTransaction.PaymentId = response.PaymentId;
+            paymentTransaction.ConversationId = response.ConversationId;
+            paymentTransaction.Currency = response.Currency ?? paymentTransaction.Currency;
             paymentTransaction.Installment = response.Installment > 0 ? response.Installment : 1;
-            paymentTransaction.PaymentStatus = !string.IsNullOrEmpty(response.PaymentStatus) ? response.PaymentStatus : response.Status;
-            paymentTransaction.FraudStatus = response.FraudStatus != null ? response.FraudStatus : 0;
-
-            // Commission değerleri için null check
-            paymentTransaction.ProviderCommissionFee = response.IyziCommissionFee > 0 ? response.IyziCommissionFee : 0;
-            paymentTransaction.ProviderCommissionRateAmount = response.IyziCommissionRateAmount > 0 ? response.IyziCommissionRateAmount : 0;
-            paymentTransaction.ProviderResponse = response.ProviderResponse;
-
-
-
-            //Yeni Eklenen Alanlar 
-            paymentTransaction.Order.DiscountCoupon = paymentTransaction.Order.Basket.DiscountCoupon ?? null;
-            paymentTransaction.Order.DiscountCouponId = paymentTransaction.Order.Basket.DiscountCouponId ?? null;
-            paymentTransaction.Order.DiscountedAmount = paymentTransaction.Order.Basket.DiscountedAmount ?? null;
-            paymentTransaction.Order.Basket.isDeleted = true;
+            paymentTransaction.PaymentStatus = response.PaymentStatus ?? response.Status;
+            paymentTransaction.FraudStatus = response.FraudStatus;
 
             await _paymentTransactionWriteRepository.SaveAsync();
         }
 
         private string MaskCreditCard(string cardNumber)
         {
-            if (string.IsNullOrEmpty(cardNumber)) return string.Empty;
+            if (string.IsNullOrEmpty(cardNumber) || cardNumber.Length < 4)
+                return string.Empty;
 
-            // Sadece son 4 haneyi göster
             var lastFourDigits = cardNumber.Substring(cardNumber.Length - 4);
-            var maskedPart = new string('*', cardNumber.Length - 4);
-            return maskedPart + lastFourDigits;
+            return new string('*', cardNumber.Length - 4) + lastFourDigits;
+        }
+
+        private decimal ParseDecimal(object value)
+        {
+            if (value == null)
+                return 0;
+
+            // Decimal değeri string olarak al
+            string stringValue = value.ToString();
+
+            // Binlik ayraçları temizle (örneğin, "1.999,99" → "1999.99")
+            stringValue = stringValue.Replace(",", "").Replace(".", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
+
+            if (decimal.TryParse(stringValue,
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign,
+                CultureInfo.InvariantCulture,
+                out decimal result))
+            {
+                return result;
+            }
+
+            return 0;
         }
     }
 }
