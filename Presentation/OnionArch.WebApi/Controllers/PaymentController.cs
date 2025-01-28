@@ -11,6 +11,8 @@ using OnionArch.Application.Features.Commands.Payment.Complete3DPayment;
 using OnionArch.Application.Features.Commands.Payment.CreatePayment;
 using OnionArch.Application.Features.Queries.DiscountCoupon.GetAllDiscountCoupons;
 using OnionArch.Application.Features.Queries.PaymentQueries;
+using OnionArch.Application.Features.Queries.PaymentQueries.CheckBinNumber;
+using OnionArch.Application.Features.Queries.PaymentQueries.PayymentInstallment;
 using System.Net;
 using System.Web;
 
@@ -288,6 +290,8 @@ namespace OnionArch.WebApi.Controllers
             throw new NotImplementedException();
         }
 
+        
+
         [HttpPost]
         [Route("refund/{transactionId}")]
         [Authorize(Roles = "Admin")] // Sadece admin iade yapabilir
@@ -296,5 +300,44 @@ namespace OnionArch.WebApi.Controllers
             // TODO: Refund Payment Command implementasyonu
             throw new NotImplementedException();
         }
+
+        
+        [HttpGet]
+        [Route("GetBinNumber")]
+        public async Task<IActionResult> GetBinNumber([FromQuery] CheckBinNumberRequest request)
+        {
+            CheckBinNumberResponse response = await _mediator.Send(request);
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(response);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(response);
+                case HttpStatusCode.NotFound:
+                    return NotFound(response);
+                default:
+                    return StatusCode((int)response.StatusCode, response);
+            }
+        }
+        
+        
+        [HttpGet]
+        [Route("PayymentInstallment")]
+        public async Task<IActionResult> PayymentInstallment([FromQuery] PayymentInstallmentRequest request)
+        {
+            PayymentInstallmentResponse response = await _mediator.Send(request);
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(response);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(response);
+                case HttpStatusCode.NotFound:
+                    return NotFound(response);
+                default:
+                    return StatusCode((int)response.StatusCode, response);
+            }
+        }
+
     }
 }

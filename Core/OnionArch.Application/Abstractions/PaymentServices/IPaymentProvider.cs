@@ -14,5 +14,7 @@ namespace OnionArch.Application.Abstractions.PaymentServices
         Task<PaymentResponse> ProcessThreeDPaymentAsync(string paymentId,string conversationId, string threeDResponse);
         Task<PaymentResponse> CancelPaymentAsync(string transactionId);
         Task<PaymentResponse> RefundPaymentAsync(string transactionId, decimal amount);
+        Task<PaymentResponse> CheckBinNumber(string binNumber);
+        Task<PaymentInstamentDTO> GetBasketInstament(string cardNumber, double paidPrice);
     }
 }

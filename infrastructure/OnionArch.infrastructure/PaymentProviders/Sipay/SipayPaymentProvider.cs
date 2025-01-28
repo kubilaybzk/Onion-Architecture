@@ -78,6 +78,24 @@ namespace OnionArch.infrastructure.PaymentProviders.Sipay
                 };
             }
         }
+
+        public async Task<PaymentResponse> CheckBinNumber(string binNumber)
+        {
+            return new PaymentResponse
+            {
+
+            };
+        }
+
+        
+
+        public async Task<PaymentInstamentDTO> GetBasketInstament(string cardNumber, double paidPrice)
+        {
+            return new PaymentInstamentDTO
+            {
+
+            };
+        }
     }
 
 }

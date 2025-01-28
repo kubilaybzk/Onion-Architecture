@@ -10,6 +10,7 @@ using System.Globalization;
 using OnionArch.Application.View_Models.BasketItem;
 using Microsoft.AspNetCore.Http;
 using OnionArch.Domain.Entities;
+using System.Numerics;
 
 namespace OnionArch.infrastructure.PaymentProviders.Iyzico
 {
@@ -436,6 +437,98 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                     ErrorCode = "IYZICO_REFUND_ERROR"
                 };
             }
+        }
+
+        public async Task<PaymentResponse> CheckBinNumber(string binNumber)
+        {
+            try
+            {
+                var options = new Options
+                {
+                    ApiKey = _apiKey,
+                    SecretKey = _secretKey,
+                    BaseUrl = _baseUrl
+                };
+
+                RetrieveBinNumberRequest request = new RetrieveBinNumberRequest();
+                request.Locale = Locale.TR.ToString();
+                request.BinNumber = binNumber;
+
+                BinNumber binNumberresponse = await BinNumber.Retrieve(request, options);
+               if(binNumberresponse.Status == Status.SUCCESS.ToString())
+                {
+                    return new PaymentResponse
+                    {
+                        Status = Status.SUCCESS.ToString(),
+                        BinNumber = binNumberresponse.Bin,
+                        CardAssociation = binNumberresponse.CardAssociation,
+                        CardFamily = binNumberresponse.CardFamily,
+                        CardType = binNumberresponse.CardType,
+                        Commerical = binNumberresponse.Commercial,
+                        BankName = binNumberresponse.BankName
+                    };
+                }
+                return new PaymentResponse
+                {
+                    Status = Status.FAILURE.ToString(),
+                    ErrorCode = binNumberresponse.ErrorCode,
+                    ErrorMessage = binNumberresponse.ErrorMessage
+                };
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunda boş response dön
+                return new PaymentResponse
+                {
+                    Status = Status.FAILURE.ToString(),
+                    ErrorMessage = ex.Message,
+                    ErrorCode = "IYZICO_BIN_CHECK_ERROR"
+                };
+            }
+        }
+
+        
+
+        public async Task<PaymentInstamentDTO> GetBasketInstament(string cardNumber, double paidPrice)
+        {
+            var options = new Options
+            {
+                ApiKey = _apiKey,
+                SecretKey = _secretKey,
+                BaseUrl = _baseUrl
+            };
+            RetrieveInstallmentInfoRequest request = new RetrieveInstallmentInfoRequest();
+            request.Locale = Locale.TR.ToString();
+            request.BinNumber = cardNumber;
+            request.Price = paidPrice.ToString();
+
+            InstallmentInfo installmentInfo = await InstallmentInfo.Retrieve(request, options);
+
+            return new PaymentInstamentDTO()
+            {
+                ErrorCode = installmentInfo.ErrorCode,
+                ErrorGroup = installmentInfo.ErrorGroup,
+                ErrorMessage = installmentInfo.ErrorMessage,
+                Status = installmentInfo.Status,
+                installmentDetails = installmentInfo.InstallmentDetails?.Select(x => new OnionArch.Application.DTOs.Payment.InstallmentDetail
+                {
+                    binNumber = x.BinNumber,
+                    price = double.Parse(x.Price ?? "0"), // Convert string to double
+                    cardType = x.CardType,
+                    cardAssociation = x.CardAssociation,
+                    cardFamilyName = x.CardFamilyName,
+                    force3ds = (int)x.Force3Ds, // Convert nullable int to int
+                    bankCode = (int)x.BankCode, // Convert nullable int to int
+                    bankName = x.BankName,
+                    forceCvc = (int)x.ForceCvc, // Convert nullable int to int
+                    commercial = (int)x.Commercial, // Convert nullable int to int
+                    installmentPrices = x.InstallmentPrices?.Select(p => new OnionArch.Application.DTOs.Payment.InstallmentPrice
+                    {
+                        installmentPrice = double.Parse(p.Price ?? "0"), // Convert string to double
+                        totalPrice = double.Parse(p.TotalPrice ?? "0"), // Convert string to double
+                    }).ToList() ?? null
+                }).ToList()
+            };
         }
     }
 }

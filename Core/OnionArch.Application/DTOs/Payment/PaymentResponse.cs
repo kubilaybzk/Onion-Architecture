@@ -238,7 +238,15 @@ namespace OnionArch.Application.DTOs.Payment
             /// </summary>
             
             public string ProviderResponse { get; set; }
-
-
+            public int? Commerical { get; set; }
+            public string? BankName { get; set; }
+            public List<InstallmentDetail>? installmentDetails { get; set; } //Taksit oranları için
     }
+
+    // Taksit oranları için gerekli olan response değerlerinin sınıfları.
+
+
+    
+
+
 }

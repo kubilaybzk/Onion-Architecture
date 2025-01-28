@@ -18,5 +18,8 @@ namespace OnionArch.Application.Abstractions.PaymentServices
         Task<List<PaymentTransaction>> GetOrderTransactionsAsync(string orderId);
         Task<List<PaymentTransaction>> GetUserTransactionsAsync(string userId);
         Task UpdateTransactionStatusAsync(string transactionId, PaymentStatus status, string? errorMessage = null);
+
+        Task <PaymentBinNumberDTO> GetPaymentBinNumberAsync(string cardNumber);
+        Task<PaymentInstamentDTO> GetPaymentInstallment(string cardNumber, double paidPrice);
     }
 }

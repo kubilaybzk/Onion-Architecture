@@ -308,5 +308,33 @@ namespace OnionArch.Persistance.ServicesConcreates
 
             return 0;
         }
+
+        public async Task<PaymentBinNumberDTO> GetPaymentBinNumberAsync(string cardNumber)
+        {
+            var providerName = _configuration["Payment:Provider"];
+            var provider = _paymentFactory.CreateProvider(providerName);
+            var response = await provider.CheckBinNumber(cardNumber);
+             
+            return new PaymentBinNumberDTO()
+            {
+                Status = response.Status,
+                BinNumber = response.BinNumber,
+                BankName = response.BankName,
+                CardType = response.CardType,
+                CardAssociation = response.CardAssociation,
+                CardFamily = response.CardFamily,
+                Commerical = response.Commerical,
+                
+            };
+        }
+
+        public async Task<PaymentInstamentDTO> GetPaymentInstallment(string cardNumber,double paidPrice)
+        {
+            var providerName = _configuration["Payment:Provider"];
+            var provider = _paymentFactory.CreateProvider(providerName);
+            var response = await provider.GetBasketInstament(cardNumber, paidPrice);
+
+            return response;
+        }
     }
 }
