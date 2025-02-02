@@ -28,6 +28,8 @@ namespace OnionArch.Application.Abstractions.BasketServices
 
         public Task<bool> ClearBasketAsync(Guid basketId);
 
+        public Task<Basket> TotalBasketAmountCalculatorAsync(Basket basket);
+
 
     }
 }

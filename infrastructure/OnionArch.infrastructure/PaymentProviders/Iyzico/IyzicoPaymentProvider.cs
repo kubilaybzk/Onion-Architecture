@@ -116,7 +116,7 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                         ? request.OrderInformation.Basket.DiscountedAmount.Value.ToString(CultureInfo.InvariantCulture)
                         : totalPrice.ToString(CultureInfo.InvariantCulture),
                     Currency = Currency.TRY.ToString(),
-                    Installment = 1,
+                    Installment = request.Installment,
                     BasketId = request.OrderId,
                     PaymentChannel = PaymentChannel.WEB.ToString(),
                     PaymentGroup = PaymentGroup.PRODUCT.ToString(),
@@ -205,19 +205,24 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                         Price = payment.Price, //Ödeme sepet tutarı.
                         PaidPrice = payment.PaidPrice, //İndirim vade farkı vs. hesaplanmış POS’tan geçen, tahsil edilen, nihai tutar.
                         Currency = payment.Currency, //Ödeme alındığı para birimi,
-                        Installment = (int)payment.Installment, //Taksit bilgisi.
+                        //Installment = (int)payment.Installment, //Taksit bilgisi.
                         PaymentStatus = payment.PaymentStatus, // SUCCESS, FAILURE, INIT_THREEDS, CALLBACK_THREEDS, BKM_POS_SELECTED, CALLBACK_PECCO
                         BasketId = payment.BasketId, //Sepetin id değeri
                         BinNumber = payment.BinNumber,    //Kartın bin numarası,
                         CardAssociation = payment.CardAssociation, //Eğer ödeme yapılan kart yerel bir kart ise, kartın ait olduğu kuruluş. 
                         CardFamily = payment.CardFamily, //yerel bir kart ise, kartın ait olduğu aile. Geçerli değerler: Bonus, Axess, World, Maximum, Paraf, CardFinans, Advantage
                         CardType = payment.CardType, //Geçerli değerler: CREDIT_CARD, DEBIT_CARD, PREPAID_CARD
-                        FraudStatus = (int)payment.FraudStatus, /*
+                        /*FraudStatus = (int)payment.FraudStatus, 
                             Ödeme işleminin fraud filtrelerine göre durumu. Eğer ödemenin fraud risk skoru düşük ise
                             ödemeye anında onay verilir, bu durumda 1 değeri döner. Eğer fraud risk 
                             skoru yüksek ise ödeme işlemi reddedilir ve -1 döner. Eğer ödeme işlemi daha sonradan
                             incelenip karar verilecekse 0 döner. Geçerli değerler: 0, -1 ve 1. Üye işyeri sadece 1 olan 
                             işlemlerde ürünü kargoya vermelidir, 0 olan işlemler için bilgilendirme beklemelidir. */
+
+                        
+                        Installment = payment.Installment.HasValue ? (int)payment.Installment : 0, // Default to 0 if null
+                        FraudStatus = payment.FraudStatus.HasValue ? (int)payment.FraudStatus : 0, // Default to 0 if null
+
 
                         IyziCommissionFee = payment.IyziCommissionFee, //Ödemeye ait iyzico işlem ücreti.
                         IyziCommissionRateAmount = payment.IyziCommissionRateAmount, //Ödemeye ait iyzico işlem komisyon tutarı.
@@ -489,7 +494,7 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
 
         
 
-        public async Task<PaymentInstamentDTO> GetBasketInstament(string cardNumber, double paidPrice)
+        public async Task<PaymentInstamentDTO> GetBasketInstament(string cardNumber, string paidPrice)
         {
             var options = new Options
             {
@@ -524,8 +529,8 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
                     commercial = (int)x.Commercial, // Convert nullable int to int
                     installmentPrices = x.InstallmentPrices?.Select(p => new OnionArch.Application.DTOs.Payment.InstallmentPrice
                     {
-                        installmentPrice = double.Parse(p.Price ?? "0"), // Convert string to double
-                        totalPrice = double.Parse(p.TotalPrice ?? "0"), // Convert string to double
+                        installmentPrice = p.Price , // Convert string to double
+                        totalPrice = p.TotalPrice, // Convert string to double
                     }).ToList() ?? null
                 }).ToList()
             };

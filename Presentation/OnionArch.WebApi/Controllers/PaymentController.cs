@@ -322,6 +322,7 @@ namespace OnionArch.WebApi.Controllers
         
         
         [HttpGet]
+        [AllowAnonymous]
         [Route("PayymentInstallment")]
         public async Task<IActionResult> PayymentInstallment([FromQuery] PayymentInstallmentRequest request)
         {

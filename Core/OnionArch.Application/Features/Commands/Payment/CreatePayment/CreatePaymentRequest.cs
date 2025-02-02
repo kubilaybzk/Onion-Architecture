@@ -16,5 +16,6 @@ namespace OnionArch.Application.Features.Commands.Payment.CreatePayment
         public string ExpireYear { get; set; }
         public string Cvc { get; set; }
         public bool Use3D { get; set; }
+        public int Installment { get; set; } = 1;
     }
 }

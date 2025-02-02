@@ -102,7 +102,7 @@ namespace OnionArch.Persistance.ServicesConcreates
                     Price = 0,
                     PaidPrice = 0,
                     Currency = request.Currency,
-                    Installment = 0,
+                    Installment = request.Installment,
                     PaymentStatus = "PENDING",
                     FraudStatus = 0,
                     ProviderCommissionFee = 0,
@@ -135,7 +135,7 @@ namespace OnionArch.Persistance.ServicesConcreates
                     paymentTransaction.PaymentId = response.PaymentId;
                     paymentTransaction.ConversationId = response.ConversationId;
                     paymentTransaction.Currency = response.Currency ?? paymentTransaction.Currency;
-                    paymentTransaction.Installment = response.Installment > 0 ? response.Installment : 1;
+                    paymentTransaction.Installment = response.Installment > 0 ? response.Installment : 0;
                     paymentTransaction.PaymentStatus = response.PaymentStatus ?? response.Status;
                     paymentTransaction.FraudStatus = response.FraudStatus;
 
@@ -328,7 +328,7 @@ namespace OnionArch.Persistance.ServicesConcreates
             };
         }
 
-        public async Task<PaymentInstamentDTO> GetPaymentInstallment(string cardNumber,double paidPrice)
+        public async Task<PaymentInstamentDTO> GetPaymentInstallment(string cardNumber, string paidPrice)
         {
             var providerName = _configuration["Payment:Provider"];
             var provider = _paymentFactory.CreateProvider(providerName);

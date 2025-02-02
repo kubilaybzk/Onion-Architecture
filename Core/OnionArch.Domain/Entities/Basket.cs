@@ -22,5 +22,7 @@ namespace OnionArch.Domain.Entities
         public Guid? DiscountCouponId { get; set; }
         public DiscountCoupon? DiscountCoupon { get; set; }
         public decimal? DiscountedAmount { get; set; }
+        public decimal TotalBasketAmount { get; set; }
+
     }
 }

@@ -55,6 +55,9 @@ using OnionArch.Application.Repositories.PaymentTransactionCrud;
 using OnionArch.Application.Abstractions.OrderServices;
 using OnionArch.Application.Abstractions.PaymentServices;
 using OnionArch.Persistance.Repositories.DiscountCouponCrud;
+using OnionArch.Application.Repositories.HeroSectionCruds.HeroSectionImageCrud;
+using OnionArch.Application.Repositories.HeroSectionCruds.HeroSectionSliderCrud;
+using OnionArch.Persistance.Repositories.HeroSectionCruds.HeroSectionSliderCrud;
 
 namespace OnionArch.Persistance
 {
@@ -155,7 +158,16 @@ namespace OnionArch.Persistance
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentTransactionWriteRepository, PaymentTransactionWriteRepository>();
             services.AddScoped<IPaymentTransactionReadRepository, PaymentTransactionReadRepository>();
-             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+
+
+
+            services.AddScoped<IHeroSectionImageReadRepository, HeroSectionImageReadRepository>();
+            services.AddScoped<IHeroSectionImageWriteRepository, HeroSectionImageWriteRepository>();
+
+            services.AddScoped<IHeroSectionSliderReadRepository, HeroSectionSliderReadRepository>();
+            services.AddScoped<IHeroSectionSliderWriteRepository, HeroSectionSliderWriteRepository>();
+
         }
 	}
 }

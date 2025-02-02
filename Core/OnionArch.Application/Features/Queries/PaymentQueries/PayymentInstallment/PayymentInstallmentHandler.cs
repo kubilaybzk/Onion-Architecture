@@ -45,8 +45,8 @@ namespace OnionArch.Application.Features.Queries.PaymentQueries.PayymentInstallm
                         ErrorGroup = response.ErrorGroup,
                         ErrorMessage = response.ErrorMessage,
                         Status = response.Status,
-                        StatusCode = System.Net.HttpStatusCode.NotFound,
-                        StatusCodeString = System.Net.HttpStatusCode.NotFound.ToString()
+                        StatusCode = System.Net.HttpStatusCode.BadRequest,
+                        StatusCodeString = System.Net.HttpStatusCode.BadRequest.ToString()
                     };
                 }
             }

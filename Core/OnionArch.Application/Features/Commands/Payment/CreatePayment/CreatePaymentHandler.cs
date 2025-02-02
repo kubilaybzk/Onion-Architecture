@@ -37,6 +37,8 @@ namespace OnionArch.Application.Features.Commands.Payment.CreatePayment
                     Cvc = request.Cvc,
                     Use3D = request.Use3D,
                     Currency = "TRY",
+                    Installment = request.Installment
+
                 };
 
                 var transaction = await _paymentService.CreatePaymentTransactionAsync(request.OrderId, paymentRequest);

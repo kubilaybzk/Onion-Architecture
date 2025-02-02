@@ -33,8 +33,8 @@ namespace OnionArch.Application.DTOs.Payment
 
     public class InstallmentPrice
     {
-        public double installmentPrice { get; set; }
-        public double totalPrice { get; set; }
+        public string installmentPrice { get; set; }
+        public string totalPrice { get; set; }
         public int installmentNumber { get; set; }
 }
 

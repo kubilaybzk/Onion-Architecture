@@ -49,9 +49,11 @@ namespace OnionArch.Persistance.ServicesConcreates
             if (coupon == null)
                 return false;
 
-            var basketItems = await _basketService.GetBasketItemsAsync();
-            decimal cartTotal = basketItems.Sum(bi => bi.Product.LastPrice * bi.Quantity);
-            
+            //var basketItems = await _basketService.GetBasketItemsAsync();
+            //decimal cartTotal = basketItems.Sum(bi => bi.Product.LastPrice * bi.Quantity);
+
+            decimal cartTotal = basket.TotalBasketAmount;
+
             if (cartTotal < coupon.MinimumCartAmount)
                 throw new Exception($"Minimum sepet tutarı {coupon.MinimumCartAmount:C2} olmalıdır");
 

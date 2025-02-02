@@ -10,6 +10,6 @@ namespace OnionArch.Application.Features.Queries.PaymentQueries.PayymentInstallm
     public class PayymentInstallmentRequest:IRequest<PayymentInstallmentResponse>
     {
         public string CardNumbeer { get; set; }
-        public double PaidPrice { get; set; }
+        public string PaidPrice { get; set; }
     }
 }

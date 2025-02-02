@@ -89,7 +89,7 @@ namespace OnionArch.infrastructure.PaymentProviders.Sipay
 
         
 
-        public async Task<PaymentInstamentDTO> GetBasketInstament(string cardNumber, double paidPrice)
+        public async Task<PaymentInstamentDTO> GetBasketInstament(string cardNumber, string paidPrice)
         {
             return new PaymentInstamentDTO
             {

@@ -3,26 +3,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Abstractions.BasketServices;
 using OnionArch.Application.Abstractions.OrderCrud;
-using OnionArch.Application.Abstractions.UserServices;
 using OnionArch.Application.Repositories.BasketCrud;
 using OnionArch.Application.Repositories.BasketItemCrud;
 using OnionArch.Application.View_Models.BasketItem;
 using OnionArch.Domain.Entities;
 using OnionArch.Domain.Entities.Identity;
 using OnionArch.Persistance.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnionArch.Persistance.ServicesConcreates
 {
     public class BasketService : IBasketService
     {
-
-        readonly IHttpContextAccessor _httpContextAccessor; //User'a erişebilmemiz için gerekli
-        readonly UserManager<AppUser> _userManager; //.Net'in User işlemleri ile ilgili bizim yazdığımız dışında olan interface
+        readonly IHttpContextAccessor _httpContextAccessor;
+        readonly UserManager<AppUser> _userManager;
         readonly IOrderReadRepository _orderReadRepository;
         readonly IBasketWriteRepository _basketWriteRepository;
         readonly IBasketItemReadRepository _basketItemReadRepository;
@@ -30,7 +23,14 @@ namespace OnionArch.Persistance.ServicesConcreates
         readonly IBasketReadRepository _basketReadRepository;
         private readonly OnionArchDBContext _context;
 
-        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IOrderReadRepository orderReadRepository, IBasketWriteRepository basketWriteRepository, IBasketItemReadRepository basketItemReadRepository, IBasketItemWriteRepository basketItemWriteRepository, IBasketReadRepository basketReadRepository = null, OnionArchDBContext context = null)
+        public BasketService(IHttpContextAccessor httpContextAccessor,
+            UserManager<AppUser> userManager,
+            IOrderReadRepository orderReadRepository,
+            IBasketWriteRepository basketWriteRepository,
+            IBasketItemReadRepository basketItemReadRepository,
+            IBasketItemWriteRepository basketItemWriteRepository,
+            IBasketReadRepository basketReadRepository = null,
+            OnionArchDBContext context = null)
         {
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
@@ -42,84 +42,60 @@ namespace OnionArch.Persistance.ServicesConcreates
             _context = context;
         }
 
-
-
-        // Şu anki kullanıcıyı bulan ve ilgili sepeti döndüren metot.
         public async Task<Basket> CurrentUserBasket()
         {
             var username = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
             if (string.IsNullOrEmpty(username))
                 throw new Exception("Kullanıcı bulunamadı");
 
-            // Aktif sepeti ve siparişleri birlikte sorgula
-            var userWithBasket = await _userManager.Users
-                .Include(u => u.Baskets)
-                    .ThenInclude(b => b.Order)
-                .FirstOrDefaultAsync(u => u.UserName == username);
+            var userWithBaskets = await _basketWriteRepository.Table
+                .Include(b => b.BasketItems)
+                    .ThenInclude(bi => bi.Product)
+                .Include(b => b.Order)
+                .Include(b => b.User)
+                .AsSplitQuery()
+                .Where(b => b.User.UserName == username)
+                .ToListAsync();
 
-            if (userWithBasket == null)
-                throw new Exception("Kullanıcı bulunamadı");
+            if (!userWithBaskets.Any())
+            {
+                var user = await _userManager.FindByNameAsync(username);
+                if (user == null)
+                    throw new Exception("Kullanıcı bulunamadı");
 
-            // Aktif sepet kontrolü - siparişe dönüşmemiş VE ödeme yapılmamış sepet
-            var activeBasket = userWithBasket.Baskets
+                var newBasket = new Basket
+                {
+                    User = user,
+                    TotalBasketAmount = 0
+                };
+
+                await _basketWriteRepository.AddAsync(newBasket);
+                await _basketWriteRepository.SaveAsync();
+                return newBasket;
+            }
+
+            var activeBasket = userWithBaskets
                 .FirstOrDefault(b => b.Order == null ||
-                                   (b.Order != null && b.Order.isOrdered==false && b.Order.paidStatus==false))
+                                   (b.Order != null && b.Order.isOrdered == false && b.Order.paidStatus == false))
                 ?? new Basket();
 
             if (activeBasket.ID == Guid.Empty)
             {
-                userWithBasket.Baskets.Add(activeBasket);
+                var user = userWithBaskets.First().User;
+                activeBasket.User = user;
+                await _basketWriteRepository.AddAsync(activeBasket);
                 await _basketWriteRepository.SaveAsync();
             }
 
             return activeBasket;
         }
 
-        public async Task<bool> AddBasketItemToBasketAsync(VM_Add_BasketItem addedBasketItem)
-        {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try
-            {
-                var userBasket = await CurrentUserBasket();
-                if (userBasket == null)
-                    return false;
-
-                var existingItem = await _basketItemReadRepository.GetSingleAsync(
-                    bi => bi.BasketId == userBasket.ID && bi.ProductId == Guid.Parse(addedBasketItem.ProductId));
-
-                if (existingItem != null)
-                {
-                    existingItem.Quantity += addedBasketItem.Quantity;
-                }
-                else
-                {
-                    await _basketItemWriteRepository.AddAsync(new BasketItem
-                    {
-                        BasketId = userBasket.ID,
-                        ProductId = Guid.Parse(addedBasketItem.ProductId),
-                        Quantity = addedBasketItem.Quantity,
-                    });
-                }
-
-                await _basketItemWriteRepository.SaveAsync();
-                await transaction.CommitAsync();
-                return true;
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
-
         public async Task<List<BasketItem>> GetBasketItemsAsync()
         {
-            // Tek bir sorgu ile tüm verileri çekelim
             var currentUserBasket = await CurrentUserBasket();
 
-            // Eager loading ile tek sorguda ilişkiliverileri çekelim
             var basketWithItems = await _basketReadRepository.Table
-                .AsSplitQuery() // Büyük sorgularda performansı artırır
+                .AsSplitQuery()
                 .Include(b => b.BasketItems)
                     .ThenInclude(bi => bi.Product)
                         .ThenInclude(p => p.ProductImageFiles.Where(pif => pif.Showcase))
@@ -132,85 +108,135 @@ namespace OnionArch.Persistance.ServicesConcreates
             return basketWithItems?.BasketItems?.ToList() ?? new List<BasketItem>();
         }
 
-        public async Task<Boolean> RemoveBasketItemAsync(string id)
+        public async Task<bool> AddBasketItemToBasketAsync(VM_Add_BasketItem addedBasketItem)
         {
-            //Burada kullanıcının basket bilgilerine ihtiyacımız yok basket içi.
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                BasketItem? checkBasketHasThisItem = await _basketItemReadRepository.GetByIdAsync(id);
-                if (checkBasketHasThisItem != null)
-                {
-                    _basketItemWriteRepository.Remove(checkBasketHasThisItem);
-                    await _basketItemWriteRepository.SaveAsync();
+                var userBasket = await CurrentUserBasket();
+                if (userBasket == null)
+                    return false;
 
+                var existingItem = userBasket.BasketItems?
+                    .FirstOrDefault(bi => bi.ProductId == Guid.Parse(addedBasketItem.ProductId));
+
+                if (existingItem != null)
+                {
+                    existingItem.Quantity += addedBasketItem.Quantity;
                 }
+                else
+                {
+                    if (userBasket.BasketItems == null)
+                        userBasket.BasketItems = new List<BasketItem>();
+
+                    userBasket.BasketItems.Add(new BasketItem
+                    {
+                        BasketId = userBasket.ID,
+                        ProductId = Guid.Parse(addedBasketItem.ProductId),
+                        Quantity = addedBasketItem.Quantity
+                    });
+                }
+
+                await _basketWriteRepository.SaveAsync();
+                await TotalBasketAmountCalculatorAsync(userBasket);
+                await _basketWriteRepository.SaveAsync(); // Total hesaplandıktan sonra tekrar kaydet
+                await transaction.CommitAsync();
                 return true;
             }
-            catch (Exception e)
+            catch
             {
-                return false;
+                await transaction.RollbackAsync();
+                throw;
             }
-
-
-        }
-
-        public async Task<Boolean> UpdateBasketItemAsync(VM_Update_BasketItem updateBasketItem)
-        {
-
-            try
-            {
-                BasketItem currentBasket = await _basketItemReadRepository.GetByIdAsync(updateBasketItem.BasketItemId);
-
-                if (currentBasket != null)
-                {
-                    currentBasket.Quantity = updateBasketItem.Quantity;
-                    await _basketItemWriteRepository.SaveAsync();
-
-                }
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-
         }
 
         public async Task<Boolean> AddMultipleBasketItemsToBasketAsync(List<VM_Add_BasketItem> addedBasketItems)
         {
-            Basket userBasket = await CurrentUserBasket();
-
             try
             {
+                var userBasket = await CurrentUserBasket();
                 if (userBasket != null)
                 {
+                    if (userBasket.BasketItems == null)
+                        userBasket.BasketItems = new List<BasketItem>();
+
                     foreach (var addedBasketItem in addedBasketItems)
                     {
-                        BasketItem checkHasSameProduct = await _basketItemReadRepository.GetSingleAsync(
-                            bi => bi.BasketId == userBasket.ID && bi.ProductId == Guid.Parse(addedBasketItem.ProductId));
+                        var existingItem = userBasket.BasketItems
+                            .FirstOrDefault(bi => bi.ProductId == Guid.Parse(addedBasketItem.ProductId));
 
-                        if (checkHasSameProduct != null)
+                        if (existingItem != null)
                         {
-                            checkHasSameProduct.Quantity += addedBasketItem.Quantity;
+                            existingItem.Quantity += addedBasketItem.Quantity;
                         }
                         else
                         {
-                            await _basketItemWriteRepository.AddAsync(
-                                new BasketItem
-                                {
-                                    BasketId = userBasket.ID,
-                                    ProductId = Guid.Parse(addedBasketItem.ProductId),
-                                    Quantity = addedBasketItem.Quantity,
-                                });
+                            userBasket.BasketItems.Add(new BasketItem
+                            {
+                                BasketId = userBasket.ID,
+                                ProductId = Guid.Parse(addedBasketItem.ProductId),
+                                Quantity = addedBasketItem.Quantity
+                            });
                         }
                     }
 
-                    await _basketItemWriteRepository.SaveAsync();
-
+                    await _basketWriteRepository.SaveAsync();
+                    await TotalBasketAmountCalculatorAsync(userBasket);
+                    await _basketWriteRepository.SaveAsync(); // Total hesaplandıktan sonra tekrar kaydet
                 }
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<Boolean> RemoveBasketItemAsync(string id)
+        {
+            try
+            {
+                var userBasket = await CurrentUserBasket();
+
+                var basketItem = userBasket.BasketItems?
+                    .FirstOrDefault(bi => bi.ID == Guid.Parse(id));
+
+                if (basketItem != null)
+                {
+                    _basketItemWriteRepository.Remove(basketItem);
+                    await _basketItemWriteRepository.SaveAsync();
+                    await TotalBasketAmountCalculatorAsync(userBasket);
+                    await _basketWriteRepository.SaveAsync(); // Total hesaplandıktan sonra tekrar kaydet
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<Boolean> UpdateBasketItemAsync(VM_Update_BasketItem updateBasketItem)
+        {
+            try
+            {
+                var userBasket = await CurrentUserBasket();
+
+                var basketItem = userBasket.BasketItems?
+                    .FirstOrDefault(bi => bi.ID == Guid.Parse(updateBasketItem.BasketItemId));
+
+                if (basketItem != null)
+                {
+                    basketItem.Quantity = updateBasketItem.Quantity;
+                    await _basketItemWriteRepository.SaveAsync();
+                    await TotalBasketAmountCalculatorAsync(userBasket);
+                    await _basketWriteRepository.SaveAsync(); // Total hesaplandıktan sonra tekrar kaydet
+                }
+
+                return true;
+            }
+            catch (Exception)
             {
                 return false;
             }
@@ -218,23 +244,61 @@ namespace OnionArch.Persistance.ServicesConcreates
 
         public async Task<bool> ClearBasketAsync(Guid basketId)
         {
-           
             try
             {
-                var basketItems = await _basketItemReadRepository
-                    .GetWhere(bi => bi.BasketId == basketId)
-                    .ToListAsync();
+                var userBasket = await CurrentUserBasket();
+                if (userBasket.ID != basketId)
+                {
+                    throw new Exception("Yetkisiz işlem");
+                }
 
-                _basketItemWriteRepository.RemoveRange(basketItems);
-                await _basketItemWriteRepository.SaveAsync();
+                if (userBasket.BasketItems != null)
+                {
+                    _basketItemWriteRepository.RemoveRange(userBasket.BasketItems?.ToList());
+                    await _basketItemWriteRepository.SaveAsync();
 
-               
+                    userBasket.TotalBasketAmount = 0;
+                    await _basketWriteRepository.SaveAsync();
+                }
+
                 return true;
             }
             catch
             {
-               
                 throw;
+            }
+        }
+
+        public async Task<Basket> TotalBasketAmountCalculatorAsync(Basket basket)
+        {
+            try
+            {
+                if (basket == null)
+                    throw new Exception("Sepet bulunamadı");
+
+                decimal totalAmount = 0;
+
+                // Her basket item için product bilgisini ayrı ayrı çekelim
+                if (basket.BasketItems != null)
+                {
+                    foreach (var item in basket.BasketItems)
+                    {
+                        var product = await _context.Products
+                            .FirstOrDefaultAsync(p => p.ID == item.ProductId);
+
+                        if (product != null)
+                        {
+                            totalAmount += product.LastPrice * item.Quantity;
+                        }
+                    }
+                }
+
+                basket.TotalBasketAmount = totalAmount;
+                return basket;
+            }
+            catch
+            {
+                throw new Exception("Basket toplama işleminde problem");
             }
         }
     }
