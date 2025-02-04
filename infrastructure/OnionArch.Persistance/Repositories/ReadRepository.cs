@@ -29,7 +29,7 @@ namespace OnionArch.Persistance.Repositories
 
         virtual public  IQueryable<T> GetAll(bool tracking = true)
         {
-            var query = Table.AsQueryable();
+            var query = Table.AsQueryable().Where(p=>p.isDeleted==false);
             if (!tracking)
                 query = query.AsNoTracking();
             return query;
