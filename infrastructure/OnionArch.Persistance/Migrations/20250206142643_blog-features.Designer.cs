@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnionArch.Persistance.Contexts;
@@ -11,9 +12,11 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    partial class OnionArchDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250206142643_blog-features")]
+    partial class blogfeatures
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace OnionArch.Persistance.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("BlogBlogCategory", b =>
-                {
-                    b.Property<Guid>("BlogsID")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CategoriesID")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("BlogsID", "CategoriesID");
-
-                    b.HasIndex("CategoriesID");
-
-                    b.ToTable("BlogBlogCategory");
-                });
 
             modelBuilder.Entity("CategoryCategoryImageFile", b =>
                 {
@@ -475,44 +463,6 @@ namespace OnionArch.Persistance.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Blogs");
-                });
-
-            modelBuilder.Entity("OnionArch.Domain.Entities.BlogCategory", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("BlogCategory");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Brand", b =>
@@ -1434,21 +1384,6 @@ namespace OnionArch.Persistance.Migrations
                         });
 
                     b.HasDiscriminator().HasValue("ProductImageFile");
-                });
-
-            modelBuilder.Entity("BlogBlogCategory", b =>
-                {
-                    b.HasOne("OnionArch.Domain.Entities.Blog", null)
-                        .WithMany()
-                        .HasForeignKey("BlogsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnionArch.Domain.Entities.BlogCategory", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("CategoryCategoryImageFile", b =>
