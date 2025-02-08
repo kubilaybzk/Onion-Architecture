@@ -52,6 +52,8 @@ namespace OnionArch.Persistance.Contexts
         public DbSet<HeroSectionImage> HeroSectionImages { get; set; }
         public DbSet<HeroSectionSlider> HeroSectionSliders { get; set; }
 
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<BlogImageFile> BlogImageFiles { get; set; }
 
         //Burada veri tabanında otomatik olarka yapılan işlemlerde EFCore tarafından belirli alanlara değerler atanmasını istiyoruz.
         //Base entity içinde bulunana update ve createTime alanlarının

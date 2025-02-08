@@ -58,12 +58,16 @@ using OnionArch.Persistance.Repositories.DiscountCouponCrud;
 using OnionArch.Application.Repositories.HeroSectionCruds.HeroSectionImageCrud;
 using OnionArch.Application.Repositories.HeroSectionCruds.HeroSectionSliderCrud;
 using OnionArch.Persistance.Repositories.HeroSectionCruds.HeroSectionSliderCrud;
+using OnionArch.Application.Repositories.BlogCruds;
+using OnionArch.Persistance.Repositories.BlogCruds;
+using OnionArch.Application.Repositories.BlogCategoryCruds;
+using OnionArch.Persistance.Repositories.BlogCategoryCruds;
 
 namespace OnionArch.Persistance
 {
     public static class ServicesRegistration
-	{
-		public static void AddPersistanceServices(this IServiceCollection services)
+    {
+        public static void AddPersistanceServices(this IServiceCollection services)
         {
 
             services.AddDbContext<OnionArchDBContext>(options => options.UseNpgsql(Configuration.ConnectionString));
@@ -74,7 +78,7 @@ namespace OnionArch.Persistance
 
             services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
-            
+
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
 
@@ -111,10 +115,10 @@ namespace OnionArch.Persistance
 
 
 
-            services.AddScoped<ICategoryReadRepository , CategoryReadRepository>();
+            services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
             services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
 
-            services.AddScoped<IUserService,UserService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IAuthService, AuthService>();
 
@@ -122,7 +126,7 @@ namespace OnionArch.Persistance
 
             services.AddScoped<IAddressWriteRepository, AddressWriteRepository>();
             services.AddScoped<IAddressReadRepository, AddressReadRepository>();
-            services.AddScoped<IAddressService,AddressService>();
+            services.AddScoped<IAddressService, AddressService>();
 
             services.AddScoped<ICategoryServices, CategoryServices>();
 
@@ -138,7 +142,7 @@ namespace OnionArch.Persistance
 
             services.AddScoped<IProductAttributeReadRepository, ProductAttributeReadRepository>();
             services.AddScoped<IProductAttributeWriteRepository, ProductAttributeWriteRepository>();
-            
+
             services.AddScoped<IAttributeService, AttributeService>();
 
 
@@ -168,7 +172,13 @@ namespace OnionArch.Persistance
             services.AddScoped<IHeroSectionSliderReadRepository, HeroSectionSliderReadRepository>();
             services.AddScoped<IHeroSectionSliderWriteRepository, HeroSectionSliderWriteRepository>();
 
+            services.AddScoped<IBlogReadRepository, BlogReadRepository>();
+            services.AddScoped<IBlogWriteRepository, BlogWriteRepository>();
+
+            services.AddScoped<IBlogCategoryReadRepository, BlogCategoryReadRepository>();
+            services.AddScoped<IBlogCategoryWriteRepository, BlogCategoryWriteRepository>();
+
         }
-	}
+    }
 }
 
