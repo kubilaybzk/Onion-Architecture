@@ -6,6 +6,7 @@ using OnionArch.Application.Features.Commands.BlogCommands.DeleteBlogCommands;
 using OnionArch.Application.Features.Commands.BlogCommands.UpdateBlogCommands;
 using OnionArch.Application.Features.Queries.BlogQueries.GetBlogById;
 using OnionArch.Application.Features.Queries.BlogQueries.GetAllBlogs;
+using OnionArch.Application.Features.Queries.BlogQueries.GetBlogBySlug;
 
 namespace OnionArch.WebApi.Controllers
 {
@@ -34,7 +35,13 @@ namespace OnionArch.WebApi.Controllers
             return StatusCode((int)response.StatusCode, response);
         }
 
-        
+        [HttpGet("GetBlogBySlug")]
+        public async Task<IActionResult> GetBlogBySlug([FromQuery] GetBlogBySlugQueryRequest request)
+        {
+            GetBlogBySlugQueryResponse response = await _mediator.Send(request);
+            return StatusCode((int)response.StatusCode, response);
+        }
+
         [HttpPut("UpdateBlog")]
         public async Task<IActionResult> Update([FromForm] UpdateBlogCommandRequest request)
         {
