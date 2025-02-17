@@ -29,6 +29,7 @@ namespace OnionArch.Application.Features.Queries.HeroSectionQueries.GetHeroSecti
                     ImageRederictLink = item.ImageRederictLink,
                     ImageRedirectLinkTitle = item.ImageRedirectLinkTitle,
                     ID=item.ID,
+                    isSliderImage = item.isSliderImage,
                     HeroSectionImages = item.HeroSectionImages.Select(pif => new HeroSectionImage()
                     {
                         FileName = pif.FileName,
