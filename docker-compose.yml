@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '5031:8080'
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Logging__LogLevel__Default=Information
+      - Logging__LogLevel__Microsoft.AspNetCore=Warning
+      - AllowedHosts=*
+      - ConnectionStrings__SqlConnectionString=Data Source=localhost\\SQLEXPRESS;Initial Catalog=OnionArch;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False
+      - ConnectionStrings__PostgressConnectionString=User ID=postgres;Password=postgres;Host=db;Port=5432;Database=ETicaretAPIDb;
+      - Token__Audience=www.bilmemne.com
+      - Token__Issuer=www.myapi.com
+      - Token__SecurityKey=Üflediler söndüm karanlıkta gördüm ...
+      - Payment__Iyzico__ApiKey=sandbox-Ql9GLX1PFP2Kkx1VfgAq7Ydq4XR5O3EP
+      - Payment__Iyzico__SecretKey=sandbox-VtfOnfxzPSNt476ZRpzyt3DfSQhWiENF
+      - Payment__Iyzico__BaseUrl=https://sandbox-api.iyzipay.com
+      - Payment__Sipay__MerchantId=your-merchant-id
+      - Payment__Sipay__ApiKey=your-api-key
+      - Payment__Sipay__BaseUrl=https://api.sipay.com
+      - Payment__Provider=iyzico
+      - Payment__DefaultProvider=iyzico
+      - Payment__BaseUrl=http://localhost:5031
+      - Payment__FrontendUrl=http://localhost:3000
+    networks:
+      - postgres-network
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ETicaretAPIDb
+    ports:
+      - '5432:5432'
+    networks:
+      - postgres-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: your@email.com
+      PGADMIN_DEFAULT_PASSWORD: yourpassword
+    ports:
+      - '3002:80'
+    networks:
+      - postgres-network
+
+networks:
+  postgres-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    external: true
+    name: helperpythonfiles_postgres_data # Mevcut volume adınız
+
+
