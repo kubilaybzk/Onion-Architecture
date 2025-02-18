@@ -51,8 +51,3 @@ services:
 networks:
   postgres-network:
     driver: bridge
-
-volumes:
-  postgres_data:
-    external: true
-    name: helperpythonfiles_postgres_data
