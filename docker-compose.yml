@@ -8,6 +8,12 @@ services:
       - '5031:8080'
     depends_on:
       - db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - Logging__LogLevel__Default=Information
@@ -15,11 +21,11 @@ services:
       - AllowedHosts=*
       - ConnectionStrings__SqlConnectionString=Data Source=localhost\\SQLEXPRESS;Initial Catalog=OnionArch;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False
       - ConnectionStrings__PostgressConnectionString=User ID=postgres;Password=postgres;Host=db;Port=5432;Database=ETicaretAPIDb;
-      - Token__Audience=www.bilmemne.com
-      - Token__Issuer=www.myapi.com
-      - Token__SecurityKey=Üflediler söndüm karanlıkta gördüm ...
-      - Payment__Iyzico__ApiKey=sandbox-Ql9GLX1PFP2Kkx1VfgAq7Ydq4XR5O3EP
-      - Payment__Iyzico__SecretKey=sandbox-VtfOnfxzPSNt476ZRpzyt3DfSQhWiENF
+      - Token__Audience=www.ssss.com
+      - Token__Issuer=www.ssssss.com
+      - Token__SecurityKey=Üflediler sssssssssssss karanlıkta gördüm ...
+      - Payment__Iyzico__ApiKey=sandbox-ssssssss
+      - Payment__Iyzico__SecretKey=sandbox-ssss
       - Payment__Iyzico__BaseUrl=https://sandbox-api.iyzipay.com
       - Payment__Sipay__MerchantId=your-merchant-id
       - Payment__Sipay__ApiKey=your-api-key
@@ -33,17 +39,26 @@ services:
 
   db:
     image: postgres:latest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ETicaretAPIDb
     ports:
       - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - postgres-network
 
   pgadmin:
     image: dpage/pgadmin4
+    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: your@email.com
       PGADMIN_DEFAULT_PASSWORD: yourpassword
@@ -59,6 +74,4 @@ networks:
 volumes:
   postgres_data:
     external: true
-    name: helperpythonfiles_postgres_data # Mevcut volume adınız
-
-
+    name: helperpythonfiles_postgres_data
