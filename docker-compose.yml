@@ -9,31 +9,6 @@ services:
     depends_on:
       - db
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - Logging__LogLevel__Default=Information
-      - Logging__LogLevel__Microsoft.AspNetCore=Warning
-      - AllowedHosts=*
-      - ConnectionStrings__SqlConnectionString=Data Source=localhost\\SQLEXPRESS;Initial Catalog=OnionArch;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False
-      - ConnectionStrings__PostgressConnectionString=User ID=postgres;Password=postgres;Host=db;Port=5432;Database=ETicaretAPIDb;
-      - Token__Audience=www.ssss.com
-      - Token__Issuer=www.ssssss.com
-      - Token__SecurityKey=Üflediler sssssssssssss karanlıkta gördüm ...
-      - Payment__Iyzico__ApiKey=sandbox-ssssssss
-      - Payment__Iyzico__SecretKey=sandbox-ssss
-      - Payment__Iyzico__BaseUrl=https://sandbox-api.iyzipay.com
-      - Payment__Sipay__MerchantId=your-merchant-id
-      - Payment__Sipay__ApiKey=your-api-key
-      - Payment__Sipay__BaseUrl=https://api.sipay.com
-      - Payment__Provider=iyzico
-      - Payment__DefaultProvider=iyzico
-      - Payment__BaseUrl=http://localhost:5031
-      - Payment__FrontendUrl=http://localhost:3000
     networks:
       - postgres-network
 
@@ -41,7 +16,7 @@ services:
     image: postgres:latest
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -73,5 +48,3 @@ networks:
 
 volumes:
   postgres_data:
-    external: true
-    name: helperpythonfiles_postgres_data
