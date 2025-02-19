@@ -16,10 +16,19 @@ RUN dotnet restore "Presentation/OnionArch.WebApi/OnionArch.WebApi.csproj"
 # Copy everything else and build
 COPY . .
 WORKDIR "/src/Presentation/OnionArch.WebApi"
+
+# WWWRoot'u yedekle
+RUN mkdir -p /tmp/wwwroot_backup
+RUN if [ -d "wwwroot" ]; then cp -r wwwroot/* /tmp/wwwroot_backup/; fi
+
 RUN dotnet build "OnionArch.WebApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "OnionArch.WebApi.csproj" -c Release -o /app/publish
+
+# WWWRoot'u geri yükle
+RUN mkdir -p /app/publish/wwwroot
+RUN cp -r /tmp/wwwroot_backup/* /app/publish/wwwroot/
 
 # .NET runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final

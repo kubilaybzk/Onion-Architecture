@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - '5031:8080'
+    volumes:
+      - ./Presentation/OnionArch.WebApi/wwwroot:/app/wwwroot
     depends_on:
       - db
     restart: unless-stopped
@@ -48,3 +50,4 @@ networks:
 
 volumes:
   postgres_data:
+    driver: local
