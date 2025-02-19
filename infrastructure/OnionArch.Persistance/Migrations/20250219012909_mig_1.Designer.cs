@@ -12,8 +12,8 @@ using OnionArch.Persistance.Contexts;
 namespace OnionArch.Persistance.Migrations
 {
     [DbContext(typeof(OnionArchDBContext))]
-    [Migration("20250114183751_new_paymentTransections")]
-    partial class new_paymentTransections
+    [Migration("20250219012909_mig_1")]
+    partial class mig_1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace OnionArch.Persistance.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("BlogBlogCategory", b =>
+                {
+                    b.Property<Guid>("BlogsID")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CategoriesID")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("BlogsID", "CategoriesID");
+
+                    b.HasIndex("CategoriesID");
+
+                    b.ToTable("BlogBlogCategory");
+                });
 
             modelBuilder.Entity("CategoryCategoryImageFile", b =>
                 {
@@ -228,6 +243,10 @@ namespace OnionArch.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("isDeleted")
                         .HasColumnType("boolean");
 
@@ -349,6 +368,9 @@ namespace OnionArch.Persistance.Migrations
                     b.Property<decimal?>("DiscountedAmount")
                         .HasColumnType("numeric");
 
+                    b.Property<decimal>("TotalBasketAmount")
+                        .HasColumnType("numeric");
+
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -399,6 +421,101 @@ namespace OnionArch.Persistance.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("BasketItems");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.Blog", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("PublishDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ReadingTime")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SeoDescription")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SeoKeywords")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SeoTitle")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Blogs");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.BlogCategory", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("BlogCategory");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Brand", b =>
@@ -725,6 +842,47 @@ namespace OnionArch.Persistance.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.HeroSectionSlider", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("HtmlContent")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageAltTile")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageRederictLink")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageRedirectLinkTitle")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("isSliderImage")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("HeroSectionSliders");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.Identity.AppRole", b =>
                 {
                     b.Property<string>("Id")
@@ -830,6 +988,10 @@ namespace OnionArch.Persistance.Migrations
                     b.Property<Guid>("ID")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("BasketID")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("BillingAddress")
                         .IsRequired()
                         .HasColumnType("text");
@@ -871,6 +1033,12 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("isOrdered")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("paidStatus")
                         .HasColumnType("boolean");
 
                     b.HasKey("ID");
@@ -940,14 +1108,12 @@ namespace OnionArch.Persistance.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ConversationId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Currency")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ErrorCode")
@@ -958,10 +1124,10 @@ namespace OnionArch.Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("FraudStatus")
+                    b.Property<int?>("FraudStatus")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Installment")
+                    b.Property<int?>("Installment")
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsThreeD")
@@ -970,39 +1136,35 @@ namespace OnionArch.Persistance.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("PaidPrice")
+                    b.Property<decimal?>("PaidPrice")
                         .HasColumnType("numeric");
 
                     b.Property<string>("PaymentId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PaymentProvider")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PaymentStatus")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("ProviderCommissionFee")
+                    b.Property<decimal?>("ProviderCommissionFee")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("ProviderCommissionRateAmount")
+                    b.Property<decimal?>("ProviderCommissionRateAmount")
                         .HasColumnType("numeric");
 
                     b.Property<string>("ProviderResponse")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<DateOnly>("SystemTime")
-                        .HasColumnType("date");
+                    b.Property<DateTimeOffset?>("SystemTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnType("timestamp with time zone");
@@ -1169,6 +1331,25 @@ namespace OnionArch.Persistance.Migrations
                     b.ToTable("ProductProductImageFile");
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.BlogImageFile", b =>
+                {
+                    b.HasBaseType("OnionArch.Domain.Entities.File");
+
+                    b.Property<string>("AltText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("BlogID")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsHeader")
+                        .HasColumnType("boolean");
+
+                    b.HasIndex("BlogID");
+
+                    b.HasDiscriminator().HasValue("BlogImageFile");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.BrandImageFile", b =>
                 {
                     b.HasBaseType("OnionArch.Domain.Entities.File");
@@ -1217,6 +1398,21 @@ namespace OnionArch.Persistance.Migrations
                     b.HasDiscriminator().HasValue("CategoryImageFile");
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.HeroSectionImage", b =>
+                {
+                    b.HasBaseType("OnionArch.Domain.Entities.File");
+
+                    b.Property<Guid>("HeroSectionSliderID")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("isSliderImage")
+                        .HasColumnType("boolean");
+
+                    b.HasIndex("HeroSectionSliderID");
+
+                    b.HasDiscriminator().HasValue("HeroSectionImage");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.InvoiceFile", b =>
                 {
                     b.HasBaseType("OnionArch.Domain.Entities.File");
@@ -1241,6 +1437,21 @@ namespace OnionArch.Persistance.Migrations
                         });
 
                     b.HasDiscriminator().HasValue("ProductImageFile");
+                });
+
+            modelBuilder.Entity("BlogBlogCategory", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.Blog", null)
+                        .WithMany()
+                        .HasForeignKey("BlogsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnionArch.Domain.Entities.BlogCategory", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CategoryCategoryImageFile", b =>
@@ -1553,6 +1764,17 @@ namespace OnionArch.Persistance.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("OnionArch.Domain.Entities.BlogImageFile", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.Blog", "Blog")
+                        .WithMany("CoverImage")
+                        .HasForeignKey("BlogID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blog");
+                });
+
             modelBuilder.Entity("OnionArch.Domain.Entities.BrandImageFile", b =>
                 {
                     b.HasOne("OnionArch.Domain.Entities.Brand", "Brand")
@@ -1562,6 +1784,17 @@ namespace OnionArch.Persistance.Migrations
                         .IsRequired();
 
                     b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.HeroSectionImage", b =>
+                {
+                    b.HasOne("OnionArch.Domain.Entities.HeroSectionSlider", "HeroSectionSlider")
+                        .WithMany("HeroSectionImages")
+                        .HasForeignKey("HeroSectionSliderID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HeroSectionSlider");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Attribute", b =>
@@ -1584,6 +1817,11 @@ namespace OnionArch.Persistance.Migrations
 
                     b.Navigation("Order")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.Blog", b =>
+                {
+                    b.Navigation("CoverImage");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Brand", b =>
@@ -1610,6 +1848,11 @@ namespace OnionArch.Persistance.Migrations
             modelBuilder.Entity("OnionArch.Domain.Entities.DiscountCoupon", b =>
                 {
                     b.Navigation("UsedInBaskets");
+                });
+
+            modelBuilder.Entity("OnionArch.Domain.Entities.HeroSectionSlider", b =>
+                {
+                    b.Navigation("HeroSectionImages");
                 });
 
             modelBuilder.Entity("OnionArch.Domain.Entities.Identity.AppUser", b =>

@@ -168,7 +168,7 @@ namespace OnionArch.infrastructure.PaymentProviders.Iyzico
 
                 if (request.Use3D)
                 {
-                    var baseUrl = _configuration["BaseUrl"] ?? "http://localhost:5031";  // Default değer ekledik
+                    var baseUrl = _configuration["BaseUrl"] ?? "https://adjacentadmin.kubilaybzk.dev";  // Default değer ekledik
                     var callbackUrl = baseUrl.TrimEnd('/') + "/api/Payment/complete-3d";
                     iyzipayRequest.CallbackUrl = callbackUrl;
 

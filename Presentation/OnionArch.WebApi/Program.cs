@@ -162,7 +162,7 @@ builder.Services.AddSignalRServices();          //SignalR içinde ServisRegistra
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.WithOrigins(
-    "http://localhost:3000",
+    "https://adjacentcommerce.kubilaybzk.dev",
     "https://localhost:3000",
     "https://0.0.0.0:3000",
     "http://0.0.0.0:3000",
