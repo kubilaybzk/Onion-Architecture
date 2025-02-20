@@ -2,7 +2,7 @@ name: Publish Backend
 on:
   push:
     branches:
-      - prod
+      - Production
 jobs:
   release:
     concurrency:
@@ -16,4 +16,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script: cd /home/Onion-Architecture && git checkout prod  && git pull && bash start.sh
+          script: cd /home/Onion-Architecture && git checkout Production  && git pull && bash start.sh
