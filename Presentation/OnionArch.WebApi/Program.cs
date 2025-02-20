@@ -160,7 +160,7 @@ builder.Services.AddSignalRServices();          //SignalR içinde ServisRegistra
 
 
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.WithOrigins(
     "http://localhost:3000",
     "https://localhost:3000",
@@ -169,7 +169,9 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     "https://127.0.0.1:3000",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5500",
-    "https://127.0.0.1:5500"
+    "https://127.0.0.1:5500",
+    "https://adjacentadmin.kubilaybzk.dev",
+    "https://adjacentcommerce.kubilaybzk.dev"
      ).AllowAnyHeader()//
      .AllowAnyMethod()//.
      .AllowCredentials()//.AllowCredentials() SignalR'ın çalışması için.
@@ -209,11 +211,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 
 var app = builder.Build();
-
+ 
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())
 // {
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");

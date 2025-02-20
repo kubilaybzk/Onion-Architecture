@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace OnionArch.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class paymentinit : Migration
+    public partial class mig_1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -90,6 +90,49 @@ namespace OnionArch.Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BlogCategory",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Slug = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlogCategory", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Blogs",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    Summary = table.Column<string>(type: "text", nullable: false),
+                    Slug = table.Column<string>(type: "text", nullable: false),
+                    IsPublished = table.Column<bool>(type: "boolean", nullable: false),
+                    PublishDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ReadingTime = table.Column<int>(type: "integer", nullable: false),
+                    SeoTitle = table.Column<string>(type: "text", nullable: false),
+                    SeoDescription = table.Column<string>(type: "text", nullable: false),
+                    SeoKeywords = table.Column<string>(type: "text", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Blogs", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Brands",
                 columns: table => new
                 {
@@ -161,6 +204,26 @@ namespace OnionArch.Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "HeroSectionSliders",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    ImageAltTile = table.Column<string>(type: "text", nullable: false),
+                    ImageRederictLink = table.Column<string>(type: "text", nullable: false),
+                    ImageRedirectLinkTitle = table.Column<string>(type: "text", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    isSliderImage = table.Column<bool>(type: "boolean", nullable: false),
+                    HtmlContent = table.Column<string>(type: "text", nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HeroSectionSliders", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -193,6 +256,7 @@ namespace OnionArch.Persistance.Migrations
                     Neighbourhood = table.Column<string>(type: "text", nullable: false),
                     LongAddress = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    ZipCode = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
                     RecipientName = table.Column<string>(type: "text", nullable: false),
                     RecipientSurName = table.Column<string>(type: "text", nullable: false),
@@ -356,6 +420,30 @@ namespace OnionArch.Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BlogBlogCategory",
+                columns: table => new
+                {
+                    BlogsID = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoriesID = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlogBlogCategory", x => new { x.BlogsID, x.CategoriesID });
+                    table.ForeignKey(
+                        name: "FK_BlogBlogCategory_BlogCategory_CategoriesID",
+                        column: x => x.CategoriesID,
+                        principalTable: "BlogCategory",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BlogBlogCategory_Blogs_BlogsID",
+                        column: x => x.BlogsID,
+                        principalTable: "Blogs",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BrandAttriburtes",
                 columns: table => new
                 {
@@ -379,40 +467,6 @@ namespace OnionArch.Persistance.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_BrandAttriburtes_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Files",
-                columns: table => new
-                {
-                    ID = table.Column<Guid>(type: "uuid", nullable: false),
-                    FileName = table.Column<string>(type: "text", nullable: false),
-                    Path = table.Column<string>(type: "text", nullable: false),
-                    Storage = table.Column<string>(type: "text", nullable: false),
-                    Discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
-                    BrandId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Showcase = table.Column<bool>(type: "boolean", nullable: true),
-                    SeoImageAltInformation = table.Column<string>(type: "text", nullable: true),
-                    ShowImage = table.Column<bool>(type: "boolean", nullable: true),
-                    IsHeaderImage = table.Column<bool>(type: "boolean", nullable: true),
-                    ImageTitle = table.Column<string>(type: "text", nullable: true),
-                    CategoryRedirectLink = table.Column<string>(type: "text", nullable: true),
-                    CategoryRedirectLinkTitle = table.Column<string>(type: "text", nullable: true),
-                    CategoryImageOrder = table.Column<int>(type: "integer", nullable: true),
-                    Price = table.Column<decimal>(type: "numeric", nullable: true),
-                    ProductImageFile_Showcase = table.Column<bool>(type: "boolean", nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Files", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Files_Brands_BrandId",
                         column: x => x.BrandId,
                         principalTable: "Brands",
                         principalColumn: "ID",
@@ -493,6 +547,57 @@ namespace OnionArch.Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Files",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    Storage = table.Column<string>(type: "text", nullable: false),
+                    Discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
+                    IsHeader = table.Column<bool>(type: "boolean", nullable: true),
+                    AltText = table.Column<string>(type: "text", nullable: true),
+                    BlogID = table.Column<Guid>(type: "uuid", nullable: true),
+                    BrandId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Showcase = table.Column<bool>(type: "boolean", nullable: true),
+                    SeoImageAltInformation = table.Column<string>(type: "text", nullable: true),
+                    ShowImage = table.Column<bool>(type: "boolean", nullable: true),
+                    IsHeaderImage = table.Column<bool>(type: "boolean", nullable: true),
+                    ImageTitle = table.Column<string>(type: "text", nullable: true),
+                    CategoryRedirectLink = table.Column<string>(type: "text", nullable: true),
+                    CategoryRedirectLinkTitle = table.Column<string>(type: "text", nullable: true),
+                    CategoryImageOrder = table.Column<int>(type: "integer", nullable: true),
+                    isSliderImage = table.Column<bool>(type: "boolean", nullable: true),
+                    HeroSectionSliderID = table.Column<Guid>(type: "uuid", nullable: true),
+                    Price = table.Column<decimal>(type: "numeric", nullable: true),
+                    ProductImageFile_Showcase = table.Column<bool>(type: "boolean", nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Files", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Files_Blogs_BlogID",
+                        column: x => x.BlogID,
+                        principalTable: "Blogs",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Files_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Files_HeroSectionSliders_HeroSectionSliderID",
+                        column: x => x.HeroSectionSliderID,
+                        principalTable: "HeroSectionSliders",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Baskets",
                 columns: table => new
                 {
@@ -500,6 +605,7 @@ namespace OnionArch.Persistance.Migrations
                     UserId = table.Column<string>(type: "text", nullable: false),
                     DiscountCouponId = table.Column<Guid>(type: "uuid", nullable: true),
                     DiscountedAmount = table.Column<decimal>(type: "numeric", nullable: true),
+                    TotalBasketAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     isDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -519,30 +625,6 @@ namespace OnionArch.Persistance.Migrations
                         principalTable: "DiscountCoupons",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CategoryCategoryImageFile",
-                columns: table => new
-                {
-                    CategoryImageFilesID = table.Column<Guid>(type: "uuid", nullable: false),
-                    CategoryInfoID = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CategoryCategoryImageFile", x => new { x.CategoryImageFilesID, x.CategoryInfoID });
-                    table.ForeignKey(
-                        name: "FK_CategoryCategoryImageFile_Categories_CategoryInfoID",
-                        column: x => x.CategoryInfoID,
-                        principalTable: "Categories",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CategoryCategoryImageFile_Files_CategoryImageFilesID",
-                        column: x => x.CategoryImageFilesID,
-                        principalTable: "Files",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -593,6 +675,30 @@ namespace OnionArch.Persistance.Migrations
                         name: "FK_ProductAttributes_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoryCategoryImageFile",
+                columns: table => new
+                {
+                    CategoryImageFilesID = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryInfoID = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryCategoryImageFile", x => new { x.CategoryImageFilesID, x.CategoryInfoID });
+                    table.ForeignKey(
+                        name: "FK_CategoryCategoryImageFile_Categories_CategoryInfoID",
+                        column: x => x.CategoryInfoID,
+                        principalTable: "Categories",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryCategoryImageFile_Files_CategoryImageFilesID",
+                        column: x => x.CategoryImageFilesID,
+                        principalTable: "Files",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -663,6 +769,9 @@ namespace OnionArch.Persistance.Migrations
                     DiscountCouponId = table.Column<Guid>(type: "uuid", nullable: true),
                     ShippingAddress = table.Column<string>(type: "text", nullable: false),
                     BillingAddress = table.Column<string>(type: "text", nullable: false),
+                    paidStatus = table.Column<bool>(type: "boolean", nullable: true),
+                    isOrdered = table.Column<bool>(type: "boolean", nullable: true),
+                    BasketID = table.Column<string>(type: "text", nullable: false),
                     CustomerID = table.Column<Guid>(type: "uuid", nullable: true),
                     ProductID = table.Column<Guid>(type: "uuid", nullable: true),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -737,19 +846,27 @@ namespace OnionArch.Persistance.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uuid", nullable: false),
-                    OrderID = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
-                    PaymentProvider = table.Column<string>(type: "text", nullable: false),
-                    TransactionId = table.Column<string>(type: "text", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    Currency = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
+                    ProviderResponse = table.Column<string>(type: "text", nullable: true),
                     IsThreeD = table.Column<bool>(type: "boolean", nullable: false),
                     CardNumber = table.Column<string>(type: "text", nullable: false),
                     CardHolder = table.Column<string>(type: "text", nullable: false),
                     ErrorCode = table.Column<string>(type: "text", nullable: false),
                     ErrorMessage = table.Column<string>(type: "text", nullable: false),
-                    ProviderResponse = table.Column<string>(type: "text", nullable: false),
+                    ConversationId = table.Column<string>(type: "text", nullable: true),
+                    PaymentProvider = table.Column<string>(type: "text", nullable: true),
+                    SystemTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    PaymentId = table.Column<string>(type: "text", nullable: true),
+                    Price = table.Column<decimal>(type: "numeric", nullable: true),
+                    PaidPrice = table.Column<decimal>(type: "numeric", nullable: true),
+                    Currency = table.Column<string>(type: "text", nullable: true),
+                    Installment = table.Column<int>(type: "integer", nullable: true),
+                    PaymentStatus = table.Column<string>(type: "text", nullable: true),
+                    FraudStatus = table.Column<int>(type: "integer", nullable: true),
+                    ProviderCommissionFee = table.Column<decimal>(type: "numeric", nullable: true),
+                    ProviderCommissionRateAmount = table.Column<decimal>(type: "numeric", nullable: true),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     isDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -764,8 +881,8 @@ namespace OnionArch.Persistance.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PaymentTransactions_Orders_OrderID",
-                        column: x => x.OrderID,
+                        name: "FK_PaymentTransactions_Orders_OrderId",
+                        column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -839,6 +956,11 @@ namespace OnionArch.Persistance.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BlogBlogCategory_CategoriesID",
+                table: "BlogBlogCategory",
+                column: "CategoriesID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BrandAttriburtes_BrandId",
                 table: "BrandAttriburtes",
                 column: "BrandId");
@@ -885,10 +1007,20 @@ namespace OnionArch.Persistance.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Files_BlogID",
+                table: "Files",
+                column: "BlogID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Files_BrandId",
                 table: "Files",
                 column: "BrandId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_HeroSectionSliderID",
+                table: "Files",
+                column: "HeroSectionSliderID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
@@ -921,9 +1053,9 @@ namespace OnionArch.Persistance.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PaymentTransactions_OrderID",
+                name: "IX_PaymentTransactions_OrderId",
                 table: "PaymentTransactions",
-                column: "OrderID");
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PaymentTransactions_UserId",
@@ -979,6 +1111,9 @@ namespace OnionArch.Persistance.Migrations
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
+                name: "BlogBlogCategory");
+
+            migrationBuilder.DropTable(
                 name: "BrandAttriburtes");
 
             migrationBuilder.DropTable(
@@ -1006,6 +1141,9 @@ namespace OnionArch.Persistance.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "BlogCategory");
+
+            migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
@@ -1028,6 +1166,12 @@ namespace OnionArch.Persistance.Migrations
 
             migrationBuilder.DropTable(
                 name: "Attributes");
+
+            migrationBuilder.DropTable(
+                name: "Blogs");
+
+            migrationBuilder.DropTable(
+                name: "HeroSectionSliders");
 
             migrationBuilder.DropTable(
                 name: "DiscountCoupons");
