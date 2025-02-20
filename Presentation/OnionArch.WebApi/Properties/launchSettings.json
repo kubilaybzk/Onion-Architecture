@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "OnionArch.WebApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:63344;http://localhost:63345"
+    }
+  }
+}

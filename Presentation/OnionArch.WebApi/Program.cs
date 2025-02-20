@@ -184,7 +184,7 @@ else
     builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
         policy.WithOrigins(
             "https://adjacentadmin.kubilaybzk.dev",
-            "https://adjacentcommerce.kubilaybzk.dev",
+            "https://adjacentcommerce.kubilaybzk.dev"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
