@@ -160,21 +160,38 @@ builder.Services.AddSignalRServices();          //SignalR içinde ServisRegistra
 
 
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-    policy.WithOrigins(
-    "https://adjacentcommerce.kubilaybzk.dev",
-    "https://localhost:3000",
-    "https://0.0.0.0:3000",
-    "http://0.0.0.0:3000",
-    "https://127.0.0.1:3000",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:5500",
-    "https://127.0.0.1:5500"
-     ).AllowAnyHeader()//
-     .AllowAnyMethod()//.
-     .AllowCredentials()//.AllowCredentials() SignalR'ın çalışması için.
-)) ;
-
+ 
+if (app.Environment.IsDevelopment())
+{
+    builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+        policy.WithOrigins(
+        "http://localhost:3000",
+        "https://localhost:3000",
+        "https://0.0.0.0:3000",
+        "http://0.0.0.0:3000",
+        "https://127.0.0.1:3000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5500",
+        "https://127.0.0.1:5500"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+    ));
+}
+else 
+{
+    builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+        policy.WithOrigins(
+            "https://adjacentadmin.kubilaybzk.dev",
+            "https://adjacentcommerce.kubilaybzk.dev",
+            "https://*.kubilaybzk.dev"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+    ));
+}
 
 
 
