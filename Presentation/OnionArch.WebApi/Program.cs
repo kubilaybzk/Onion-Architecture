@@ -207,7 +207,13 @@ if (app.Environment.IsDevelopment())
         "https://127.0.0.1:3000",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5500",
-        "https://127.0.0.1:5500"
+        "https://127.0.0.1:5500",
+        "https://adjacentadmin.kubilaybzk.dev",
+        "https://adjacentcommerce.kubilaybzk.dev",
+        "https://*.kubilaybzk.dev", 
+        "http://adjacentadmin.kubilaybzk.dev",
+        "http://adjacentcommerce.kubilaybzk.dev",
+        "http://*.kubilaybzk.dev"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
@@ -220,7 +226,10 @@ else
         policy.WithOrigins(
             "https://adjacentadmin.kubilaybzk.dev",
             "https://adjacentcommerce.kubilaybzk.dev",
-            "https://*.kubilaybzk.dev"
+            "https://*.kubilaybzk.dev", 
+            "http://adjacentadmin.kubilaybzk.dev",
+            "http://adjacentcommerce.kubilaybzk.dev",
+            "http://*.kubilaybzk.dev"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
