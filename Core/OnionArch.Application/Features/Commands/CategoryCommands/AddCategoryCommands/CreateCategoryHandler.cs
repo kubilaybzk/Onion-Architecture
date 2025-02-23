@@ -48,8 +48,11 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
                     MaterializedPath = "",
                     MaterializedPathByName = request.CategoryName,
                     MaterializedPathBySlug=request.CategorySlug,
-                    CategoryImageFiles = new List<CategoryImageFile>()
                 };
+                if (request.ImageInfos != null)
+                {
+                    category.CategoryImageFiles = new List<CategoryImageFile>();
+                }
 
                 //Add category's headerImage
                 if (request.CategoryHeaderImage != null)
