@@ -41,6 +41,9 @@
     <Folder Include="Logs\" />
     <Folder Include="wwwroot\" />
     <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\resource\blog-images\" />
+    <Folder Include="wwwroot\resource\Category_Images\" />
+    <Folder Include="wwwroot\resource\heroSection-images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\" />
