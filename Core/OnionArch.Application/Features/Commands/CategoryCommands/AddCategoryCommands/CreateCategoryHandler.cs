@@ -47,7 +47,8 @@ namespace OnionArch.Application.Features.Commands.CategoryCommands.AddCategoryCo
                     CategorySlug = _categoryServices.GenerateSlug(request.CategorySlug),
                     MaterializedPath = "",
                     MaterializedPathByName = request.CategoryName,
-                    MaterializedPathBySlug=request.CategorySlug
+                    MaterializedPathBySlug=request.CategorySlug,
+                    CategoryImageFiles = new List<CategoryImageFile>()
                 };
 
                 //Add category's headerImage
