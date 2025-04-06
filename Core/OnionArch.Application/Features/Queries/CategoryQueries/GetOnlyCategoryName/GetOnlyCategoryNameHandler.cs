@@ -68,6 +68,7 @@ namespace OnionArch.Application.Features.Queries.CategoryQueries.GetOnlyCategory
             {
                 Id = category.ID,
                 CategoryName = category.CategoryName,
+                IsSpecialCategory=category.IsSpecialCategory,
                 SubCategories = allCategories
                     .Where(c => c.ParentCategoryId == category.ID)
                     .Select(subCategory => MapToViewModel(subCategory, allCategories))
