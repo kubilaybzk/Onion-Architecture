@@ -11,6 +11,7 @@ namespace OnionArch.Application.View_Models.Category
         public Guid Id { get; set; }
         public string CategoryName { get; set; }
         public List<VM_GetOnlyCategoryName_VM> SubCategories { get; set; }
-        public Boolean IsSpecialCategory { get; set; }  ;
+        public Boolean IsSpecialCategory { get; set; }  
+
     }
 }
