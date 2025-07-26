@@ -49,7 +49,7 @@ On the User Side:
 
 # ETicaretClient
 This project is a E-Commerce Project. ASP.NET Core 6 + Onion Architecture +  NextJS 
-FrontEnd Repo : https://github.com/kubilaybzk/OnionArch-FrontEnd (private).
+FrontEnd Repo : https://github.com/kubilaybzk/OnionArch-FrontEnd (private)..
 
 
 
