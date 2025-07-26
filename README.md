@@ -1,7 +1,7 @@
 # ETicaretAPI
 This project is a E-Commerce Project. ASP.NET Core 6 + NextJS + Onion Architecture
 
-Technologies and structures used
+Technologies and structures used in this project
 
 Backend:
 - ASP.NET Core 6
